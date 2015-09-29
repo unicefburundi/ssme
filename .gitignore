@@ -1,0 +1,15 @@
+localsettings.py~
+localsettings.pyc
+*.~
+*.py~
+*.htmlc
+*.html~
+*.pyc
+*.sqlite3
+*.py[co]
+localsettings.py
+*.sublime-*
+local_settings.py
+*1.js
+static/
+*ipynb*
