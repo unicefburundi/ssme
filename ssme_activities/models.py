@@ -1,6 +1,4 @@
 from django.db import models
-from authentication.models import UserProfile
-from django.utils.translation import ugettext as _
 
 class User(models.Model):
     nom = models.CharField(max_length=40)
