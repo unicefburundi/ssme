@@ -50,6 +50,7 @@ class Beneficiaire(models.Model):
 
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
+    name = models.CharField(max_length=100)
     models.CharField(max_length=200)
     priority = models.IntegerField(unique=True)
     can_be_fractioned = models.BooleanField(default=False)
