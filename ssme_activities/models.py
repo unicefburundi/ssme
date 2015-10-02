@@ -46,12 +46,12 @@ class Campaign(models.Model):
 class Beneficiaire(models.Model):
     '''In this model, we will store every category of beneficiaries for ssme campaign'''
     designation = models.CharField(max_length=100)
-    priority = models.IntegerField()
+    priority = models.IntegerField(unique=True)
 
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
     models.CharField(max_length=200)
-    priority = models.IntegerField()
+    priority = models.IntegerField(unique=True)
     can_be_fractioned = models.BooleanField(default=False)
 
 class CampaignBeneficiary(models.Model):
