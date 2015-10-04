@@ -15,7 +15,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('designation', models.CharField(max_length=100)),
-                ('priority', models.IntegerField(unique=True)),
             ],
         ),
         migrations.CreateModel(
@@ -40,30 +39,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('dosage', models.FloatField()),
+                ('order_in_sms', models.IntegerField()),
                 ('camapaign_beneficiary', models.ForeignKey(to='ssme_activities.CampaignBeneficiary')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CampaignCDS',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('campaign', models.ForeignKey(to='ssme_activities.Campaign')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CampaignCDSBeneficiary',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('expected_number', models.IntegerField()),
-                ('beneficiary', models.ForeignKey(to='ssme_activities.CampaignBeneficiary')),
-                ('campaign_cds', models.ForeignKey(to='ssme_activities.CampaignCDS')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='CampaignCDSProduit',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('campaign_cds', models.ForeignKey(to='ssme_activities.CampaignCDS')),
             ],
         ),
         migrations.CreateModel(
@@ -96,6 +73,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('priority', models.IntegerField(unique=True)),
                 ('can_be_fractioned', models.BooleanField(default=False)),
+                ('unite_de_mesure', models.CharField(max_length=10)),
             ],
         ),
         migrations.CreateModel(
@@ -114,7 +92,7 @@ class Migration(migrations.Migration):
                 ('concerned_date', models.DateField()),
                 ('text', models.CharField(max_length=200)),
                 ('category', models.CharField(max_length=50)),
-                ('campaign_cds', models.ForeignKey(to='ssme_activities.CampaignCDS')),
+                ('cds', models.ForeignKey(to='ssme_activities.CDS')),
             ],
         ),
         migrations.CreateModel(
@@ -123,7 +101,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('reception_date', models.DateField()),
                 ('received_number', models.IntegerField()),
-                ('campaign_cds_beneficiary', models.ForeignKey(to='ssme_activities.CampaignCDSBeneficiary')),
+                ('campaign_product_beneficiary', models.ForeignKey(to='ssme_activities.CampaignBeneficiaryProduct')),
                 ('report', models.ForeignKey(to='ssme_activities.Report')),
             ],
         ),
@@ -133,6 +111,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('phone_number', models.CharField(max_length=20)),
                 ('supervisor_phone_number', models.CharField(max_length=20)),
+                ('cds', models.ForeignKey(to='ssme_activities.CDS')),
             ],
         ),
         migrations.CreateModel(
@@ -141,17 +120,17 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('reception_date', models.DateField()),
                 ('received_quantity', models.IntegerField()),
-                ('campaign_cds_product', models.ForeignKey(to='ssme_activities.CampaignCDSProduit')),
+                ('campaign_product', models.ForeignKey(to='ssme_activities.CampaignProduct')),
                 ('report', models.ForeignKey(to='ssme_activities.Report')),
             ],
         ),
         migrations.CreateModel(
-            name='ReportProductStock',
+            name='ReportProductRemainStock',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('concerned_date', models.DateField()),
                 ('remain_quantity', models.IntegerField()),
-                ('campaign_cds_product', models.ForeignKey(to='ssme_activities.CampaignCDSProduit')),
+                ('campaign_product', models.ForeignKey(to='ssme_activities.CampaignProduct')),
                 ('report', models.ForeignKey(to='ssme_activities.Report')),
             ],
         ),
@@ -180,16 +159,6 @@ class Migration(migrations.Migration):
             model_name='campaignproduct',
             name='product',
             field=models.ForeignKey(to='ssme_activities.Product'),
-        ),
-        migrations.AddField(
-            model_name='campaigncdsproduit',
-            name='produit',
-            field=models.ForeignKey(to='ssme_activities.Product'),
-        ),
-        migrations.AddField(
-            model_name='campaigncds',
-            name='cds',
-            field=models.ForeignKey(to='ssme_activities.CDS'),
         ),
         migrations.AddField(
             model_name='campaignbeneficiaryproduct',
