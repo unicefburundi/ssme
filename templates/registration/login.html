@@ -12,14 +12,14 @@
 <p class="danger">Your username and password didn't match. Please try again.</p>
 {% endif %}
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}"  role="form">
+<form method="post" action="{% url 'login' %}"  role="form">
   {% csrf_token %}
   <div class="form-group">
     <div for="email">{{ form.username.label_tag }}</div>
     {{ form.username }}
 </div>
 <div class="form-group">
-  <div for="pwd">{{ form.password.label_tag }}<a href="{% url 'auth_password_reset' %}">(forgot password)</a></div>
+  <div for="pwd">{{ form.password.label_tag }}<a href="{% url 'password_reset' %}">(forgot password)</a></div>
     {{ form.password }}
 </div>
   <input type="submit" value="Login" class="btn btn-sm btn-success"/>

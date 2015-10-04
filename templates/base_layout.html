@@ -68,11 +68,11 @@
               </ul>
             </li>
             <li><a href="#">Level : ....</a></li>
-            <li><a href="{% url 'auth_logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+            <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
             </li>
             {% else %}
             <li>
-                <a class="page-scroll text-right" href="{% url 'auth_login' %}">Login</a>
+                <a class="page-scroll text-right" href="{% url 'login' %}">Login</a>
             </li>
         {% endif %}
           </ul>

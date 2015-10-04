@@ -44,8 +44,8 @@ INSTALLED_APPS = (
     'betterforms',
     'django_tables2',
     'django_extensions',
-    'registration',
     'ssme_activities',
+    'authtools',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,6 +125,8 @@ LOGIN_URL = reverse_lazy("login")
 LOGOUT_URL = reverse_lazy("logout")
 LOGIN_REDIRECT_URL = reverse_lazy("landing")
 LOGOUT_REDIRECT_URL = reverse_lazy("landing")
+
+AUTH_USER_MODEL = 'authtools.User'
 
 try:
     from localsettings import *
