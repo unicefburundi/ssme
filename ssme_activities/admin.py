@@ -3,6 +3,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.utils.crypto import get_random_string
 from authtools.admin import NamedUserAdmin
 from django.contrib import admin
+from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 from ssme_activities.models import *
 
@@ -59,3 +60,10 @@ admin.site.register(Report)
 admin.site.register(ProfileUser)
 admin.site.register(Campaign)
 admin.site.register(Beneficiaire)
+admin.site.register(User, UserAdmin)
+admin.site.register(CampaignBeneficiary)
+admin.site.register(CampaignProduct)
+admin.site.register(CampaignBeneficiaryProduct)
+admin.site.register(ReportBeneficiary)
+admin.site.register(ReportProductReception)
+admin.site.register(ReportProductRemainStock)

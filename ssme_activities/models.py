@@ -46,6 +46,7 @@ class CDS(models.Model):
 
 class Reporter(models.Model):
     '''In this model, we will store reporters'''
+    cds = models.ForeignKey(CDS)
     phone_number = models.CharField(max_length=20)
     supervisor_phone_number = models.CharField(max_length=20)
 
@@ -58,13 +59,13 @@ class Campaign(models.Model):
 class Beneficiaire(models.Model):
     '''In this model, we will store every category of beneficiaries for ssme campaign'''
     designation = models.CharField(max_length=100)
-    priority = models.IntegerField()
 
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
-    models.CharField(max_length=200)
-    priority = models.IntegerField()
+    name = models.CharField(max_length=100)
+    priority = models.IntegerField(unique=True)
     can_be_fractioned = models.BooleanField(default=False)
+    unite_de_mesure = models.CharField(max_length=10)
 
 class CampaignBeneficiary(models.Model):
     '''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
@@ -86,44 +87,30 @@ class CampaignBeneficiaryProduct(models.Model):
     camapaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     campaign_product = models.ForeignKey(CampaignProduct)
     dosage = models.FloatField()
-
-class CampaignCDS(models.Model):
-    '''With this model, we will be able to define and identify facilicties concerned by a given ssme campaign'''
-    campaign = models.ForeignKey(Campaign)
-    cds = models.ForeignKey(CDS)
+    order_in_sms = models.IntegerField()
 
 class Report(models.Model):
     '''In this model, we will store each report'''
-    campaign_cds = models.ForeignKey(CampaignCDS)
+    cds = models.ForeignKey(CDS)
     reporting_date = models.DateField()
     concerned_date = models.DateField()
     text = models.CharField(max_length=200)
     category = models.CharField(max_length=50)
 
-class CampaignCDSBeneficiary(models.Model):
-    '''With this model, we will be able to define and identify expected beneficiaries at a given facility and given campaign'''
-    campaign_cds = models.ForeignKey(CampaignCDS)
-    beneficiary = models.ForeignKey(CampaignBeneficiary)
-    expected_number = models.IntegerField()
-
 class ReportBeneficiary(models.Model):
-    campaign_cds_beneficiary = models.ForeignKey(CampaignCDSBeneficiary)
+    campaign_product_beneficiary = models.ForeignKey(CampaignBeneficiaryProduct)
     reception_date = models.DateField()
     received_number = models.IntegerField()
     report = models.ForeignKey(Report)
 
-class CampaignCDSProduit(models.Model):
-    campaign_cds = models.ForeignKey(CampaignCDS)
-    produit = models.ForeignKey(Product)
-
 class ReportProductReception(models.Model):
-    campaign_cds_product = models.ForeignKey(CampaignCDSProduit)
+    campaign_product = models.ForeignKey(CampaignProduct)
     reception_date = models.DateField()
     received_quantity = models.IntegerField()
     report = models.ForeignKey(Report)
 
-class ReportProductStock(models.Model):
-    campaign_cds_product = models.ForeignKey(CampaignCDSProduit)
+class ReportProductRemainStock(models.Model):
+    campaign_product = models.ForeignKey(CampaignProduct)
     concerned_date = models.DateField()
     remain_quantity = models.IntegerField()
     report = models.ForeignKey(Report)
