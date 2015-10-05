@@ -1,12 +1,24 @@
 from django.db import models
+from django.conf import settings
+from django.utils.translation import ugettext as _
+from django.core.validators import RegexValidator
 
-class User(models.Model):
-    nom = models.CharField(max_length=40)
-    prenom = models.CharField(max_length=40)
-    login = models.CharField(max_length=40)
-    password = models.CharField(max_length=40)
-    level = models.CharField(max_length=20)
-    
+class ProfileUser(models.Model):
+    MOH_LEVEL_CHOICES = (
+        ('CEN', 'Central'),
+        ('BPS', 'BPS'),
+        ('BDS', 'BDS'),
+        ('CDS', 'CDS'),
+    )
+
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
+    # The additional attributes we wish to include.
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
+    telephone = models.CharField(validators=[phone_regex], blank=True, help_text=_('The telephone to contact you.'), max_length=16)
+    level= models.CharField(max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
+    moh_facility = models.IntegerField(null=True, blank=True, help_text=_('Code of the MoH facility'))
+
+
 class Province(models.Model):
     '''In this model, we will store burundi provinces'''
     name = models.CharField(unique=True, max_length=20)
@@ -69,7 +81,7 @@ class CampaignProduct(models.Model):
         unique_together = ('campaign', 'product',)
 
 class CampaignBeneficiaryProduct(models.Model):
-    '''With this model, we will be able to define and identify which medecines will be received by each beneficiary 
+    '''With this model, we will be able to define and identify which medecines will be received by each beneficiary
     category and quantity for each Beneficiary'''
     camapaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     campaign_product = models.ForeignKey(CampaignProduct)
@@ -109,7 +121,7 @@ class ReportProductReception(models.Model):
     reception_date = models.DateField()
     received_quantity = models.IntegerField()
     report = models.ForeignKey(Report)
-    
+
 class ReportProductStock(models.Model):
     campaign_cds_product = models.ForeignKey(CampaignCDSProduit)
     concerned_date = models.DateField()
