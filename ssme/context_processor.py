@@ -13,7 +13,7 @@ def get_name_of_mohfacility(level='',code=''):
 def myfacility(request):
     myprofile = None
     try:
-        myprofile = ProfileUser.objects.get(user=request.user)
+        myprofile, created = ProfileUser.objects.get_or_create(user=request.user)
     except TypeError:
         return {}
 
