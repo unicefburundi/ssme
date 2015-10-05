@@ -2,11 +2,14 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.conf import settings
+import django.core.validators
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -77,6 +80,16 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='ProfileUser',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('telephone', models.CharField(blank=True, help_text='The telephone to contact you.', max_length=16, validators=[django.core.validators.RegexValidator(regex=b'^\\+?1?\\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")])),
+                ('level', models.CharField(blank=True, help_text='Either CDS, BDS, PBS, or Central level.', max_length=3, choices=[(b'CEN', b'Central'), (b'BPS', b'BPS'), (b'BDS', b'BDS'), (b'CDS', b'CDS')])),
+                ('moh_facility', models.IntegerField(help_text='Code of the MoH facility', null=True, blank=True)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Province',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -132,17 +145,6 @@ class Migration(migrations.Migration):
                 ('remain_quantity', models.IntegerField()),
                 ('campaign_product', models.ForeignKey(to='ssme_activities.CampaignProduct')),
                 ('report', models.ForeignKey(to='ssme_activities.Report')),
-            ],
-        ),
-        migrations.CreateModel(
-            name='User',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('nom', models.CharField(max_length=40)),
-                ('prenom', models.CharField(max_length=40)),
-                ('login', models.CharField(max_length=40)),
-                ('password', models.CharField(max_length=40)),
-                ('level', models.CharField(max_length=20)),
             ],
         ),
         migrations.AddField(
