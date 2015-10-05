@@ -67,7 +67,7 @@
                 <li><a href="#">Profile</a></li>
               </ul>
             </li>
-            <li><a href="#">Level : ....</a></li>
+            <li><a href="#">Level : {{mylevel}}</a></li>
             <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
             </li>
             {% else %}
@@ -90,8 +90,6 @@
       <!-- left -->
       {% if user.is_authenticated %}
       <ul class="nav nav-stacked">
-
-                <li><a href="#"><i class="glyphicon glyphicon-flash"></i> Alerts</a></li>
             <li role="presentation" class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Facilities <span class="caret"></span>
               </a>
@@ -103,9 +101,21 @@
                 <li><a href="#">Search Patients</a></li>
               </ul>
           </li>
-          {% if user.is_superuser %}
-                  <li><a href="#"><i class="glyphicon glyphicon-list-alt"></i> Create</a></li>
-                {% endif %}
+
+                  <li role="presentation" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Create <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+              {% if user.is_superuser %}
+                <li><a href="#">Facilities</a></li>
+                <li><a href="#">Users</a></li>
+              {% endif %}
+                <li><a href="#">Campains</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Beneficiaries</a></li>
+              </ul>
+          </li>
+
         {% endif %}
       </ul>
 
