@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
+from django.core.urlresolvers import reverse
+
 
 class ProfileUser(models.Model):
     MOH_LEVEL_CHOICES = (
@@ -27,6 +29,12 @@ class Province(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+            return reverse('province_detail', kwargs={'pk': self.id})
+
+    class Meta:
+        ordering = ('name',)
+
 class District(models.Model):
     '''In this model, we will store districts'''
     province = models.ForeignKey(Province)
@@ -36,13 +44,26 @@ class District(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+            return reverse('district_detail', kwargs={'pk': self.id})
+
+    class Meta:
+        ordering = ('name',)
+
 class CDS(models.Model):
     '''In this model, we will store facilities'''
     district = models.ForeignKey(District)
     name = models.CharField(max_length=40)
     code = models.CharField(unique=True, max_length=6)
+
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+            return reverse('cds_detail', kwargs={'pk': self.id})
+
+    class Meta:
+        ordering = ('name',)
 
 class Reporter(models.Model):
     '''In this model, we will store reporters'''

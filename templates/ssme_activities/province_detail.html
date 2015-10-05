@@ -2,59 +2,19 @@
 {% load render_table from django_tables2 %}
 
 {% block page_title %}
-<h4><i class="glyphicon glyphicon-list-alt"></i> Analytics of patients at  {{ object.name|  capfirst }} Province</h4>
+<h4><i class="glyphicon glyphicon-list-alt"></i> {{ object.name|  capfirst }} Province</h4>
 {% endblock page_title %}
 
 {% block content %}
 {% if object %}
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-8">
             <dl class="dl-horizontal">
                 <dt>Name of the Province : </dt>
                 <p> {{object.name}}</p>
                 <dt>Code of the Province : </dt>
                 <p> {{object.code}}</p>
             </dl>
-        </div>
-        <div class="col-md-8">
-        <div class="row">
-                <form action="{% url 'province_statistics' pk=object.id %}" method="post" id="post-form" class="form-inline">
-                {% csrf_token %}
-                    <div class="form-group col-md-3">
-                        <div class="row">
-                            <label for="start_date">Start Date :</label>
-                        </div>
-                        <div class="row">
-                            {{form.start_date}}
-                        </div>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <div class="row">
-                            <label for="age">End Date :</label>
-                        </div>
-                        <div class="row">
-                            {{form.end_date}}
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="row"></div>
-                        <div class="row" style="padding-top: 18px">
-                            <button type="submit" class="btn btn-primary" >Analyse</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <hr>
-            <div class="row">
-            {% if start_date != None  %}
-            {% now "d/m/Y" as current_year %}
-                Displaying results from : <span class="badge">{{start_date|default:"The Beginning"}}</span> to : <span class="badge">{{end_date|default:current_year}}</span>
-        {% endif %}
-                <div class="col-md-10">
-                    {% render_table statistics %}
-                </div>
-                <div class="col-md-2"></div>
-            </div>
         </div>
     </div>
 {% else %}

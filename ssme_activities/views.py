@@ -10,7 +10,10 @@ def dashboard(request):
     return render(request, 'base_layout.html')
 
 def moh_facility(request):
-    return render(request, 'ssme_activities/moh_facility.html')
+    cds_form = CDSForm
+    district_form = DistrictForm
+    province_form = ProvinceForm
+    return render(request, 'ssme_activities/moh_facility.html', {'cds_form':cds_form, 'district_form':district_form, 'province_form':province_form})
 
 def profile_user(request):
     profile_form = UserCreationMultiForm

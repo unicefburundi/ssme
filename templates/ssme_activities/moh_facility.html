@@ -1,20 +1,20 @@
 {% extends "base_layout.html" %}
 
-{% block actions %}
+{% block page_title %}
 <ul class="nav nav-tabs">
   <li {% block activeprovince %}class="active"{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">Province</a></li>
   <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">District</a></li>
   <li {% block activecds %}{% endblock activecds %} ><a href="#cds"   data-toggle="tab">Cds</a></li>
-{% endblock actions  %}
+{% endblock page_title  %}
 
 {% block content %}
-
 <div class="col-md-10">
     <div class="tab-content">
+    <hr>
               <div class="tab-pane {% block activeprovince1 %}active{% endblock activeprovince1 %}" id="province">
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                 {% block province %}
-                    <form action="#" method="POST" class="form-inline">
+                    <form action="{% url 'province_add' %}" method="POST" class="form-inline">
                         {% csrf_token %}
                          <div class="row">
                              <div class="col-md-4">
@@ -37,7 +37,7 @@
               <div class="tab-pane {% block activedistrict1 %}{% endblock activedistrict1 %}" id="district">
                 <h4><i class="glyphicon glyphicon-cog"></i></h4>
                 {% block district %}
-                    <form action="#" method="POST" class="form-inline">
+                    <form action="{% url 'district_add' %}" method="POST" class="form-inline">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-4">
@@ -65,7 +65,7 @@
               <div class="tab-pane {% block activecds1 %}{% endblock activecds1 %}" id="cds">
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block cds %}
-                    <form action="#" method="POST" class="form-inline">
+                    <form action="{% url 'cds_add' %}" method="POST" class="form-inline">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-md-3">
