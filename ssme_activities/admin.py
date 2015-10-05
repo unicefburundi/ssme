@@ -4,6 +4,7 @@ from django.utils.crypto import get_random_string
 from authtools.admin import NamedUserAdmin
 from django.contrib import admin
 from ssme_activities.forms import UserCreationForm
+from ssme_activities.models import *
 
 User = get_user_model()
 
@@ -51,4 +52,10 @@ class UserAdmin(NamedUserAdmin):
             )
 
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(Province)
+admin.site.register(District)
+admin.site.register(CDS)
+admin.site.register(Report)
+admin.site.register(ProfileUser)
+admin.site.register(Campaign)
+admin.site.register(Beneficiaire)
