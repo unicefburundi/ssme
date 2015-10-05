@@ -128,6 +128,14 @@ LOGOUT_REDIRECT_URL = reverse_lazy("landing")
 
 AUTH_USER_MODEL = 'authtools.User'
 
+KNOWN_PREFIXES = {
+'RG':'SELF_REGISTRATION',
+'SDS':'STOCK_DEBUT_SEMAINE',
+'SR':'STOCK_RECU',
+'SF':'STOCK_FINAL',
+'B':'BENEFICIAIRE',
+}
+
 try:
     from localsettings import *
 except ImportError:

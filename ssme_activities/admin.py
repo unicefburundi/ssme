@@ -22,7 +22,7 @@ admin.site.register(Report)
 admin.site.register(ReportBeneficiary)
 admin.site.register(ReportProductReception)
 admin.site.register(ReportProductRemainStock)
-
+admin.site.register(Temporary)
 
 
 User = get_user_model()
