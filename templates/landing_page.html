@@ -61,7 +61,7 @@
                     {% if user.is_authenticated %}
                             {% if user.is_active %}
                             <li>
-                                <a class="page-scroll" href="{% url 'landing' %}">Dashboard</a>
+                                <a class="page-scroll" href="{% url 'dashboard' %}">Dashboard</a>
                             </li>
                             <li>
                                 <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
@@ -240,7 +240,7 @@
                         {% if user.is_authenticated %}
                             {% if user.is_active %}
                             <li>
-                                <a class="page-scroll" href="{% url 'landing' %}">Dashboard</a>
+                                <a class="page-scroll" href="{% url 'dashboard' %}">Dashboard</a>
                             </li>
                             <li>
                                 <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
