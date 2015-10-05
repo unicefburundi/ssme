@@ -20,4 +20,9 @@ urlpatterns = patterns('',
     url(r'^province/$', ProvinceListView.as_view(), name='province_list'),
     url(r'^province/add/$', ProvinceCreateView.as_view(), name='province_add'),
     url(r'^province/(?P<pk>\d+)/$', ProvinceDetailView.as_view(), name='province_detail'),
+
+    #ProfileUser
+    url(r'^register/$', UserSignupView.as_view(), name="create_profile"),
+    url(r'^profile/(?P<pk>\d+)/$', ProfileUserDetailView.as_view(), name="profile_user_detail"),
+    url(r'^profile_edit/(?P<pk>\d+)/$', ProfileUserUpdateView.as_view(), name="profileuser_update"),
 )

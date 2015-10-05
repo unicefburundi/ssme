@@ -1,6 +1,8 @@
 from django import forms
 from authtools.forms import UserCreationForm
 from ssme_activities.models import *
+from betterforms.multiform import MultiModelForm
+from collections import OrderedDict
 
 class UserCreationForm(UserCreationForm):
     """
@@ -37,3 +39,16 @@ class CDSForm(forms.ModelForm):
     class Meta:
         model = CDS
         fields = '__all__'
+
+#User
+
+class UserProfileForm2(forms.ModelForm):
+    class Meta:
+        model = ProfileUser
+        exclude = ('user',)
+
+class UserCreationMultiForm(MultiModelForm):
+    form_classes = OrderedDict((
+        ('user', UserCreationForm),
+        ('profile', UserProfileForm2),
+    ))
