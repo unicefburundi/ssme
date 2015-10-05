@@ -20,12 +20,12 @@
         {% for cds in object_list %}
             <tr>
                 {% with cds.id as code  %}
-                    <td>{{ cds.name }}</td>
                     {% if  user|has_group:'Central' %}
-                        <td><a href="{% url 'cds_detail' pk=code %} " class="btn btn_link">{{ cds.code}}</a></td>
+                        <td><a href="{% url 'cds_detail' pk=code %} " class="btn btn_link">{{ cds.name}}</a></td>
                     {% else %}
-                    <td>{{ cds.code}}</td>
+                    <td>{{ cds.name}}</td>
                     {% endif %}
+                    <td>{{ cds.code }}</td>
                     <td>{{ cds.district}}</td>
                     <td>{{cds.status}}</td>
                 {% endwith %}
