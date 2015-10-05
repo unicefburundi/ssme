@@ -1,0 +1,57 @@
+{% extends "base_layout.html" %}
+{% load extras_utils %}
+
+{% block page_title %}
+<h3><i class="glyphicon glyphicon-list-alt"></i> Centres de Sante.</h3>
+{% endblock page_title %}
+
+{% block content %}
+{% if object_list %}
+    <div class="col-md-8">
+    <table id="list_cds" class="table table-bordered" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel']>
+        <thead>
+              <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>District</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+        {% for cds in object_list %}
+            <tr>
+                {% with cds.id as code  %}
+                    <td>{{ cds.name }}</td>
+                    {% if  user|has_group:'Central' %}
+                        <td><a href="{% url 'cds_detail' pk=code %} " class="btn btn_link">{{ cds.code}}</a></td>
+                    {% else %}
+                    <td>{{ cds.code}}</td>
+                    {% endif %}
+                    <td>{{ cds.district}}</td>
+                    <td>{{cds.status}}</td>
+                {% endwith %}
+            </tr>
+        {% endfor %}
+    </table>
+    {# .... **Now the pagination section** .... #}
+    {% if is_paginated %}
+        <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+    </div>
+    <div class="col-md-4"></div>
+
+{% else %}
+    <p>No CDS found!!! :(</p>
+{% endif %}
+{% endblock content %}

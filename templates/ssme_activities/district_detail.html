@@ -1,0 +1,55 @@
+{% extends "base_layout.html" %}
+{% load render_table from django_tables2 %}
+
+{% block page_title %}
+<h4><i class="glyphicon glyphicon-list-alt"></i> Analytics of patients at  {{ object.name|  capfirst }} District</h4>
+{% endblock page_title %}
+
+{% block content %}
+{% if object %}
+    <div class="row">
+        <div class="col-md-3">
+            <dl class="dl-horizontal">
+                <dt>Name of the District : </dt>
+                <p> {{object.name}}</p>
+                <dt>Code of the District : </dt>
+                <p> {{object.code}}</p>
+                <dt>Province : </dt>
+                <p> {{object.province}}</p>
+            </dl>
+        </div>
+        <div class="col-md-8">
+        <div class="row">
+                <form action="{% url 'district_statistics' pk=object.id %}" method="post" id="post-form" class="form-inline">
+                {% csrf_token %}
+                    <div class="form-group col-md-3">
+                        <label for="start_date">Start Date :</label>
+                        {{form.start_date}}
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="age">End Date :</label>
+                        {{form.end_date}}
+                    </div>
+                    <div class="col-md-2">
+                        <div class="row" style="padding-top: 18px">
+                            <button type="submit" class="btn btn-primary" >Analyse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+    <hr>
+        <div class="col-lg-9">
+        {% if start_date != None  %}
+            {% now "d/m/Y" as current_year %}
+                Displaying results from : <span class="badge">{{start_date|default:"The Beginning"}}</span> to : <span class="badge">{{end_date|default:current_year}}</span>
+        {% endif %}
+            {% render_table statistics %}
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+{% else %}
+No Patient in this District
+{% endif %}
+{% endblock content %}
