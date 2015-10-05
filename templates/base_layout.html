@@ -1,0 +1,153 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <script type="text/javascript" src="{% static 'js/libs/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="{% static 'js/bootstrap-table/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table/extensions/export/tableExport.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table/extensions/export/jquery.base64.js' %}"></script>
+    <script src="{% static 'js/bootstrap-table/extensions/export/bootstrap-table-export.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
+    <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+
+    <script type="text/javascript">
+      // Change JQueryUI plugin names to fix name collision with Bootstrap.
+      $.widget.bridge('uitooltip', $.ui.tooltip);
+      $.widget.bridge('uibutton', $.ui.button);
+      // on page load
+      $(function() {
+      $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
+      });
+    </script>
+    {% block css_section %}
+        <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-theme.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <style>
+        .row.vdivide [class*='col-']:not(:last-child):after {
+          background: #e0e0e0;
+          width: 1px;
+          content: "";
+          display:block;
+          position: absolute;
+          top:0;
+          bottom: 0;
+          right: 0;
+          min-height: 70px;
+        }
+    </style>
+    {% endblock css_section %}
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <title>SSME - {% block title %}App{% endblock title %} </title>
+  </head>
+  <body>
+<!-- Header -->
+<div id="top-nav" class="navbar navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-toggle"></span>
+      </button>
+      <a class="navbar-brand" href="/">SSME Panel</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
+            <li role="presentation" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> {{user.username|capfirst}}</a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Profile</a></li>
+              </ul>
+            </li>
+            <li><a href="#">Level : ....</a></li>
+            <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+            </li>
+            {% else %}
+            <li>
+                <a class="page-scroll text-right" href="{% url 'login' %}">Login</a>
+            </li>
+        {% endif %}
+          </ul>
+    </div>
+  </div><!-- /container -->
+</div>
+<!-- /Header -->
+
+<!-- Main -->
+<div class="container">
+
+  <!-- upper section -->
+  <div class="row">
+  <div class="col-sm-2">
+      <!-- left -->
+      {% if user.is_authenticated %}
+      <ul class="nav nav-stacked">
+
+                <li><a href="#"><i class="glyphicon glyphicon-flash"></i> Alerts</a></li>
+            <li role="presentation" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Facilities <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Provinces</a></li>
+                <li><a href="#">Districts</a></li>
+                <li><a href="#">C.d.S</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Search Patients</a></li>
+              </ul>
+          </li>
+          {% if user.is_superuser %}
+                  <li><a href="#"><i class="glyphicon glyphicon-list-alt"></i> Create</a></li>
+                {% endif %}
+        {% endif %}
+      </ul>
+
+      <hr>
+
+    </div><!-- /span-2 -->
+    <div class="col-sm-10">
+
+      <!-- column 2 -->
+      {% if user.is_authenticated %}
+       {% block page_title %}
+          <h3><i class="glyphicon glyphicon-dashboard"></i> Dashboard</h3>
+       {% endblock page_title %}
+        <hr>
+        {% endif %}
+        {% block actions %}
+
+        {% endblock actions %}
+        <div class="container">
+          {% block content %}
+          <!--  MAIN CONTENT GOES HERE -->
+          {% endblock content %}
+        </div>
+    </div><!--/col-span-10-->
+
+  </div><!--/row-->
+  <!-- /upper section -->
+
+  <!-- lower section -->
+
+  </div><!--/row-->
+
+</div><!--/container-->
+<!-- /Main -->
+
+
+<footer class="text-center">&copy; {% now "Y" %} <span class="separator">|</span> Powered by Open-Source. <span class="separator"> | </span>  Bootstrap Theme by <a href="http://www.bootply.com/85850"><strong>Bootply.com</strong></a></footer>
+
+  <!-- script references -->
+  {% block js_footer %}
+      <!-- Scrolling Nav JavaScript -->
+      <script src="{% static 'js/jquery.easing.min.js' %}"></script>
+  {% endblock js_footer %}
+  </body>
+</html>

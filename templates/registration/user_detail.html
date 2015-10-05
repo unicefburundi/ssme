@@ -1,0 +1,44 @@
+{% extends "base_layout.html" %}
+
+{% block content %}
+<h2>{{ object.user.username|  capfirst }} ' s Profile</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <dl  class="dl-horizontal">
+            <dt>Username :</dt>
+                <p>{{ object.user.userprofile.user.username }}</p>
+            {% if object.user.userprofile.user.first_name%}
+            <dt>First name :</dt>
+                <p>{{ object.user.userprofile.user.first_name }}</p>
+            {% endif %}
+            {% if object.user.userprofile.user.last_name%}
+            <dt>Last name :</dt>
+                <p>{{ object.user.userprofile.user.last_name }}</p>
+            {% endif %}
+            {% if object.user.userprofile.telephone%}
+            <dt>Telephone :</dt>
+                <p>{{ object.user.userprofile.telephone }}</p>
+            {% endif %}
+            {% if object.user.userprofile.level%}
+            <dt>Level :</dt>
+                <p>{{ object.user.userprofile.level }}</p>
+            {% endif %}
+            {% if object.user.userprofile.moh_facility%}
+            <dt>MoH facility code : </dt>
+                <p>{{ object.user.userprofile.moh_facility }}</p>
+            {% endif %}
+            {% if object.facility%}
+            <dt>{{ object.user.userprofile.level }} name :  </dt>
+                <p>  {{ object.facility }}</p>
+            {% endif %}
+        </dl>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+</div>
+{% if object.user.username == user.username %}
+<p><a href='{% url "edit_profile" %}'>Edit my profile</a></p>
+{% endif %}
+{% endblock %}

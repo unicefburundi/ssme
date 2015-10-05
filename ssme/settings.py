@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
-
+from django.core.urlresolvers import reverse_lazy
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
@@ -34,13 +34,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'betterforms',
+    'django_tables2',
+    'django_extensions',
     'ssme_activities',
+    'authtools',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -60,22 +65,6 @@ ROOT_URLCONF = 'ssme.urls'
 #    os.path.join(BASE_DIR, 'templates'),
 #)
 
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
 
 WSGI_APPLICATION = 'ssme.wsgi.application'
 
@@ -119,6 +108,26 @@ STATIC_ROOT = os.path.join(PROJECT_PATH,  'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'staticfiles'),
 )
+
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, 'fixtures'),
+)
+
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+)
+
+#-----------------------------------------------------------------------------------
+# Login / Logout
+#-----------------------------------------------------------------------------------
+LOGIN_URL = reverse_lazy("login")
+LOGOUT_URL = reverse_lazy("logout")
+LOGIN_REDIRECT_URL = reverse_lazy("landing")
+LOGOUT_REDIRECT_URL = reverse_lazy("landing")
+
+AUTH_USER_MODEL = 'authtools.User'
+
 try:
     from localsettings import *
 except ImportError:

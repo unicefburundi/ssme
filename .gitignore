@@ -1,10 +1,7 @@
-localsettings.py~
-localsettings.pyc
 *.~
 *.py~
 *.htmlc
 *.html~
-*.pyc
 *.sqlite3
 *.py[co]
 localsettings.py
