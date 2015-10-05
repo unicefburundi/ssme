@@ -135,3 +135,15 @@ class ReportProductRemainStock(models.Model):
     concerned_date = models.DateField()
     remain_quantity = models.IntegerField()
     report = models.ForeignKey(Report)
+
+class Temporary(models.Model):
+    '''
+    This model will be used to temporary store a reporter who doesn't finish his self registration
+    '''
+    cds = models.ForeignKey(CDS)
+    phone_number = models.CharField(max_length=20)
+    supervisor_phone_number = models.CharField(max_length=20)
+
+    def __unicode__(self):
+        return self.phone_number
+

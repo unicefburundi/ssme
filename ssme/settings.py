@@ -72,12 +72,12 @@ WSGI_APPLICATION = 'ssme.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
 
 
 # Internationalization
@@ -139,6 +139,14 @@ LOGIN_REDIRECT_URL = reverse_lazy("landing")
 LOGOUT_REDIRECT_URL = reverse_lazy("landing")
 
 AUTH_USER_MODEL = 'authtools.User'
+
+KNOWN_PREFIXES = {
+'RG':'SELF_REGISTRATION',
+'SDS':'STOCK_DEBUT_SEMAINE',
+'SR':'STOCK_RECU',
+'SF':'STOCK_FINAL',
+'B':'BENEFICIAIRE',
+}
 
 try:
     from localsettings import *
