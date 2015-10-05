@@ -1,5 +1,6 @@
 from django import forms
 from authtools.forms import UserCreationForm
+from ssme_activities.models import *
 
 class UserCreationForm(UserCreationForm):
     """
@@ -21,3 +22,18 @@ class UserCreationForm(UserCreationForm):
         if bool(password1) ^ bool(password2):
             raise forms.ValidationError("Fill out both fields")
         return password2
+
+class ProvinceForm(forms.ModelForm):
+    class Meta:
+        model = Province
+        fields = '__all__'
+
+class DistrictForm(forms.ModelForm):
+    class Meta:
+        model = District
+        fields = '__all__'
+
+class CDSForm(forms.ModelForm):
+    class Meta:
+        model = CDS
+        fields = '__all__'
