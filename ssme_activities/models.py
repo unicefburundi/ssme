@@ -20,6 +20,15 @@ class ProfileUser(models.Model):
     level= models.CharField(max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
     moh_facility = models.IntegerField(null=True, blank=True, help_text=_('Code of the MoH facility'))
 
+    def __unicode__(self):
+        return self.user
+
+    def get_absolute_url(self):
+            return reverse('profile_user_detail', kwargs={'pk': self.id})
+
+    class Meta:
+        ordering = ('user',)
+
 
 class Province(models.Model):
     '''In this model, we will store burundi provinces'''
