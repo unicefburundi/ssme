@@ -70,7 +70,7 @@ class UserAdmin(NamedUserAdmin):
                 email_template_name='registration/account_creation_email.html',
             )
 
-admin.site.unregister(User)
+'''admin.site.unregister(User)
 admin.site.register(Province)
 admin.site.register(District)
 admin.site.register(CDS)
@@ -84,4 +84,4 @@ admin.site.register(CampaignProduct)
 admin.site.register(CampaignBeneficiaryProduct)
 admin.site.register(ReportBeneficiary)
 admin.site.register(ReportProductReception)
-admin.site.register(ReportProductRemainStock)
+admin.site.register(ReportProductRemainStock)'''
