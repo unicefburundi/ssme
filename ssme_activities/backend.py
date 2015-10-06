@@ -96,6 +96,18 @@ def handel_rapidpro_request(request):
 	if(incoming_data['message_type']=='SELF_REGISTRATION'):
 		#The contact who sent the current message is doing self registration  in the group of reporters
 		temporary_record_reporter(incoming_data)
+	if(incoming_data['message_type']=='STOCK_DEBUT_SEMAINE'):
+		#The contact who sent the current message is reporting the stock at the begining of the campaign
+		record_sds(incoming_data)
+	if(incoming_data['message_type']=='STOCK_RECU'):
+		#The contact who sent the current message is reporting a stock reception
+		record_sr(incoming_data)
+	if(incoming_data['message_type']=='STOCK_FINAL'):
+		#The contact who sent the current message is reporting the final stock for one day
+		record_sf(incoming_data)
+	if(incoming_data['message_type']=='BENEFICIAIRE'):
+		#The contact who sent the current message is reporting number of beneficiaries for one day
+		record_beneficiaries(incoming_data)
 
 
 

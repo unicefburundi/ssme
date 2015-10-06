@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct
 import re
 import datetime
 
@@ -17,43 +17,33 @@ def check_number_of_values(args):
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
-	if(args['message_type']=='PATIENT_REGISTRATION'):
-		if len(args['text'].split(' ')) < 6:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
-		if len(args['text'].split(' ')) > 6:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
-		if len(args['text'].split(' ')) == 6:
-			args['valide'] = True
-			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
-	if(args['message_type']=='TRACK'):
-		if len(args['text'].split(' ')) < 4:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
-		if len(args['text'].split(' ')) > 4:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
-		if len(args['text'].split(' ')) == 4:
-			args['valide'] = True
-			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
-	if(args['message_type']=='RECEPTION_P_T'):
-		if len(args['text'].split(' ')) < 4:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
-		if len(args['text'].split(' ')) > 4:
-			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
-		if len(args['text'].split(' ')) == 4:
-			args['valide'] = True
-			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 
+		
+
+def identify_the_opened_campaign(args):
+	'''This function identifies an opened campaign. More than one campaign can not be opened at the same time'''
+	campaign = Campaign.objects.filter(open = True)
+	
+	if len(campaign) < 1:
+		#There is no opened campaign
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur admin. Pas de campagne ouverte."
+	if len(campaign) > 1:
+		#There is more than one opened campaign
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur admin. Plusieurs campagnes ouvertes en meme temps."
+	if len(campaign) == 1:
+		#There is one opened campaign
+		campaign = campaign[0]
+		args['opened_campaign'] = campaign
+		args['valide'] = True
+		args['info_to_contact'] = "Tout vas bien."
 
 
 
 #------------------------------------------------------------------------------------
 
-
+#======================reporters self registration==================================
 
 
 def check_cds(args):
@@ -81,8 +71,9 @@ def check_supervisor_phone_number(args):
 		args['valide'] = True
 		args['info_to_contact'] = "Le numero de telephone du superviseur est bien ecrit."
 
+'''
 def check_supervisor_phone_number_not_for_this_contact(args):
-	'''This function checks if the contact didn't send his/her phone number in the place of the supervisor phone number'''
+	'This function checks if the contact didn't send his/her phone number in the place of the supervisor phone number'
 	print("args['phone']")
 	print(args['phone'])
 	print("args['phone'][4:]")
@@ -95,6 +86,7 @@ def check_supervisor_phone_number_not_for_this_contact(args):
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Le numero de telephone du superviseur est bien note."
+'''
 
 def save_temporary_the_reporter(args):
 	same_existing_temp = Temporary.objects.filter(phone_number = args['phone'])
@@ -142,10 +134,11 @@ def temporary_record_reporter(args):
 	if not args['valide']:
 		return
 
+	#La ligne ci dessous ne peut pas fonctionner sur les instance Anonimise de RapidPro
 	#Let's check if the contact didn't send his/her number in the place of the supervisor number
-	check_supervisor_phone_number_not_for_this_contact(args)
-	if not args['valide']:
-		return
+	#check_supervisor_phone_number_not_for_this_contact(args)
+	#if not args['valide']:
+		#return
 
 	#Let's temporary save the reporter
 	save_temporary_the_reporter(args)
@@ -198,3 +191,87 @@ def complete_registration(args):
 
 
 #-----------------------------------------------------------------
+
+
+#==================Report SDS(Stock au Debut de la Semaine)=======
+
+def record_sds(args):
+	pass
+
+
+#------------------------------------------------------------------
+
+#==================Report SR(Stock Recu)===========================
+
+def record_sr(args):
+	pass
+
+#------------------------------------------------------------------
+
+#==================Report SF(Stock Final)===========================
+
+def record_sf(args):
+	pass
+
+#-------------------------------------------------------------------
+
+#==================Report B(Beneficiaries)===========================
+
+def identify_number_of_concerned_beneficiaries(args):
+	''' This function identifies the number of concerned beneficiaries '''
+
+	#Let's identify number of Beneficiaries on this campaign
+	campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'])
+
+	if len(campaign_beneficiaries) < 1:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur admin. Pas de beneficiaires lies a la campagne ouverte."
+		return
+
+	args['number_of_concerned_beneficiaries'] = len(campaign_beneficiaries)
+
+	#Let's identify the number of beneficiary/product
+
+	number_of_expected_beneficiarie_values = 0
+
+	for campaign_beneficiary in campaign_beneficiaries:
+		if args['valide']:
+			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(camapaign_beneficiary = campaign_beneficiary)
+			if len(camp_ben_products) < 1:
+				#The admin didn't define products which will be received by these beneficiaries in the opened campaign
+				args['valide'] = False
+				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas definis."
+			number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
+
+	args['number_of_beneficiries_per_product'] = number_of_expected_beneficiarie_values
+
+	print("Number of concerned beneficiaries")
+	print(args['number_of_concerned_beneficiaries'])
+	print("Number of beneficiaries per products")
+	print(args['number_of_beneficiries_per_product'])
+
+
+def check_number_of_incoming_variables(args):
+	pass
+
+def record_beneficiaries(args):
+	'''This function is used to record number of beneficiaries'''
+	#Let's identify the opened campaign
+	identify_the_opened_campaign(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's identify the opened campaign
+	identify_number_of_concerned_beneficiaries(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the phone user sent expected number of values
+	check_number_of_incoming_variables(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+#--------------------------------------------------------------------
