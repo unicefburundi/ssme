@@ -139,7 +139,7 @@ class CampaignBeneficiary(models.Model):
 	beneficiary = models.ForeignKey(Beneficiaire)
 	order_in_sms = models.IntegerField()
 	def __unicode__(self):
-		return self.beneficairy.designation
+		return self.beneficiary.designation
 	
 	def get_absolute_url(self):
 		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
@@ -178,7 +178,7 @@ class CampaignBeneficiaryProduct(models.Model):
     dosage = models.FloatField(null = True)
 
     def __unicode__(self):
-        return self.campaign_beneficiary.beneficairy.designation
+        return self.campaign_beneficiary.beneficiary.designation
 
     def get_absolute_url(self):
             return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
