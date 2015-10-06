@@ -64,10 +64,10 @@
           {% if user.is_authenticated %}
             <li role="presentation" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> {{user.name|capfirst}}</a>
             <ul class="dropdown-menu">
-                <li><a href="#">Profile</a></li>
+                <li><a href="{% url 'profileuser_update' pk=user.id %}"> Profile</a></li>
               </ul>
             </li>
-            <li><a href="#">Level : ....</a></li>
+            <li><a href="#">Level : {{mylevel}}</a></li>
             <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
             </li>
             {% else %}
@@ -90,22 +90,30 @@
       <!-- left -->
       {% if user.is_authenticated %}
       <ul class="nav nav-stacked">
-
-                <li><a href="#"><i class="glyphicon glyphicon-flash"></i> Alerts</a></li>
             <li role="presentation" class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Facilities <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a href="#">Provinces</a></li>
-                <li><a href="#">Districts</a></li>
-                <li><a href="#">C.d.S</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Search Patients</a></li>
+                <li><a href="{% url 'province_list' %}">Provinces</a></li>
+                <li><a href="{% url 'district_list' %}">Districts</a></li>
+                <li><a href="{% url 'cds_list' %}">C.d.S</a></li>
               </ul>
           </li>
-          {% if user.is_superuser %}
-                  <li><a href="#"><i class="glyphicon glyphicon-list-alt"></i> Create</a></li>
-                {% endif %}
+
+                  <li role="presentation" class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Create <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+              {% if user.is_superuser %}
+                <li><a href="{% url 'profile_user' %}">Users</a></li>
+                <li><a href="{% url 'moh_facility' %}">Facilities</a></li>
+              {% endif %}
+                <li><a href="{% url 'campaigns' %}">Campains</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="{% url 'beneficiaries' %}">Beneficiaries</a></li>
+              </ul>
+          </li>
+
         {% endif %}
       </ul>
 
@@ -118,8 +126,8 @@
       {% if user.is_authenticated %}
        {% block page_title %}
           <h3><i class="glyphicon glyphicon-dashboard"></i> Dashboard</h3>
+          <hr>
        {% endblock page_title %}
-        <hr>
         {% endif %}
         {% block actions %}
 
