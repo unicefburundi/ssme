@@ -92,3 +92,132 @@ class ProfileUserUpdateView(UpdateView):
     model = ProfileUser
     fields = ('telephone',)
     exclude = ('user',)
+
+# Reporter
+class ReporterListView(ListView):
+    model = Reporter
+    paginate_by = 25
+
+class ReporterDetailView(DetailView):
+    model = Reporter
+
+# Campaign
+class CampaignCreateView(CreateView):
+    model = Campaign
+    form_class = CampaignForm
+
+class CampaignCDSListView(ListView):
+    model = CampaignCDS
+    paginate_by = 25
+
+class CampaignDetailView(DetailView):
+    model = Campaign
+
+# Beneficiaire
+class BeneficiaireCreateView(CreateView):
+    model = Beneficiaire
+    form_class = BeneficiaireForm
+
+class BeneficiaireListView(ListView):
+    model = Beneficiaire
+    paginate_by = 25
+
+class BeneficiaireDetailView(DetailView):
+    model = Beneficiaire
+
+# Product
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm
+
+class ProductListView(ListView):
+    model = Product
+    paginate_by = 25
+
+class ProductDetailView(DetailView):
+    model = Product
+
+# CampaignBeneficiary
+class CampaignBeneficiaryCreateView(CreateView):
+    model = CampaignBeneficiary
+    form_class = CampaignBeneficiaryForm
+
+class CampaignBeneficiaryListView(ListView):
+    model = CampaignBeneficiary
+    paginate_by = 25
+
+class CampaignBeneficiaryDetailView(DetailView):
+    model = CampaignBeneficiary
+
+# CampaignProduct
+class CampaignProductCreateView(CreateView):
+    model = CampaignProduct
+    form_class = CampaignProductForm
+
+class CampaignProductListView(ListView):
+    model = CampaignProduct
+    paginate_by = 25
+
+class CampaignProductDetailView(DetailView):
+    model = CampaignProduct
+
+# CampaignBeneficiaryProduct
+class CampaignBeneficiaryProductCreateView(CreateView):
+    model = CampaignBeneficiaryProduct
+    form_class = CampaignBeneficiaryProductForm
+
+class CampaignBeneficiaryProductListView(ListView):
+    model = CampaignBeneficiaryProduct
+    paginate_by = 25
+
+class CampaignBeneficiaryProductDetailView(DetailView):
+    model = CampaignBeneficiaryProduct
+
+# Report
+class ReportCreateView(CreateView):
+    model = Report
+    form_class = ReportForm
+
+class ReportListView(ListView):
+    model = Report
+    paginate_by = 25
+
+class ReportDetailView(DetailView):
+    model = Report
+
+# ReportBeneficiary
+class ReportBeneficiaryCreateView(CreateView):
+    model = ReportBeneficiary
+    form_class = ReportBeneficiaryForm
+
+class ReportBeneficiaryListView(ListView):
+    model = ReportBeneficiary
+    paginate_by = 25
+
+class ReportBeneficiaryDetailView(DetailView):
+    model = ReportBeneficiary
+
+# ReportProductReception
+class ReportProductReceptionCreateView(CreateView):
+    model = ReportProductReception
+    form_class = ReportProductReceptionForm
+
+class ReportProductReceptionListView(ListView):
+    model = ReportProductReception
+    paginate_by = 25
+
+class ReportProductReceptionDetailView(DetailView):
+    model = ReportProductReception
+
+# ReportProductRemainStock
+class ReportProductRemainStockCreateView(CreateView):
+    model = ReportProductRemainStock
+    form_class = ReportProductRemainStockForm
+
+class ReportProductRemainStockListView(ListView):
+    model = ReportProductRemainStock
+    paginate_by = 25
+
+class ReportProductRemainStockDetailView(DetailView):
+    model = ReportProductRemainStock
+
