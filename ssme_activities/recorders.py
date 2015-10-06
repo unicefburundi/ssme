@@ -18,7 +18,7 @@ def check_number_of_values(args):
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 
-		
+
 
 def identify_the_opened_campaign(args):
 	'''This function identifies an opened campaign. More than one campaign can not be opened at the same time'''
@@ -40,6 +40,54 @@ def identify_the_opened_campaign(args):
 		args['info_to_contact'] = "Tout vas bien."
 
 
+
+def check_if_is_reporter(args):
+	concerned_reporter = Reporter.objects.filter(phone_number = args['phone'])
+	if len(concerned_reporter) < 1:
+		#This person is not in the list of reporters
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. Vous ne vous etes pas enregistre pour pouvoir donner des rapports."
+		return
+
+	one_concerned_reporter = concerned_reporter[0]
+	
+	if not one_concerned_reporter.cds:
+		#The CDS of this reporter is not known
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. Votre CDS n est pas connu dans le systeme."
+		return
+
+	args['cds'] = one_concerned_reporter.cds
+	args['valide'] = True
+	args['info_to_contact'] = " Le cds de ce rapporteur est connu "
+
+
+def check_date_is_in_camp_period(args):
+	'''This function checks if a date is in campaign period.'''
+
+	#expression = r'^((0[1-9])|([1-2][0-9])|(3[01]))-((0[1-9])|(1[0-2]))-[0-9]{4}$'
+	expression = r'^((0[1-9])|([1-2][0-9])|(3[01]))((0[1-9])|(1[0-2]))[0-9]{2}$'
+	if re.search(expression, args['text'].split(' ')[1]) is None:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. La date indiquee n est pas valide."
+		return
+	
+
+	sent_date = args['text'].split(' ')[1][0:2]+"-"+args['text'].split(' ')[1][2:4]+"-20"+args['text'].split(' ')[1][4:]
+
+	sent_date_without_dash = sent_date.replace("-","")
+	try:
+		date_sent = datetime.datetime.strptime(sent_date_without_dash, "%d%m%Y").date()
+	except:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. La date indiquee n est pas valide."
+		return
+
+	if (date_sent < args['opened_campaign'].start_date or date_sent > args['opened_campaign'].end_date):
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. La date indiquee n est pas dans la periode de la campagne SSME ouverte."
+		return
+	
 
 #------------------------------------------------------------------------------------
 
@@ -254,6 +302,7 @@ def identify_number_of_concerned_beneficiaries(args):
 def check_number_of_incoming_variables(args):
 	''' This function checks if the phone user sends the expected number of of values '''
 	the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
 		args['info_to_contact'] = "Vous avez envoye peu de valeurs."
@@ -264,6 +313,22 @@ def check_number_of_incoming_variables(args):
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
 
+
+def check_beneficiary_values_valid(args):
+	''' This function checks if the values sent by the phone user are the one expected '''
+	indice = 2
+	
+	while ((indice < args['expected_vulues_number']) and (indice > 0)):
+		value = args['text'].split(' ')[indice]
+		expression = r'^[0-9]+$'
+		if re.search(expression, value) is None:
+			args['valide'] = False
+			args['info_to_contact'] = "Erreur. La valeur envoyee a l indice "+str(indice)+" n est pas valide."
+			indice = -1
+			return
+		indice = indice + 1
+	if args['valide']:
+		args['info_to_contact'] = "Le test des nombres des beneficiaires passe."
 
 def record_beneficiaries(args):
 	'''This function is used to record number of beneficiaries'''
@@ -286,6 +351,23 @@ def record_beneficiaries(args):
 		return
 
 	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
 
+	#Let's check if different values are valid
+	check_beneficiary_values_valid(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's test if the date is valid
+	check_date_is_in_camp_period(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+	
+	#Let's record the a beneficiary report
 	
 #--------------------------------------------------------------------
