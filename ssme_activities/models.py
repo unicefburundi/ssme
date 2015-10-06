@@ -140,7 +140,7 @@ class CampaignBeneficiary(models.Model):
     order_in_sms = models.IntegerField()
 
     def __unicode__(self):
-        return self.beneficairy.designation
+        return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
 
     def get_absolute_url(self):
         return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
@@ -162,7 +162,7 @@ class CampaignProduct(models.Model):
     product = models.ForeignKey(Product)
 
     def __unicode__(self):
-        return self.product.name
+        return "%s ds campaign du %s au %s" % (self.product.name, self.campaign.start_date, self.campaign.end_date)
 
     def get_absolute_url(self):
             return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
@@ -196,7 +196,7 @@ class Report(models.Model):
     category = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return self.report
+        return self.text
 
     class Meta:
         ordering = ('reporting_date',)
@@ -208,7 +208,7 @@ class ReportBeneficiary(models.Model):
     report = models.ForeignKey(Report)
 
     def __unicode__(self):
-        return self.report
+        return self.report.text
 
     class Meta:
         ordering = ('reception_date',)
@@ -220,7 +220,7 @@ class ReportProductReception(models.Model):
     report = models.ForeignKey(Report)
 
     def __unicode__(self):
-        return self.campaign_product
+        return self.report.text
 
     class Meta:
         ordering = ('reception_date',)
@@ -232,7 +232,7 @@ class ReportProductRemainStock(models.Model):
     report = models.ForeignKey(Report)
 
     def __unicode__(self):
-        return self.report
+        return self.report.text
 
     class Meta:
         ordering = ('report',)
