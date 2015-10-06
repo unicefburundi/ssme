@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from smartmin.views import *
 
 def dashboard(request):
     return render(request, 'base_layout.html')
@@ -92,3 +93,58 @@ class ProfileUserUpdateView(UpdateView):
     model = ProfileUser
     fields = ('telephone',)
     exclude = ('user',)
+
+# Reporter
+class ReporterListView(ListView):
+    model = Reporter
+    paginate_by = 25
+
+class ReporterDetailView(DetailView):
+    model = Reporter
+
+# Campaign
+class CampaignCRUDL(SmartCRUDL):
+    model = Campaign
+
+    class List(SmartListView):
+        search_fields = ('going_on__icontains', )
+        default_order = 'going_on'
+
+# Beneficiaire
+class BeneficiaireCRUDL(SmartCRUDL):
+    model = Beneficiaire
+
+    class List(SmartListView):
+        search_fields = ('designation__icontains', )
+        default_order = 'designation'
+# Product
+class ProductCRUDL(SmartCRUDL):
+    model = Product
+
+    class List(SmartListView):
+        search_fields = ('name__icontains', )
+        default_order = 'name'
+
+# CampaignBeneficiary
+class CampaignBeneficiaryCRUDL(SmartCRUDL):
+    model = CampaignBeneficiary
+
+    class List(SmartListView):
+        search_fields = ('beneficiary__icontains', )
+        default_order = 'beneficiary'
+
+# CampaignBeneficiaryProduct
+class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
+    model = CampaignBeneficiaryProduct
+
+    class List(SmartListView):
+        search_fields = ('campaign_beneficiary__icontains', 'campaign_product__icontains')
+        default_order = 'campaign_beneficiary'
+
+# CampaignProduct
+class CampaignProductCRUDL(SmartCRUDL):
+    model = CampaignProduct
+
+    class List(SmartListView):
+        search_fields = ('product__icontains', )
+        default_order = 'product'

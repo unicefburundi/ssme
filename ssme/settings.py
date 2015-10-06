@@ -45,6 +45,8 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_extensions',
     'ssme_activities',
+    'guardian',
+    'smartmin',
     'authtools',
 )
 
@@ -141,12 +143,34 @@ LOGOUT_REDIRECT_URL = reverse_lazy("landing")
 AUTH_USER_MODEL = 'authtools.User'
 
 KNOWN_PREFIXES = {
-'RG':'SELF_REGISTRATION',
-'SDS':'STOCK_DEBUT_SEMAINE',
-'SR':'STOCK_RECU',
-'SF':'STOCK_FINAL',
-'B':'BENEFICIAIRE',
+    'RG':'SELF_REGISTRATION',
+    'SDS':'STOCK_DEBUT_SEMAINE',
+    'SR':'STOCK_RECU',
+    'SF':'STOCK_FINAL',
+    'B':'BENEFICIAIRE',
 }
+
+#------------------------------------------------
+# Smartim
+#----------------------------------------------
+
+# create the smartmin CRUDL permissions on all objects
+PERMISSIONS = {
+  '*': ('create', # can create an object
+        'read',   # can read an object, viewing it's details
+        'update', # can update an object
+        'delete', # can delete an object,
+        'list'),  # can view a list of the objects
+}
+
+# assigns the permissions that each group should have, here creating an Administrator group with
+# authority to create and change users
+GROUP_PERMISSIONS = {
+    "Administrator": ('auth.user.*',)
+}
+
+# this is required by guardian
+ANONYMOUS_USER_ID = -1
 
 try:
     from localsettings import *
