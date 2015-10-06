@@ -128,32 +128,33 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
+        return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
 
 class CampaignBeneficiary(models.Model):
-	'''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
-	campaign = models.ForeignKey(Campaign)
-	beneficiary = models.ForeignKey(Beneficiaire)
-	order_in_sms = models.IntegerField()
-	def __unicode__(self):
-		return self.beneficairy.designation
-	
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
-	
-	class Meta:
-		ordering = ('beneficiary',)
-		unique_together = ('campaign', 'beneficiary', 'order_in_sms',)
+    '''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
+    campaign = models.ForeignKey(Campaign)
+    beneficiary = models.ForeignKey(Beneficiaire)
+    order_in_sms = models.IntegerField()
+
+    def __unicode__(self):
+        return self.beneficairy.designation
+
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
+
+    class Meta:
+       ordering = ('beneficiary',)
+       unique_together = ('campaign', 'beneficiary', 'order_in_sms',)
 
 
 class CampaignBeneficiaryCDS(models.Model):
-	campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
-	cds = models.ForeignKey(CDS)
-	population_attendu = models.IntegerField(null=True)
-	population_obtenue = models.IntegerField(null=True)
+    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    cds = models.ForeignKey(CDS)
+    population_attendu = models.IntegerField(null=True)
+    population_obtenue = models.IntegerField(null=True)
 
 class CampaignProduct(models.Model):
     '''With this model we will be able to define and identify concerned medecines for a given campaign'''
