@@ -93,13 +93,13 @@ class Campaign(models.Model):
     '''In this model, we will store campaigns'''
     start_date = models.DateField()
     end_date = models.DateField()
-    open = models.BooleanField(default=False)
+    going_on = models.BooleanField(default=False)
 
-    def __unicode__(self):
-        return self.end_date
+    def __str__(self):
+        return self.start_date.strftime("%B %d, %Y")
 
     def get_absolute_url(self):
-            return reverse('campain_detail', kwargs={'pk': self.id})
+        return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('end_date',)
@@ -112,7 +112,7 @@ class Beneficiaire(models.Model):
         return self.designation
 
     def get_absolute_url(self):
-            return reverse('designation_detail', kwargs={'pk': self.id})
+        return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('designation',)
@@ -128,7 +128,7 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('product_detail', kwargs={'pk': self.id})
+            return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
@@ -139,10 +139,10 @@ class CampaignBeneficiary(models.Model):
     beneficairy = models.ForeignKey(Beneficiaire)
 
     def __unicode__(self):
-        return self.beneficairy
+        return self.beneficairy.designation
 
     def get_absolute_url(self):
-            return reverse('campaignbeneficiary_detail', kwargs={'pk': self.id})
+            return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('beneficairy',)
@@ -154,10 +154,10 @@ class CampaignProduct(models.Model):
     product = models.ForeignKey(Product)
 
     def __unicode__(self):
-        return self.product
+        return self.product.name
 
     def get_absolute_url(self):
-            return reverse('campaignproduct_detail', kwargs={'pk': self.id})
+            return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('product',)
@@ -172,10 +172,10 @@ class CampaignBeneficiaryProduct(models.Model):
     order_in_sms = models.IntegerField()
 
     def __unicode__(self):
-        return self.campaign_beneficiary
+        return self.campaign_beneficiary.beneficairy.designation
 
     def get_absolute_url(self):
-            return reverse('campaignbeneficiaryproduct_detail', kwargs={'pk': self.id})
+            return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('campaign_beneficiary',)
@@ -191,9 +191,6 @@ class Report(models.Model):
     def __unicode__(self):
         return self.report
 
-    def get_absolute_url(self):
-            return reverse('report_detail', kwargs={'pk': self.id})
-
     class Meta:
         ordering = ('reporting_date',)
 
@@ -205,9 +202,6 @@ class ReportBeneficiary(models.Model):
 
     def __unicode__(self):
         return self.report
-
-    def get_absolute_url(self):
-            return reverse('reportbeneficiary_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('reception_date',)
@@ -221,9 +215,6 @@ class ReportProductReception(models.Model):
     def __unicode__(self):
         return self.campaign_product
 
-    def get_absolute_url(self):
-            return reverse('reportproductreception_detail', kwargs={'pk': self.id})
-
     class Meta:
         ordering = ('reception_date',)
 
@@ -235,9 +226,6 @@ class ReportProductRemainStock(models.Model):
 
     def __unicode__(self):
         return self.report
-
-    def get_absolute_url(self):
-            return reverse('reportproductremainstock_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('report',)

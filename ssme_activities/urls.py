@@ -26,3 +26,10 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<pk>\d+)/$', ProfileUserDetailView.as_view(), name="profile_user_detail"),
     url(r'^profile_edit/(?P<pk>\d+)/$', ProfileUserUpdateView.as_view(), name="profileuser_update"),
 )
+
+urlpatterns += CampaignCRUDL().as_urlpatterns()
+urlpatterns += BeneficiaireCRUDL().as_urlpatterns()
+urlpatterns += ProductCRUDL().as_urlpatterns()
+urlpatterns += CampaignBeneficiaryCRUDL().as_urlpatterns()
+urlpatterns += CampaignBeneficiaryProductCRUDL().as_urlpatterns()
+urlpatterns += CampaignProductCRUDL().as_urlpatterns()

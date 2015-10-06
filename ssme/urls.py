@@ -8,6 +8,7 @@ urlpatterns = urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ssme/', include('ssme_activities.urls')),
     url(r'^accounts/', include('authtools.urls')),
+    url(r'^users/', include('smartmin.users.urls')),
     url(r'^dashboard/$', 'ssme_activities.views.dashboard', name='dashboard'),
     url(r'^$', 'ssme.views.landing', name='landing'),
 ) +  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

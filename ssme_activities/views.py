@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from smartmin.views import *
 
 def dashboard(request):
     return render(request, 'base_layout.html')
@@ -102,122 +103,48 @@ class ReporterDetailView(DetailView):
     model = Reporter
 
 # Campaign
-class CampaignCreateView(CreateView):
+class CampaignCRUDL(SmartCRUDL):
     model = Campaign
-    form_class = CampaignForm
 
-class CampaignCDSListView(ListView):
-    model = CampaignCDS
-    paginate_by = 25
-
-class CampaignDetailView(DetailView):
-    model = Campaign
+    class List(SmartListView):
+        search_fields = ('going_on__icontains', )
+        default_order = 'going_on'
 
 # Beneficiaire
-class BeneficiaireCreateView(CreateView):
-    model = Beneficiaire
-    form_class = BeneficiaireForm
-
-class BeneficiaireListView(ListView):
-    model = Beneficiaire
-    paginate_by = 25
-
-class BeneficiaireDetailView(DetailView):
+class BeneficiaireCRUDL(SmartCRUDL):
     model = Beneficiaire
 
+    class List(SmartListView):
+        search_fields = ('designation__icontains', )
+        default_order = 'designation'
 # Product
-class ProductCreateView(CreateView):
+class ProductCRUDL(SmartCRUDL):
     model = Product
-    form_class = ProductForm
 
-class ProductListView(ListView):
-    model = Product
-    paginate_by = 25
-
-class ProductDetailView(DetailView):
-    model = Product
+    class List(SmartListView):
+        search_fields = ('name__icontains', )
+        default_order = 'name'
 
 # CampaignBeneficiary
-class CampaignBeneficiaryCreateView(CreateView):
-    model = CampaignBeneficiary
-    form_class = CampaignBeneficiaryForm
-
-class CampaignBeneficiaryListView(ListView):
-    model = CampaignBeneficiary
-    paginate_by = 25
-
-class CampaignBeneficiaryDetailView(DetailView):
+class CampaignBeneficiaryCRUDL(SmartCRUDL):
     model = CampaignBeneficiary
 
-# CampaignProduct
-class CampaignProductCreateView(CreateView):
-    model = CampaignProduct
-    form_class = CampaignProductForm
-
-class CampaignProductListView(ListView):
-    model = CampaignProduct
-    paginate_by = 25
-
-class CampaignProductDetailView(DetailView):
-    model = CampaignProduct
+    class List(SmartListView):
+        search_fields = ('beneficiary__icontains', )
+        default_order = 'beneficiary'
 
 # CampaignBeneficiaryProduct
-class CampaignBeneficiaryProductCreateView(CreateView):
-    model = CampaignBeneficiaryProduct
-    form_class = CampaignBeneficiaryProductForm
-
-class CampaignBeneficiaryProductListView(ListView):
-    model = CampaignBeneficiaryProduct
-    paginate_by = 25
-
-class CampaignBeneficiaryProductDetailView(DetailView):
+class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
     model = CampaignBeneficiaryProduct
 
-# Report
-class ReportCreateView(CreateView):
-    model = Report
-    form_class = ReportForm
+    class List(SmartListView):
+        search_fields = ('campaign_beneficiary__icontains', 'campaign_product__icontains')
+        default_order = 'campaign_beneficiary'
 
-class ReportListView(ListView):
-    model = Report
-    paginate_by = 25
+# CampaignProduct
+class CampaignProductCRUDL(SmartCRUDL):
+    model = CampaignProduct
 
-class ReportDetailView(DetailView):
-    model = Report
-
-# ReportBeneficiary
-class ReportBeneficiaryCreateView(CreateView):
-    model = ReportBeneficiary
-    form_class = ReportBeneficiaryForm
-
-class ReportBeneficiaryListView(ListView):
-    model = ReportBeneficiary
-    paginate_by = 25
-
-class ReportBeneficiaryDetailView(DetailView):
-    model = ReportBeneficiary
-
-# ReportProductReception
-class ReportProductReceptionCreateView(CreateView):
-    model = ReportProductReception
-    form_class = ReportProductReceptionForm
-
-class ReportProductReceptionListView(ListView):
-    model = ReportProductReception
-    paginate_by = 25
-
-class ReportProductReceptionDetailView(DetailView):
-    model = ReportProductReception
-
-# ReportProductRemainStock
-class ReportProductRemainStockCreateView(CreateView):
-    model = ReportProductRemainStock
-    form_class = ReportProductRemainStockForm
-
-class ReportProductRemainStockListView(ListView):
-    model = ReportProductRemainStock
-    paginate_by = 25
-
-class ReportProductRemainStockDetailView(DetailView):
-    model = ReportProductRemainStock
-
+    class List(SmartListView):
+        search_fields = ('product__icontains', )
+        default_order = 'product'
