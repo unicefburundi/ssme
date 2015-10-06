@@ -22,7 +22,7 @@ def check_number_of_values(args):
 
 def identify_the_opened_campaign(args):
 	'''This function identifies an opened campaign. More than one campaign can not be opened at the same time'''
-	campaign = Campaign.objects.filter(open = True)
+	campaign = Campaign.objects.filter(going_on = True)
 	
 	if len(campaign) < 1:
 		#There is no opened campaign
@@ -236,7 +236,7 @@ def identify_number_of_concerned_beneficiaries(args):
 
 	for campaign_beneficiary in campaign_beneficiaries:
 		if args['valide']:
-			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(camapaign_beneficiary = campaign_beneficiary)
+			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary = campaign_beneficiary)
 			if len(camp_ben_products) < 1:
 				#The admin didn't define products which will be received by these beneficiaries in the opened campaign
 				args['valide'] = False
@@ -252,7 +252,18 @@ def identify_number_of_concerned_beneficiaries(args):
 
 
 def check_number_of_incoming_variables(args):
-	pass
+	''' This function checks if the phone user sends the expected number of of values '''
+	the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	if len(args['text'].split(' ')) < the_expected_number_of_values:
+		args['valide'] = False
+		args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+	if len(args['text'].split(' ')) > the_expected_number_of_values:
+		args['valide'] = False
+		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+	if len(args['text'].split(' ')) == the_expected_number_of_values:
+		args['valide'] = True
+		args['info_to_contact'] = "Tous vas bien jusqu ici."
+
 
 def record_beneficiaries(args):
 	'''This function is used to record number of beneficiaries'''
@@ -274,4 +285,7 @@ def record_beneficiaries(args):
 	if not args['valide']:
 		return
 
+	#Let's check if the person who send this message is a reporter
+
+	
 #--------------------------------------------------------------------

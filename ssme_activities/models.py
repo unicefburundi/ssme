@@ -146,9 +146,8 @@ class CampaignBeneficiary(models.Model):
         return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 
     class Meta:
-       ordering = ('beneficiary',)
-       unique_together = ('campaign', 'beneficiary', 'order_in_sms',)
-
+        ordering = ('beneficiary',)
+        unique_together = ('campaign', 'beneficiary', 'order_in_sms',)
 
 class CampaignBeneficiaryCDS(models.Model):
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
@@ -179,7 +178,7 @@ class CampaignBeneficiaryProduct(models.Model):
     dosage = models.FloatField(null = True)
 
     def __unicode__(self):
-        return self.campaign_beneficiary.beneficairy.designation
+        return self.campaign_beneficiary.beneficiary.designation
 
     def get_absolute_url(self):
             return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
