@@ -148,3 +148,39 @@ class CampaignProductCRUDL(SmartCRUDL):
     class List(SmartListView):
         search_fields = ('product__icontains', )
         default_order = 'product'
+
+# CampaignProduct
+class ReportCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
+    model = Report
+
+    class List(SmartListView):
+        search_fields = ('text__icontains', 'cds__name__icontains')
+        default_order = 'cds'
+
+# ReportBeneficiary
+class ReportBeneficiaryCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
+    model = ReportBeneficiary
+
+    class List(SmartListView):
+        search_fields = ('report__text__icontains', 'campaign_beneficiary__beneficiary__designation__icontains')
+        default_order = 'report'
+
+# ReportProductReception
+class ReportProductReceptionCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
+    model = ReportProductReception
+
+    class List(SmartListView):
+        search_fields = ('report__text__icontains', 'campaign_product__product__name__icontains')
+        default_order = 'report'
+
+# ReportProductRemainStock
+class ReportProductRemainStockCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
+    model = ReportProductRemainStock
+
+    class List(SmartListView):
+        search_fields = ('report__text__icontains', 'campaign_product__product__name__icontains')
+        default_order = 'report'

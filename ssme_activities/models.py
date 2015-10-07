@@ -128,7 +128,7 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
+        return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
@@ -138,22 +138,23 @@ class CampaignBeneficiary(models.Model):
 	campaign = models.ForeignKey(Campaign)
 	beneficiary = models.ForeignKey(Beneficiaire)
 	order_in_sms = models.IntegerField()
-	def __unicode__(self):
-		return self.beneficiary.designation
-	
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 	
 	class Meta:
 		ordering = ('beneficiary',)
 		unique_together = ('campaign', 'order_in_sms',)
 
+	def __unicode__(self):
+		return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
+
+	def get_absolute_url(self):
+		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
+
 
 class CampaignBeneficiaryCDS(models.Model):
-	campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
-	cds = models.ForeignKey(CDS)
-	population_attendu = models.IntegerField(null=True)
-	population_obtenue = models.IntegerField(null=True)
+    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    cds = models.ForeignKey(CDS)
+    population_attendu = models.IntegerField(null=True)
+    population_obtenue = models.IntegerField(null=True)
 
 class CampaignProduct(models.Model):
     '''With this model we will be able to define and identify concerned medecines for a given campaign'''
@@ -161,7 +162,7 @@ class CampaignProduct(models.Model):
     product = models.ForeignKey(Product)
 
     def __unicode__(self):
-        return self.product.name
+        return "%s ds campaign du %s au %s" % (self.product.name, self.campaign.start_date, self.campaign.end_date)
 
     def get_absolute_url(self):
             return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
@@ -206,7 +207,8 @@ class ReportBeneficiary(models.Model):
     received_number = models.IntegerField()
     report = models.ForeignKey(Report)
 
-    
+    def __unicode__(self):
+        return self.report.text
 
     class Meta:
         ordering = ('reception_date',)
@@ -217,7 +219,8 @@ class ReportProductReception(models.Model):
     received_quantity = models.FloatField()
     report = models.ForeignKey(Report)
 
-
+    def __unicode__(self):
+        return self.report.text
 
     class Meta:
         ordering = ('reception_date',)
@@ -228,7 +231,8 @@ class ReportProductRemainStock(models.Model):
     remain_quantity = models.FloatField()
     report = models.ForeignKey(Report)
 
-
+    def __unicode__(self):
+        return self.report.text
 
     class Meta:
         ordering = ('report',)

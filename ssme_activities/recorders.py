@@ -599,7 +599,7 @@ def check_beneficiary_values_valid(args):
 			return
 		indice = indice + 1
 	if args['valide']:
-		args['info_to_contact'] = "Le test des nombres des beneficiaires passe."
+		args['info_to_contact'] = "Ok."
 
 def record_beneficiaries(args):
 	'''This function is used to record number of beneficiaries'''
