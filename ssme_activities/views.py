@@ -155,6 +155,7 @@ class ReportCRUDL(SmartCRUDL):
     model = Report
 
     class List(SmartListView):
+        fields = ('text', 'reporting_date', 'concerned_date',  'category', 'cds', 'cds.district', 'cds.district.province')
         search_fields = ('text__icontains', 'cds__name__icontains')
         default_order = 'cds'
 
@@ -164,6 +165,7 @@ class ReportBeneficiaryCRUDL(SmartCRUDL):
     model = ReportBeneficiary
 
     class List(SmartListView):
+        fields = ('campaign_beneficiary.beneficiary', 'campaign_beneficiary.campaign','report', 'report.cds', 'reception_date', 'received_number')
         search_fields = ('report__text__icontains', 'campaign_beneficiary__beneficiary__designation__icontains')
         default_order = 'report'
 
@@ -191,6 +193,7 @@ class ProfileUserCRUDL(SmartCRUDL):
     model = ProfileUser
 
     class List(SmartListView):
+        fields = ('user', 'telephone', 'user.email', 'level', 'moh_facility')
         search_fields = ('user__name__icontains', 'telephone__icontains', 'user__email__icontains')
         default_order = 'user'
 
