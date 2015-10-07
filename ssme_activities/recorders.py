@@ -439,7 +439,7 @@ def record_sr(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_RECU')
 
 	indice = 2
 	
@@ -505,7 +505,7 @@ def record_sf(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
 
 	indice = 2
 	
