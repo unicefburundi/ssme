@@ -657,3 +657,20 @@ def record_beneficiaries(args):
 		indice = indice + 1
 		
 #--------------------------------------------------------------------
+
+
+
+
+
+
+
+#===============================Exit=====================================
+
+def exit(args):
+	''' This function is used to delete an eventual session when someone want to exit a flow '''
+	temporary_session = Temporary.objects.filter(phone_number = args['phone'])
+	if len(temporary_session) > 0:
+		for session in temporary_session:
+			session.delete()
+	args['valide'] = True
+	args['info_to_contact'] = "Ok."
