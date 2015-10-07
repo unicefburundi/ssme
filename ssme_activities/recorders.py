@@ -380,12 +380,74 @@ def record_sds(args):
 
 #------------------------------------------------------------------
 
+
+
+
+
+
 #==================Report SR(Stock Recu)===========================
 
 def record_sr(args):
-	pass
+	''' This function is used to record products quantities received at the begining of a campaign '''
+	#Let's identify the opened campaign
+	identify_the_opened_campaign(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's identify the number of products for this campaign
+	identify_number_of_concerned_products(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the number of values sent by the phone user is the expected one
+	check_number_of_incoming_prod_variables(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if different quantity of products are valid
+	check_product_values_validity(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's test if the date is valid
+	check_date_is_in_camp_period(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's record the a beneficiary report
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+
+	indice = 2
+	
+	while (indice < args['expected_vulues_number']):
+		#We record each beneficiary number
+		value = args['text'].split(' ')[indice]
+	
+		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], product__priority = indice)
+
+		the_concerned_prod_campaign = prod_camp[0]
+		
+		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
+
+		indice = indice + 1
 
 #------------------------------------------------------------------
+
+
+
+
+
 
 #==================Report SF(Stock Final)===========================
 
