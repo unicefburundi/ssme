@@ -67,7 +67,9 @@
             <li><a href="{% url 'profileuser_update' pk=user.id %}"> Profile</a></li>
               </ul>
             </li>
-            <li><a href="#">Level : {{mylevel}}</a></li>
+            {% if mylevel %}
+                <li><a href="#">Level : {{mylevel}}</a></li>
+            {% endif %}
             <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
             </li>
             {% else %}
