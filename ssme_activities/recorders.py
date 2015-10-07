@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception
 import re
 import datetime
 
@@ -83,11 +83,88 @@ def check_date_is_in_camp_period(args):
 		args['info_to_contact'] = "Erreur. La date indiquee n est pas valide."
 		return
 
+	args['sent_date'] =  date_sent
+
 	if (date_sent < args['opened_campaign'].start_date or date_sent > args['opened_campaign'].end_date):
 		args['valide'] = False
 		args['info_to_contact'] = "Erreur. La date indiquee n est pas dans la periode de la campagne SSME ouverte."
 		return
+
+	if date_sent > datetime.datetime.now().date():
+		#The reporter must not record a partient who haven't yet come
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. La date indiquee n est pas encore arrivee."
+		return
 	
+
+
+
+
+
+
+
+#------------------------------Bellow functions are common for products-----------------------
+
+def check_number_of_incoming_prod_variables(args):
+	''' This function checks if the phone user sends the expected number of of values '''
+
+	the_expected_number_of_values = args['number_of_concerned_products'] + 2
+
+	args['expected_vulues_number'] = the_expected_number_of_values
+	if len(args['text'].split(' ')) < the_expected_number_of_values:
+		args['valide'] = False
+		args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+	if len(args['text'].split(' ')) > the_expected_number_of_values:
+		args['valide'] = False
+		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+	if len(args['text'].split(' ')) == the_expected_number_of_values:
+		args['valide'] = True
+		args['info_to_contact'] = "Tous vas bien jusqu ici."
+
+
+def identify_number_of_concerned_products(args):
+	''' This function identifies the number of concerned products '''
+
+	#Let's identify number of products for this campaign
+	campaign_products = CampaignProduct.objects.filter(campaign = args['opened_campaign'])
+
+	if len(campaign_products) < 1:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur admin. Pas de produits lies a la campagne ouverte."
+		return
+
+	args['number_of_concerned_products'] = len(campaign_products)
+
+
+def check_product_values_validity(args):
+	''' This function checks if the values sent by the phone user are the expected ones '''
+	indice = 2
+	
+	while ((indice < args['expected_vulues_number']) and (indice > 0)):
+		value = args['text'].split(' ')[indice]
+
+		#Let's identify the concerned product
+		products = Product.objects.filter(priority = indice)
+		if len(products) < 1:
+			args['valide'] = False
+			args['info_to_contact'] = "Erreur admin. Pas de produits de priorite "+str(indice)+"."
+			indice = -1
+		else:
+			current_product = products[0]
+
+			if not current_product.can_be_fractioned:
+				expression = r'^[0-9]+$'
+			else:
+				expression = r'^([0-9]+.[0-9]+)|([0-9]+)$'
+
+			if re.search(expression, value) is None:
+				args['valide'] = False
+				args['info_to_contact'] = "Erreur. La valeur envoyee a l indice "+str(indice)+" n est pas valide."
+				indice = -1
+			
+		indice = indice + 1
+	if args['valide']:
+		args['info_to_contact'] = "Ok."
 
 #------------------------------------------------------------------------------------
 
@@ -243,9 +320,63 @@ def complete_registration(args):
 
 #==================Report SDS(Stock au Debut de la Semaine)=======
 
-def record_sds(args):
-	pass
 
+
+def record_sds(args):
+	''' This function is used to record products quantities received at the begining of a campaign '''
+	#Let's identify the opened campaign
+	identify_the_opened_campaign(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's identify the number of products for this campaign
+	identify_number_of_concerned_products(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the number of values sent by the phone user is the expected one
+	check_number_of_incoming_prod_variables(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if different quantity of products are valid
+	check_product_values_validity(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's test if the date is valid
+	check_date_is_in_camp_period(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's record the a beneficiary report
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+
+	indice = 2
+	
+	while (indice < args['expected_vulues_number']):
+		#We record each beneficiary number
+		value = args['text'].split(' ')[indice]
+	
+		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], product__priority = indice)
+
+		the_concerned_prod_campaign = prod_camp[0]
+		
+		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
+
+		indice = indice + 1
+	
 
 #------------------------------------------------------------------
 
@@ -338,7 +469,7 @@ def record_beneficiaries(args):
 	if not args['valide']:
 		return
 
-	#Let's identify the opened campaign
+	#Let's identify the number of concerned beneficiaries
 	identify_number_of_concerned_beneficiaries(args)
 	print(args['valide'])
 	if not args['valide']:
@@ -369,5 +500,20 @@ def record_beneficiaries(args):
 		return
 	
 	#Let's record the a beneficiary report
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'BENEFICIAIRE')
+
+	indice = 2
 	
+	while (indice < args['expected_vulues_number']):
+		#We record each beneficiary number
+		value = args['text'].split(' ')[indice]
+	
+		ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = indice)
+
+		the_concerned_ben_campaign = ben_camp[0]
+		
+		report_ben = ReportBeneficiary.objects.create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], received_number = value, report = the_created_report)
+
+		indice = indice + 1
+		
 #--------------------------------------------------------------------

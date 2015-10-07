@@ -146,7 +146,7 @@ class CampaignBeneficiary(models.Model):
 	
 	class Meta:
 		ordering = ('beneficiary',)
-		unique_together = ('campaign', 'beneficiary', 'order_in_sms',)
+		unique_together = ('campaign', 'order_in_sms',)
 
 
 class CampaignBeneficiaryCDS(models.Model):
@@ -195,7 +195,7 @@ class Report(models.Model):
     category = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return self.report
+        return self.text
 
     class Meta:
         ordering = ('reporting_date',)
@@ -206,8 +206,7 @@ class ReportBeneficiary(models.Model):
     received_number = models.IntegerField()
     report = models.ForeignKey(Report)
 
-    def __unicode__(self):
-        return self.report
+    
 
     class Meta:
         ordering = ('reception_date',)
@@ -215,11 +214,10 @@ class ReportBeneficiary(models.Model):
 class ReportProductReception(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     reception_date = models.DateField()
-    received_quantity = models.IntegerField()
+    received_quantity = models.FloatField()
     report = models.ForeignKey(Report)
 
-    def __unicode__(self):
-        return self.campaign_product
+
 
     class Meta:
         ordering = ('reception_date',)
@@ -227,7 +225,7 @@ class ReportProductReception(models.Model):
 class ReportProductRemainStock(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     concerned_date = models.DateField()
-    remain_quantity = models.IntegerField()
+    remain_quantity = models.FloatField()
     report = models.ForeignKey(Report)
 
     def __unicode__(self):
