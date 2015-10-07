@@ -21,10 +21,10 @@ class ProfileUser(models.Model):
     moh_facility = models.IntegerField(null=True, blank=True, help_text=_('Code of the MoH facility'))
 
     def __unicode__(self):
-        return self.user
+        return self.user.name
 
     def get_absolute_url(self):
-            return reverse('profile_user_detail', kwargs={'pk': self.id})
+        return reverse('profile_user_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('user',)
@@ -39,7 +39,7 @@ class Province(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('province_detail', kwargs={'pk': self.id})
+        return reverse('province_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
@@ -54,7 +54,7 @@ class District(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('district_detail', kwargs={'pk': self.id})
+        return reverse('district_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
@@ -69,7 +69,7 @@ class CDS(models.Model):
         return self.name
 
     def get_absolute_url(self):
-            return reverse('cds_detail', kwargs={'pk': self.id})
+        return reverse('cds_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('name',)
@@ -84,7 +84,7 @@ class Reporter(models.Model):
         return self.phone_number
 
     def get_absolute_url(self):
-            return reverse('reporter_detail', kwargs={'pk': self.id})
+        return reverse('reporter_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('phone_number',)
@@ -134,20 +134,20 @@ class Product(models.Model):
         ordering = ('name',)
 
 class CampaignBeneficiary(models.Model):
-	'''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
-	campaign = models.ForeignKey(Campaign)
-	beneficiary = models.ForeignKey(Beneficiaire)
-	order_in_sms = models.IntegerField()
-	
-	class Meta:
-		ordering = ('beneficiary',)
-		unique_together = ('campaign', 'order_in_sms',)
+    '''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
+    campaign = models.ForeignKey(Campaign)
+    beneficiary = models.ForeignKey(Beneficiaire)
+    order_in_sms = models.IntegerField()
 
-	def __unicode__(self):
-		return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
+    class Meta:
+        ordering = ('beneficiary',)
+        unique_together = ('campaign', 'order_in_sms',)
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
+    def __unicode__(self):
+        return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
+
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 
 
 class CampaignBeneficiaryCDS(models.Model):
@@ -162,10 +162,10 @@ class CampaignProduct(models.Model):
     product = models.ForeignKey(Product)
 
     def __unicode__(self):
-        return "%s ds campaign du %s au %s" % (self.product.name, self.campaign.start_date, self.campaign.end_date)
+        return self.product.name
 
     def get_absolute_url(self):
-            return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
+        return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('product',)
@@ -182,7 +182,7 @@ class CampaignBeneficiaryProduct(models.Model):
         return self.campaign_beneficiary.beneficiary.designation
 
     def get_absolute_url(self):
-            return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
+        return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ('campaign_beneficiary',)

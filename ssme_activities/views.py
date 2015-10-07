@@ -184,3 +184,13 @@ class ReportProductRemainStockCRUDL(SmartCRUDL):
     class List(SmartListView):
         search_fields = ('report__text__icontains', 'campaign_product__product__name__icontains')
         default_order = 'report'
+
+# ProfileUser
+class ProfileUserCRUDL(SmartCRUDL):
+    actions = ('update', 'list', 'read')
+    model = ProfileUser
+
+    class List(SmartListView):
+        search_fields = ('user__name__icontains', 'telephone__icontains', 'user__email__icontains')
+        default_order = 'user'
+
