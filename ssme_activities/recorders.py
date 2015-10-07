@@ -673,4 +673,4 @@ def exit(args):
 		for session in temporary_session:
 			session.delete()
 	args['valide'] = True
-	args['info_to_contact'] = "Ok."
+	args['info_to_contact'] = "Vous etes desormais en dehors du flow."
