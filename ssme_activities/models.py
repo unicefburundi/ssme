@@ -228,8 +228,7 @@ class ReportProductRemainStock(models.Model):
     remain_quantity = models.FloatField()
     report = models.ForeignKey(Report)
 
-    def __unicode__(self):
-        return self.report
+
 
     class Meta:
         ordering = ('report',)
