@@ -439,7 +439,7 @@ def record_sr(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_RECU')
 
 	indice = 2
 	
@@ -505,7 +505,7 @@ def record_sf(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
 
 	indice = 2
 	
@@ -657,3 +657,20 @@ def record_beneficiaries(args):
 		indice = indice + 1
 		
 #--------------------------------------------------------------------
+
+
+
+
+
+
+
+#===============================Exit=====================================
+
+def exit(args):
+	''' This function is used to delete an eventual session when someone want to exit a flow '''
+	temporary_session = Temporary.objects.filter(phone_number = args['phone'])
+	if len(temporary_session) > 0:
+		for session in temporary_session:
+			session.delete()
+	args['valide'] = True
+	args['info_to_contact'] = "Vous etes desormais en dehors du flow."

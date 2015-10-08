@@ -108,6 +108,9 @@ def handel_rapidpro_request(request):
 	if(incoming_data['message_type']=='BENEFICIAIRE'):
 		#The contact who sent the current message is reporting number of beneficiaries for one day
 		record_beneficiaries(incoming_data)
+	if(incoming_data['message_type']=='EXIT'):
+		#The contact who sent the current message want to exit
+		exit(incoming_data)
 
 
 
