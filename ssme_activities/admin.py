@@ -6,25 +6,6 @@ from django.contrib import admin
 from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 
-# Register your models here.
-
-admin.site.register(Province)
-admin.site.register(District)
-admin.site.register(CDS)
-admin.site.register(Reporter)
-admin.site.register(Campaign)
-admin.site.register(Beneficiaire)
-admin.site.register(Product)
-admin.site.register(CampaignBeneficiary)
-admin.site.register(CampaignProduct)
-admin.site.register(CampaignBeneficiaryProduct)
-admin.site.register(Report)
-admin.site.register(ReportBeneficiary)
-admin.site.register(ReportProductReception)
-admin.site.register(ReportProductRemainStock)
-admin.site.register(Temporary)
-
-
 User = get_user_model()
 
 class UserAdmin(NamedUserAdmin):
@@ -70,18 +51,20 @@ class UserAdmin(NamedUserAdmin):
                 email_template_name='registration/account_creation_email.html',
             )
 
-'''admin.site.unregister(User)
 admin.site.register(Province)
 admin.site.register(District)
 admin.site.register(CDS)
-admin.site.register(Report)
-admin.site.register(ProfileUser)
+admin.site.register(Reporter)
 admin.site.register(Campaign)
 admin.site.register(Beneficiaire)
-admin.site.register(User, UserAdmin)
+admin.site.register(Product)
 admin.site.register(CampaignBeneficiary)
 admin.site.register(CampaignProduct)
 admin.site.register(CampaignBeneficiaryProduct)
+admin.site.register(Report)
 admin.site.register(ReportBeneficiary)
 admin.site.register(ReportProductReception)
-admin.site.register(ReportProductRemainStock)'''
+admin.site.register(ReportProductRemainStock)
+admin.site.register(Temporary)
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
