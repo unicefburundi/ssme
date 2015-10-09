@@ -120,7 +120,6 @@ class Beneficiaire(models.Model):
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
     name = models.CharField(max_length=100)
-    priority = models.IntegerField(unique=True)
     can_be_fractioned = models.BooleanField(default=False)
     unite_de_mesure = models.CharField(max_length=10)
 
@@ -157,19 +156,20 @@ class CampaignBeneficiaryCDS(models.Model):
     population_obtenue = models.IntegerField(null=True)
 
 class CampaignProduct(models.Model):
-    '''With this model we will be able to define and identify concerned medecines for a given campaign'''
-    campaign = models.ForeignKey(Campaign)
-    product = models.ForeignKey(Product)
+	'''With this model we will be able to define and identify concerned medecines for a given campaign'''
+	campaign = models.ForeignKey(Campaign)
+	product = models.ForeignKey(Product)
+	order_in_sms = models.IntegerField()
 
-    def __unicode__(self):
-        return self.product.name
+	def __unicode__(self):
+		return self.product.name
 
-    def get_absolute_url(self):
-        return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
+	def get_absolute_url(self):
+		return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
 
-    class Meta:
-        ordering = ('product',)
-        unique_together = ('campaign', 'product',)
+	class Meta:
+		ordering = ('product',)
+		unique_together = ('campaign', 'product',)
 
 class CampaignBeneficiaryProduct(models.Model):
     '''With this model, we will be able to define and identify which medecines will be received by each beneficiary
