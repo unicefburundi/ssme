@@ -90,32 +90,34 @@ class Reporter(models.Model):
         ordering = ('phone_number',)
 
 class Campaign(models.Model):
-    '''In this model, we will store campaigns'''
-    start_date = models.DateField()
-    end_date = models.DateField()
-    going_on = models.BooleanField(default=False)
+	'''In this model, we will store campaigns'''
+	name = models.CharField(max_length=500)
+	start_date = models.DateField()
+	end_date = models.DateField()
+	going_on = models.BooleanField(default=False)
+	
+	def __str__(self):
+		return self.start_date.strftime("%B %d, %Y")
 
-    def __str__(self):
-        return self.start_date.strftime("%B %d, %Y")
+	def get_absolute_url(self):
+		return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
 
-    def get_absolute_url(self):
-        return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
-
-    class Meta:
-        ordering = ('end_date',)
+	class Meta:
+		ordering = ('end_date',)
 
 class Beneficiaire(models.Model):
-    '''In this model, we will store every category of beneficiaries for ssme campaign'''
-    designation = models.CharField(max_length=100)
-
-    def __unicode__(self):
-        return self.designation
-
-    def get_absolute_url(self):
-        return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
-
-    class Meta:
-        ordering = ('designation',)
+	'''In this model, we will store every category of beneficiaries for ssme campaign'''
+	designation = models.CharField(max_length=100)
+	nombre_mois_min = models.IntegerField()
+	nombre_mois_max = models.IntegerField()
+	def __unicode__(self):
+		return self.designation
+	
+	def get_absolute_url(self):
+		return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
+	
+	class Meta:
+		ordering = ('designation',)
 
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
@@ -248,4 +250,20 @@ class Temporary(models.Model):
 
     def __unicode__(self):
         return self.phone_number
+
+class CampaignCDS(models.Model):
+	campaign = models.ForeignKey(Campaign)
+	cds = models.ForeignKey(CDS)
+	population_cible = models.IntegerField(null = True)
+	enfant_moins_5_ans = models.IntegerField(null = True)
+
+class CampaignCDSBeneficiaries(models.Model):
+	cds = models.ForeignKey(CDS)
+	beneficiaires = models.ForeignKey(CampaignBeneficiary)
+	expected_number = models.IntegerField(null = True)
+	gotten_number = models.IntegerField(null = True)
+
+class ReportStockOut(models.Model):
+	campaign_product = models.ForeignKey(CampaignProduct)
+	report = models.ForeignKey(Report)
 
