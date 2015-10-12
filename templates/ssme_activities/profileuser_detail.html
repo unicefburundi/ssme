@@ -13,6 +13,10 @@
             <dt>First name :</dt>
                 <p>{{ object.user.first_name }}</p>
             {% endif %}
+            {% if object.user.email %}
+            <dt> Email  :</dt>
+                <p>{{ object.user.email  }}</p>
+            {% endif %}
             {% if object.user.last_name%}
             <dt>Last name :</dt>
                 <p>{{ object.user.last_name }}</p>
