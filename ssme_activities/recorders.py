@@ -138,31 +138,33 @@ def identify_number_of_concerned_products(args):
 
 def check_product_values_validity(args):
 	''' This function checks if the values sent by the phone user are the expected ones '''
-	indice = 2
+
+	priority = 1
 	
-	while ((indice < args['expected_vulues_number']) and (indice > 0)):
-		value = args['text'].split(' ')[indice]
+	while ((priority <= args['number_of_concerned_products']) and (priority > 0)):
+		value = args['text'].split(' ')[priority+1]
+	
+		#Let's identify the concerned CampaignProduct
+		campaign_product = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
-		#Let's identify the concerned product
-		products = Product.objects.filter(priority = indice)
-		if len(products) < 1:
+		if len(campaign_product) < 1:
 			args['valide'] = False
-			args['info_to_contact'] = "Erreur admin. Pas de produits de priorite "+str(indice)+"."
-			indice = -1
+			args['info_to_contact'] = "Erreur admin. Pas de produits de priorite "+str(priority)+"."
+			priority = -1
 		else:
-			current_product = products[0]
+			one_campaign_product = campaign_product[0]
 
-			if not current_product.can_be_fractioned:
+			if not one_campaign_product.product.can_be_fractioned:
 				expression = r'^[0-9]+$'
 			else:
 				expression = r'^([0-9]+.[0-9]+)|([0-9]+)$'
 
 			if re.search(expression, value) is None:
 				args['valide'] = False
-				args['info_to_contact'] = "Erreur. La valeur envoyee a l indice "+str(indice)+" n est pas valide."
-				indice = -1
+				args['info_to_contact'] = "Erreur. La valeur envoyee en position "+str(priority)+" n est pas valide."
+				priority = -1
 			
-		indice = indice + 1
+		priority = priority + 1
 	if args['valide']:
 		args['info_to_contact'] = "Ok."
 
@@ -374,19 +376,19 @@ def record_sds(args):
 	#Let's record the a beneficiary report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
 
-	indice = 2
+	priority = 1
 	
-	while (indice < args['expected_vulues_number']):
+	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
-		value = args['text'].split(' ')[indice]
+		value = args['text'].split(' ')[priority+1]
 	
-		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], product__priority = indice)
+		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
 		
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
 
-		indice = indice + 1
+		priority = priority + 1
 	
 
 #------------------------------------------------------------------
@@ -441,19 +443,19 @@ def record_sr(args):
 	#Let's record the a beneficiary report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_RECU')
 
-	indice = 2
+	priority = 1
 	
-	while (indice < args['expected_vulues_number']):
+	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
-		value = args['text'].split(' ')[indice]
+		value = args['text'].split(' ')[priority+1]
 	
-		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], product__priority = indice)
+		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
 		
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
 
-		indice = indice + 1
+		priority = priority + 1
 
 #------------------------------------------------------------------
 
@@ -507,19 +509,19 @@ def record_sf(args):
 	#Let's record the a beneficiary report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
 
-	indice = 2
+	priority = 1
 	
-	while (indice < args['expected_vulues_number']):
+	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
-		value = args['text'].split(' ')[indice]
+		value = args['text'].split(' ')[priority+1]
 	
-		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], product__priority = indice)
+		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
 		
 		report_prod = ReportProductRemainStock.objects.create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'], remain_quantity = value, report = the_created_report)
 
-		indice = indice + 1
+		priority = priority + 1
 
 #-------------------------------------------------------------------
 
@@ -559,7 +561,7 @@ def identify_number_of_concerned_beneficiaries(args):
 			if len(camp_ben_products) < 1:
 				#The admin didn't define products which will be received by these beneficiaries in the opened campaign
 				args['valide'] = False
-				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas definis."
+				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
 			number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
 
 	args['number_of_beneficiries_per_product'] = number_of_expected_beneficiarie_values
@@ -587,17 +589,17 @@ def check_number_of_incoming_variables(args):
 
 def check_beneficiary_values_valid(args):
 	''' This function checks if the values sent by the phone user are the one expected '''
-	indice = 2
+	priority = 1
 	
-	while ((indice < args['expected_vulues_number']) and (indice > 0)):
-		value = args['text'].split(' ')[indice]
+	while ((priority <= args['number_of_concerned_beneficiaries']) and (priority > 0)):
+		value = args['text'].split(' ')[priority+1]
 		expression = r'^[0-9]+$'
 		if re.search(expression, value) is None:
 			args['valide'] = False
-			args['info_to_contact'] = "Erreur. La valeur envoyee a l indice "+str(indice)+" n est pas valide."
-			indice = -1
+			args['info_to_contact'] = "Erreur. La valeur envoyee en position "+str(priority)+" n est pas valide."
+			priority = -1
 			return
-		indice = indice + 1
+		priority = priority + 1
 	if args['valide']:
 		args['info_to_contact'] = "Ok."
 
@@ -642,19 +644,19 @@ def record_beneficiaries(args):
 	#Let's record the a beneficiary report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'BENEFICIAIRE')
 
-	indice = 2
+	priority = 1
 	
-	while (indice < args['expected_vulues_number']):
+	while (priority <= args['number_of_concerned_beneficiaries']):
 		#We record each beneficiary number
-		value = args['text'].split(' ')[indice]
+		value = args['text'].split(' ')[priority+1]
 	
-		ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = indice)
+		ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_ben_campaign = ben_camp[0]
 		
 		report_ben = ReportBeneficiary.objects.create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], received_number = value, report = the_created_report)
 
-		indice = indice + 1
+		priority = priority + 1
 		
 #--------------------------------------------------------------------
 

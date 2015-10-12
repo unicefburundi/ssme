@@ -171,7 +171,7 @@ class CampaignProduct(models.Model):
 
 	class Meta:
 		ordering = ('product',)
-		unique_together = ('campaign', 'product',)
+		unique_together = ('campaign', 'order_in_sms',)
 
 class CampaignBeneficiaryProduct(models.Model):
     '''With this model, we will be able to define and identify which medecines will be received by each beneficiary
@@ -266,4 +266,5 @@ class CampaignCDSBeneficiaries(models.Model):
 class ReportStockOut(models.Model):
 	campaign_product = models.ForeignKey(CampaignProduct)
 	report = models.ForeignKey(Report)
+	remaining_stock = models.FloatField()
 
