@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^register/$', UserSignupView.as_view(), name="create_profile"),
     url(r'^profile/(?P<pk>\d+)/$', ProfileUserDetailView.as_view(), name="profile_user_detail"),
     url(r'^profile_edit/(?P<pk>\d+)/$', ProfileUserUpdateView.as_view(), name="profileuser_update"),
+    (r'^create_campaign/$', CampaignWizard.as_view(FORMS)),
 )
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()

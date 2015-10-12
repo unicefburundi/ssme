@@ -52,3 +52,18 @@ class UserCreationMultiForm(MultiModelForm):
         ('user', UserCreationForm),
         ('profile', UserProfileForm2),
     ))
+
+class CampaignForm1(forms.ModelForm):
+    class Meta:
+        model = Campaign
+        fields = '__all__'
+
+class CampaignForm2(forms.ModelForm):
+    class Meta:
+        model = CampaignProduct
+        exclude = ('campaign',)
+
+class CampaignForm3(forms.ModelForm):
+    class Meta:
+        model = CampaignBeneficiaryCDS
+        exclude = ('campaign',)

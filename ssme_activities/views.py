@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from smartmin.views import *
-
+from formtools.wizard.views import SessionWizardView
 def dashboard(request):
     return render(request, 'base_layout.html')
 
@@ -197,3 +197,17 @@ class ProfileUserCRUDL(SmartCRUDL):
         search_fields = ('user__name__icontains', 'telephone__icontains', 'user__email__icontains')
         default_order = 'user'
 
+#Campaign
+
+FORMS = [("campaign", CampaignForm1),
+         ("product", CampaignForm2),
+         ("beneficiary", CampaignForm3)]
+
+
+class CampaignWizard(SessionWizardView):
+    def done(self, form_list, form_dict, **kwargs):
+        campaign = form_dict['campaign'].save()
+        product = form_dict['product'].save()
+        beneficiary = form_dict['beneficiary'].save()
+        url = reverse('ssme_activities.campaign_list')
+        return HttpResponseRedirect(url)

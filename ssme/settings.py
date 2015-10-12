@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django_tables2',
     'django_extensions',
     'ssme_activities',
+    'formtools',
     'guardian',
     'smartmin',
     'authtools',
