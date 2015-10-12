@@ -207,7 +207,8 @@ FORMS = [("campaign", CampaignForm1),
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
-        product = form_dict['product'].save()
-        beneficiary = form_dict['beneficiary'].save()
+        # import ipdb; ipdb.set_trace()
+        # product = form_dict['product'].save()
+        # beneficiary = form_dict['beneficiary'].save()
         url = reverse('ssme_activities.campaign_list')
         return HttpResponseRedirect(url)

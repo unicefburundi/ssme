@@ -3,6 +3,7 @@ from authtools.forms import UserCreationForm
 from ssme_activities.models import *
 from betterforms.multiform import MultiModelForm
 from collections import OrderedDict
+from django.forms.extras import SelectDateWidget
 
 class UserCreationForm(UserCreationForm):
     """
@@ -54,9 +55,22 @@ class UserCreationMultiForm(MultiModelForm):
     ))
 
 class CampaignForm1(forms.ModelForm):
+    start_date = forms.DateField(input_formats=['%d/%m/%Y'])
+    end_date = forms.DateField(input_formats=['%d/%m/%Y'])
+
     class Meta:
         model = Campaign
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CampaignForm1, self).__init__(*args, **kwargs)
+        self.fields['start_date'].widget.attrs.update({
+            'class': 'datePicker'
+            })
+        self.fields['end_date'].widget.attrs.update({
+            'class': 'datePicker'
+            })
+
 
 class CampaignForm2(forms.ModelForm):
     class Meta:
@@ -65,5 +79,5 @@ class CampaignForm2(forms.ModelForm):
 
 class CampaignForm3(forms.ModelForm):
     class Meta:
-        model = CampaignBeneficiaryCDS
+        model = CampaignBeneficiary
         exclude = ('campaign',)

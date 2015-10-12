@@ -95,9 +95,9 @@ class Campaign(models.Model):
 	start_date = models.DateField()
 	end_date = models.DateField()
 	going_on = models.BooleanField(default=False)
-	
+
 	def __str__(self):
-		return self.start_date.strftime("%B %d, %Y")
+		return self.name
 
 	def get_absolute_url(self):
 		return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
@@ -112,10 +112,10 @@ class Beneficiaire(models.Model):
 	nombre_mois_max = models.IntegerField()
 	def __unicode__(self):
 		return self.designation
-	
+
 	def get_absolute_url(self):
 		return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
-	
+
 	class Meta:
 		ordering = ('designation',)
 
