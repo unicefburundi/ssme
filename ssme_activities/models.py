@@ -257,12 +257,6 @@ class CampaignCDS(models.Model):
 	population_cible = models.IntegerField(null = True)
 	enfant_moins_5_ans = models.IntegerField(null = True)
 
-class CampaignCDSBeneficiaries(models.Model):
-	cds = models.ForeignKey(CDS)
-	beneficiaires = models.ForeignKey(CampaignBeneficiary)
-	expected_number = models.IntegerField(null = True)
-	gotten_number = models.IntegerField(null = True)
-
 class ReportStockOut(models.Model):
 	campaign_product = models.ForeignKey(CampaignProduct)
 	report = models.ForeignKey(Report)
