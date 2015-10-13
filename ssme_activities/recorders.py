@@ -1,6 +1,9 @@
 from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut
 import re
 import datetime
+import requests
+import json
+from django.conf import settings
 
 def check_number_of_values(args):
 	#This function checks if the message sent is composed by an expected number of values
@@ -8,6 +11,16 @@ def check_number_of_values(args):
 	print(len(args['text'].split(' ')))
 	print(args['text'].split(' '))
 	if(args['message_type']=='SELF_REGISTRATION'):
+		if len(args['text'].split(' ')) < 3:
+			args['valide'] = False
+			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+		if len(args['text'].split(' ')) > 3:
+			args['valide'] = False
+			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+		if len(args['text'].split(' ')) == 3:
+			args['valide'] = True
+			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
+	if(args['message_type']=='RUPTURE_STOCK'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
 			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
@@ -57,6 +70,7 @@ def check_if_is_reporter(args):
 		args['info_to_contact'] = "Erreur. Votre CDS n est pas connu dans le systeme."
 		return
 
+	args['the_sender'] =  one_concerned_reporter
 	args['cds'] = one_concerned_reporter.cds
 	args['valide'] = True
 	args['info_to_contact'] = " Le cds de ce rapporteur est connu "
@@ -719,11 +733,34 @@ def check_stock_out_values_validity(args):
 
 def alert_for_stock_out(args):
 	''' This function alerts in case of a stock out '''
-	pass
+	
+	url = 'https://api.rapidpro.io/api/v1/broadcasts.json'
+	token = getattr(settings,'TOKEN','')
+
+	#Let's first send an alert to the phone number given by this reporter on his registration
+
+	if args['the_sender'].supervisor_phone_number :
+		#We have his/her supervisor phone number. Let's send to him/her this message
+		the_sup_phone_number = "tel:"+args['the_sender'].supervisor_phone_number
+		data = {"urns": [the_sup_phone_number],"text": args['message_to_send_for_alert']}
+
+		
+		response = requests.post(url, headers={'Content-type': 'application/json', 'Authorization': 'Token %s' % token}, data = json.dumps(data))
+		print(response.content)
+
+
+	#Secondly, let's send this alert to the computer users who have this CDS in charge.
+	
+	
 		
 		
 def record_stock_out(args):
 	''' This function is used to record a stock out report '''
+	#Let's check if the message sent is composed by an expected number of values
+	check_number_of_values(args)
+	if not args['valide']:
+		return
+
 	#Let's identify the opened campaign
 	identify_the_opened_campaign(args)
 	print(args['valide'])
@@ -765,7 +802,22 @@ def record_stock_out(args):
 	else:
 		prod_camp = prod_camp[0]
 		stock_out_report_object = ReportStockOut.objects.create(campaign_product = prod_camp, remaining_stock = value, report = the_created_report)
+
+		args['info_to_contact'] = "Votre rapport est bien recu."
 		
+		args['cds_name'] = args['cds'].name
+		args['product_name'] = stock_out_report_object.campaign_product.product.name
+		args['remaining_stock'] = value
+		args['measuring_unit'] = stock_out_report_object.campaign_product.product.unite_de_mesure
+		args['message_to_send_for_alert'] = "Une rupture de stock de "+args['product_name']+" est signalee a "+args['cds_name']+". La quantite restante est "+args['remaining_stock']+" "+args['measuring_unit']+" ."
+
+		print("cds_name")
+		print(args['cds_name'])
+		print("product_name")
+		print(args['product_name'])
+		print("remaining_stock")
+		print(args['remaining_stock'])
+
 
 		#Let's make an alert to the concerned persons
 		alert_for_stock_out(args)
