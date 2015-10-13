@@ -209,11 +209,19 @@ FORMS = [("campaign", CampaignForm1),
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
+        products, orders = set(), set()
         for i in form_dict['product'].cleaned_data:
-            CampaignProduct.objects.get_or_create(campaign=campaign, product= i['product'], order_in_sms=i['order_in_sms'] )
+            if (i != {}) and (i['product'] not in products) and (i['order_in_sms'] not in orders):
+                CampaignProduct.objects.get_or_create(campaign=campaign, product= i['product'], order_in_sms=i['order_in_sms'] )
+                products.add(i['product'])
+                orders.add(i['order_in_sms'])
 
-        for i in form_dict['beneficiary']:
-            CampaignBeneficiary.objects.get_or_create(campaign=campaign, beneficiary= i['beneficiary'], order_in_sms=i['order_in_sms'] )
+        beneficiaries, orders = set(), set()
+        for i in form_dict['beneficiary'].cleaned_data:
+            if (i != {}) and (i['beneficiary'] not in beneficiaries) and (i['order_in_sms'] not in orders):
+                CampaignBeneficiary.objects.get_or_create(campaign=campaign, beneficiary= i['beneficiary'], order_in_sms=i['order_in_sms'] )
+                beneficiaries.add(i['beneficiary'])
+                orders.add(i['order_in_sms'])
 
         return HttpResponseRedirect(campaign.get_absolute_url())
