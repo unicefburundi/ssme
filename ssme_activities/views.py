@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
+
+
 def dashboard(request):
     return render(request, 'base_layout.html')
 
@@ -200,18 +202,22 @@ class ProfileUserCRUDL(SmartCRUDL):
 #Campaign
 
 FORMS = [("campaign", CampaignForm1),
-         ("product", CampaignForm2),
-         ("beneficiary", CampaignForm3)]
+         ("product", ProductsFormSet),
+         ("beneficiary", BeneficiaryFormSet)]
 
 
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
+        # import ipdb; ipdb.set_trace()
         campaign = form_dict['campaign'].save()
-        product = form_dict['product'].save(commit=False)
-        product.campaign = campaign
-        product.save()
-        beneficiary = form_dict['beneficiary'].save(commit=False)
-        beneficiary.campaign = campaign
-        beneficiary.save()
-        url = reverse('ssme_activities.campaign_list')
-        return HttpResponseRedirect(url)
+        campaignproduct = form_dict['product'].save(commit=False)
+        for i in campaignproduct:
+            i.campaign = campaign
+            i.save()
+
+        campaignbeneficiary = form_dict['beneficiary'].save(commit=False)
+        for i in campaignbeneficiary:
+            i.campaign = campaign
+            i.save()
+
+        return HttpResponseRedirect(campaign.get_absolute_url())

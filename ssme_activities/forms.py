@@ -3,7 +3,7 @@ from authtools.forms import UserCreationForm
 from ssme_activities.models import *
 from betterforms.multiform import MultiModelForm
 from collections import OrderedDict
-from django.forms.extras import SelectDateWidget
+from django.forms.models import inlineformset_factory
 
 class UserCreationForm(UserCreationForm):
     """
@@ -53,6 +53,22 @@ class UserCreationMultiForm(MultiModelForm):
         ('user', UserCreationForm),
         ('profile', UserProfileForm2),
     ))
+
+# Campaign
+
+MAX_ELEMENTS = 5
+
+ProductsFormSet = inlineformset_factory(Campaign,
+    CampaignProduct,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
+
+BeneficiaryFormSet = inlineformset_factory(Campaign,
+    CampaignBeneficiary,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
 
 class CampaignForm1(forms.ModelForm):
     start_date = forms.DateField(input_formats=['%d/%m/%Y'])

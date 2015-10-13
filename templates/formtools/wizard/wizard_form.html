@@ -8,10 +8,10 @@
 {% if wizard.form.forms %}
     {{ wizard.form.management_form }}
     {% for form in wizard.form.forms %}
-        {{ form.as_p }}
+        <p>{{ form.as_table }}</p>
     {% endfor %}
 {% else %}
-    {{ wizard.form.as_p }}
+    {{ wizard.form.as_table }}
 {% endif %}
 
 {% if wizard.steps.prev %}
