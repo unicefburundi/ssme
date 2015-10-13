@@ -208,16 +208,12 @@ FORMS = [("campaign", CampaignForm1),
 
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
-        # import ipdb; ipdb.set_trace()
         campaign = form_dict['campaign'].save()
-        campaignproduct = form_dict['product'].save(commit=False)
-        for i in campaignproduct:
-            i.campaign = campaign
-            i.save()
+        import ipdb; ipdb.set_trace()
+        for i in form_dict['product'].cleaned_data:
+            CampaignProduct.objects.get_or_create(campaign=campaign, product= i['product'], order_in_sms=i['order_in_sms'] )
 
-        campaignbeneficiary = form_dict['beneficiary'].save(commit=False)
-        for i in campaignbeneficiary:
-            i.campaign = campaign
-            i.save()
+        for i in form_dict['beneficiary']:
+            CampaignBeneficiary.objects.get_or_create(campaign=campaign, beneficiary= i['beneficiary'], order_in_sms=i['order_in_sms'] )
 
         return HttpResponseRedirect(campaign.get_absolute_url())

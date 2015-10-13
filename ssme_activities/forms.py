@@ -91,9 +91,11 @@ class CampaignForm1(forms.ModelForm):
 class CampaignForm2(forms.ModelForm):
     class Meta:
         model = CampaignProduct
-        exclude = ('campaign',)
+        fields = '__all__'
+
+
 
 class CampaignForm3(forms.ModelForm):
     class Meta:
         model = CampaignBeneficiary
-        exclude = ('campaign',)
+        fields = '__all__'
