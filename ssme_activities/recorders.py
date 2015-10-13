@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut
 import re
 import datetime
 
@@ -506,7 +506,7 @@ def record_sf(args):
 	if not args['valide']:
 		return
 
-	#Let's record the a beneficiary report
+	#Let's record the remaining stock report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
 
 	priority = 1
@@ -676,3 +676,99 @@ def exit(args):
 			session.delete()
 	args['valide'] = True
 	args['info_to_contact'] = "Vous etes desormais en dehors du flow."
+
+#-------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+#================================Report RUP (Rupture du stock)============
+def check_stock_out_values_validity(args):
+	''' This function checks if the values sent by the phone user are the expected ones '''
+
+	priority = args['text'].split(' ')[1]
+	value = args['text'].split(' ')[2]
+
+	#Let's identify the concerned CampaignProduct
+	campaign_product = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
+
+	if len(campaign_product) < 1:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. Pas de produits de priorite "+str(priority)+"."
+	else:
+		one_campaign_product = campaign_product[0]
+
+		if not one_campaign_product.product.can_be_fractioned:
+			#value can not be a fraction
+			expression = r'^[0-9]+$'
+		else:
+			#value can be an integer
+			expression = r'^([0-9]+.[0-9]+)|([0-9]+)$'
+			
+		if re.search(expression, value) is None:
+			args['valide'] = False
+			args['info_to_contact'] = "Erreur. La quantite restante envoye n est pas valide."
+		
+	if args['valide']:
+		args['info_to_contact'] = "Ok."
+
+
+def alert_for_stock_out(args):
+	''' This function alerts in case of a stock out '''
+	pass
+		
+		
+def record_stock_out(args):
+	''' This function is used to record a stock out report '''
+	#Let's identify the opened campaign
+	identify_the_opened_campaign(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's identify the number of products for this campaign
+	identify_number_of_concerned_products(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the product priority and remain stock value are valid
+	check_stock_out_values_validity(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's record a stock out report
+	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = datetime.datetime.now().date(), text = args['text'], category = 'RUPTURE_STOCK')
+
+	#Let's record this stock out report in the model for stock out reports
+
+	priority = args['text'].split(' ')[1]
+	value = args['text'].split(' ')[2]
+
+	prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
+
+	if len(prod_camp) < 1:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur d enregistrement du rapport de rupture du stock."
+		return
+	else:
+		prod_camp = prod_camp[0]
+		stock_out_report_object = ReportStockOut.objects.create(campaign_product = prod_camp, remaining_stock = value, report = the_created_report)
+		
+
+		#Let's make an alert to the concerned persons
+		alert_for_stock_out(args)
+
+
+	

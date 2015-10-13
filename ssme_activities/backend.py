@@ -111,6 +111,9 @@ def handel_rapidpro_request(request):
 	if(incoming_data['message_type']=='EXIT'):
 		#The contact who sent the current message want to exit
 		exit(incoming_data)
+	if(incoming_data['message_type']=='RUPTURE_STOCK'):
+		#The contact who sent the current message want to report a stock out
+		record_stock_out(incoming_data)
 
 
 

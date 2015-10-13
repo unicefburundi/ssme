@@ -148,6 +148,7 @@ KNOWN_PREFIXES = {
     'SR':'STOCK_RECU',
     'SF':'STOCK_FINAL',
     'B':'BENEFICIAIRE',
+	'RUP' : 'RUPTURE_STOCK',
 	'X':'EXIT',
 }
 
