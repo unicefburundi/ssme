@@ -262,8 +262,26 @@ def save_temporary_the_reporter(args):
 			args['valide'] = True
 			args['info_to_contact'] = "Merci. Veuillez confirmer le numero du superviseur s il vous plait."
 
+
+def check_has_already_session(args):
+	'''This function checks if this contact has a session'''
+	same_existing_temp = Temporary.objects.filter(phone_number = args['phone'])
+	if len(same_existing_temp) > 0:
+		same_existing_temp = same_existing_temp[0]
+		same_existing_temp.delete()
+		args['valide'] = False
+		args['info_to_contact'] = "Vous devriez envoyer le numero de telephone de votre superviseur seulement."
+	else:
+		args['valide'] = True
+		args['info_to_contact'] = "Ok."
+
 def temporary_record_reporter(args):
 	'''This function is used to record temporary a reporter'''
+	#Let's check if this contact has an existing session
+	check_has_already_session(args)
+	if not args['valide']:
+		return
+
 	#Let's check if the message sent is composed by an expected number of values
 	check_number_of_values(args)
 	if not args['valide']:
