@@ -145,7 +145,7 @@ class CampaignBeneficiary(models.Model):
         unique_together = ('campaign', 'order_in_sms',)
 
     def __unicode__(self):
-        return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
+        return self.beneficiary.designation
 
     def get_absolute_url(self):
         return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
@@ -156,6 +156,10 @@ class CampaignBeneficiaryCDS(models.Model):
     cds = models.ForeignKey(CDS)
     population_attendu = models.IntegerField(null=True)
     population_obtenue = models.IntegerField(null=True)
+
+    def __unicode__(self):
+        return "{0} on {1}".format(self.beneficiary.designation, self.cds.name)
+
 
 class CampaignProduct(models.Model):
 	'''With this model we will be able to define and identify concerned medecines for a given campaign'''

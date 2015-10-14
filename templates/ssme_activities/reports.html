@@ -1,4 +1,5 @@
 {% extends "base_layout.html" %}
+{% load render_table from django_tables2 %}
 
 {% block page_title %}
 <ul class="nav nav-tabs">
@@ -8,25 +9,35 @@
 {% endblock page_title  %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <div class="col-md-10">
     <div class="tab-content">
     <hr>
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                 {% block beneficiary %}
-                    <p>About Beneficiary</p>
+                    <div class="col-md-11">
+                      {% render_table report_benef %}
+                    </div>
+                    <div class="col-md-1"></div>
                 {% endblock beneficiary %}
               </div>
               <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
                 <h4><i class="glyphicon glyphicon-cog"></i></h4>
                 {% block reception %}
-                    <p>About Reception</p>
+                    <div class="col-md-11">
+                      {% render_table report_reception %}
+                    </div>
+                    <div class="col-md-1"></div>
                 {% endblock reception %}
               </div>
               <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block final %}
-                    <p>About FInal</p>
+                    <div class="col-md-11">
+                      {% render_table report_remain %}
+                    </div>
+                    <div class="col-md-1"></div>
                 {% endblock final %}
               </div>
     </div>

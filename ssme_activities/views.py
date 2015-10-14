@@ -8,6 +8,8 @@ from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import myfacility
+from django_tables2   import RequestConfig
+from ssme_activities.tables import *
 
 
 def dashboard(request):
@@ -239,4 +241,12 @@ class CampaignWizard(SessionWizardView):
 
 # Reports
 def get_reports(request):
-    return render(request, "ssme_activities/reports.html")
+    # import ipdb; ipdb.set_trace()
+    report_benef = ReportBeneficiaryTable(ReportBeneficiary.objects.all())
+    RequestConfig(request).configure(report_benef)
+    report_remain = ReportProductRemainStockTable(ReportProductRemainStock.objects.all())
+    RequestConfig(request).configure(report_remain)
+    report_reception = ReportProductReceptionTable(ReportProductReception.objects.all())
+    RequestConfig(request).configure(report_reception)
+
+    return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
