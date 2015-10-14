@@ -14,7 +14,6 @@
                 <th>Name</th>
                 <th>Code</th>
                 <th>District</th>
-                <th>Status</th>
               </tr>
             </thead>
         {% for cds in object_list %}
@@ -27,7 +26,6 @@
                     {% endif %}
                     <td>{{ cds.code }}</td>
                     <td>{{ cds.district}}</td>
-                    <td>{{cds.status}}</td>
                 {% endwith %}
             </tr>
         {% endfor %}
