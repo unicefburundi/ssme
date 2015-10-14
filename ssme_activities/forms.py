@@ -56,7 +56,7 @@ class UserCreationMultiForm(MultiModelForm):
 
 # Campaign
 
-MAX_ELEMENTS = 5
+MAX_ELEMENTS = 10
 
 ProductsFormSet = inlineformset_factory(Campaign,
     CampaignProduct,

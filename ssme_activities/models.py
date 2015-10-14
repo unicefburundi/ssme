@@ -108,8 +108,8 @@ class Campaign(models.Model):
 class Beneficiaire(models.Model):
 	'''In this model, we will store every category of beneficiaries for ssme campaign'''
 	designation = models.CharField(max_length=100)
-	nombre_mois_min = models.IntegerField()
-	nombre_mois_max = models.IntegerField()
+	nombre_mois_min = models.IntegerField(null=True, blank=True)
+	nombre_mois_max = models.IntegerField(null=True, blank=True)
 	def __unicode__(self):
 		return self.designation
 

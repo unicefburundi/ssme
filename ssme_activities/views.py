@@ -107,6 +107,7 @@ class ReporterDetailView(DetailView):
 
 # Campaign
 class CampaignCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = Campaign
     permissions = False
 
@@ -146,8 +147,12 @@ class ProductCRUDL(SmartCRUDL):
         search_fields = ('name__icontains', )
         default_order = 'name'
 
+    class Create(SmartCreateView):
+        pass
+
 # CampaignBeneficiary
 class CampaignBeneficiaryCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = CampaignBeneficiary
 
     class List(SmartListView):
@@ -156,6 +161,7 @@ class CampaignBeneficiaryCRUDL(SmartCRUDL):
 
 # CampaignBeneficiaryProduct
 class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = CampaignBeneficiaryProduct
 
     class List(SmartListView):
@@ -164,6 +170,7 @@ class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
 
 # CampaignProduct
 class CampaignProductCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = CampaignProduct
 
     class List(SmartListView):
@@ -227,7 +234,7 @@ class ProfileUserCRUDL(SmartCRUDL):
 FORMS = [("campaign", CampaignForm1),
          ("product", ProductsFormSet),
          ("beneficiary", BeneficiaryFormSet),
-         ("cds", CDSCampaignFormSet)
+         # ("cds", CDSCampaignFormSet)
          ]
 
 
