@@ -70,7 +70,7 @@ BeneficiaryFormSet = inlineformset_factory(Campaign,
     fields='__all__',
     extra=MAX_ELEMENTS)
 
-CDSCampaignFormSet = inlineformset_factory(CampaignBeneficiary,
+CDSCampaignFormSet = inlineformset_factory(Campaign,
     CampaignBeneficiaryCDS,
     can_delete=True,
     fields='__all__',

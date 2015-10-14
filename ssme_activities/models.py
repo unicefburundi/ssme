@@ -152,7 +152,7 @@ class CampaignBeneficiary(models.Model):
 
 
 class CampaignBeneficiaryCDS(models.Model):
-    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    campaign = models.ForeignKey(Campaign)
     cds = models.ForeignKey(CDS)
     population_attendu = models.IntegerField(null=True)
     population_obtenue = models.IntegerField(null=True)

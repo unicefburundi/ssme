@@ -220,9 +220,15 @@ class ProfileUserCRUDL(SmartCRUDL):
 
 #Campaign
 
+# class CDSCampaignFormSet1(CDSCampaignFormSet):
+#     cds =
+
+
 FORMS = [("campaign", CampaignForm1),
          ("product", ProductsFormSet),
-         ("beneficiary", BeneficiaryFormSet)]
+         ("beneficiary", BeneficiaryFormSet),
+         ("cds", CDSCampaignFormSet)
+         ]
 
 
 class CampaignWizard(SessionWizardView):
@@ -242,5 +248,12 @@ class CampaignWizard(SessionWizardView):
                 CampaignBeneficiary.objects.get_or_create(campaign=campaign, beneficiary= i['beneficiary'], order_in_sms=i['order_in_sms'] )
                 beneficiaries.add(i['beneficiary'])
                 orders.add(i['order_in_sms'])
+
+        # cdss, orders = set(), set()
+        # for i in form_dict['cds'].cleaned_data:
+        #     if (i != {}) and (i['cds'] not in cdss):
+        #         CampaignBeneficiaryCDS.objects.get_or_create(campaign=campaign, cds= i['cds'], population_attendu=i['population_attendu'], )
+        #         cdss.add(i['beneficiary'])
+        #         orders.add(i['order_in_sms'])
 
         return HttpResponseRedirect(campaign.get_absolute_url())
