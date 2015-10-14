@@ -99,9 +99,9 @@
                 <li><a href="{% url 'province_list' %}">Provinces</a></li>
                 <li><a href="{% url 'district_list' %}">Districts</a></li>
                 <li><a href="{% url 'cds_list' %}">CDS</a></li>
+                <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campaign</a></li>
                 {% if user.is_superuser %}
                     <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profile User</a></li>
-                    <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campaign</a></li>
                 {% endif %}
               </ul>
           </li>

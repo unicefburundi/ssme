@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
+from ssme.context_processor import myfacility
 
 
 def dashboard(request):
@@ -107,10 +108,28 @@ class ReporterDetailView(DetailView):
 # Campaign
 class CampaignCRUDL(SmartCRUDL):
     model = Campaign
+    permissions = False
 
     class List(SmartListView):
+        # import ipdb; ipdb.set_trace()
         search_fields = ('going_on__icontains', )
         default_order = 'going_on'
+
+        def derive_queryset(self, *args, **kwargs):
+            queryset = super(CampaignCRUDL.List, self).derive_queryset(*args, **kwargs)
+            # import ipdb; ipdb.set_trace()
+            myfacilities =  myfacility(self.request)
+            if myfacilities['mycode'] == None :
+                return queryset
+            # elif len(str(myfacilities['mycode'])) >=5 :
+            #     return queryset.filter(cds__code=myfacilities['mycode'])
+            # elif 3 <= len(str(myfacilities['mycode'])) <=4 :
+            #     return queryset.filter(cds__district__code=myfacilities['mycode'])
+            # elif 1 <= len(str(myfacilities['mycode'])) <= 2 :
+            #     return queryset.filter(cds__district__province__code=myfacilities['mycode'])
+            else:
+                return Campaign.objects.none()
+
 
 # Beneficiaire
 class BeneficiaireCRUDL(SmartCRUDL):

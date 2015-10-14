@@ -70,6 +70,12 @@ BeneficiaryFormSet = inlineformset_factory(Campaign,
     fields='__all__',
     extra=MAX_ELEMENTS)
 
+CDSCampaignFormSet = inlineformset_factory(CampaignBeneficiary,
+    CampaignBeneficiaryCDS,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
+
 class CampaignForm1(forms.ModelForm):
     start_date = forms.DateField(input_formats=['%d/%m/%Y'])
     end_date = forms.DateField(input_formats=['%d/%m/%Y'])
