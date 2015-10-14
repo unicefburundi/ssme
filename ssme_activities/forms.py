@@ -3,6 +3,9 @@ from authtools.forms import UserCreationForm
 from ssme_activities.models import *
 from betterforms.multiform import MultiModelForm
 from collections import OrderedDict
+from django.forms.models import inlineformset_factory
+from django.utils.translation import ugettext as _
+
 
 class UserCreationForm(UserCreationForm):
     """
@@ -52,3 +55,67 @@ class UserCreationMultiForm(MultiModelForm):
         ('user', UserCreationForm),
         ('profile', UserProfileForm2),
     ))
+
+# Campaign
+
+MAX_ELEMENTS = 10
+
+ProductsFormSet = inlineformset_factory(Campaign,
+    CampaignProduct,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
+
+BeneficiaryFormSet = inlineformset_factory(Campaign,
+    CampaignBeneficiary,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
+
+CDSCampaignFormSet = inlineformset_factory(Campaign,
+    CampaignBeneficiaryCDS,
+    can_delete=True,
+    fields='__all__',
+    extra=MAX_ELEMENTS)
+
+class CampaignForm1(forms.ModelForm):
+    start_date = forms.DateField(input_formats=['%d/%m/%Y'])
+    end_date = forms.DateField(input_formats=['%d/%m/%Y'])
+
+    class Meta:
+        model = Campaign
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CampaignForm1, self).__init__(*args, **kwargs)
+        self.fields['start_date'].widget.attrs.update({
+            'class': 'datePicker'
+            })
+        self.fields['end_date'].widget.attrs.update({
+            'class': 'datePicker'
+            })
+
+
+class CampaignForm2(forms.ModelForm):
+    class Meta:
+        model = CampaignProduct
+        fields = '__all__'
+
+
+
+class CampaignForm3(forms.ModelForm):
+    class Meta:
+        model = CampaignBeneficiary
+        fields = '__all__'
+
+class ProductForm(forms.ModelForm):
+    DOSAGE_CHOICES = (
+        ('Dose', _('Dose')),
+        ('Comprime', _('Pill')),
+        ('Injection', _('Injection')),
+    )
+    unite_de_mesure = forms.ChoiceField(required=False, choices=DOSAGE_CHOICES)
+
+    class Meta:
+        model = Product
+        fields = '__all__'

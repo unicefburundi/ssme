@@ -95,9 +95,9 @@ class Campaign(models.Model):
 	start_date = models.DateField()
 	end_date = models.DateField()
 	going_on = models.BooleanField(default=False)
-	
+
 	def __str__(self):
-		return self.start_date.strftime("%B %d, %Y")
+		return self.name
 
 	def get_absolute_url(self):
 		return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
@@ -108,14 +108,14 @@ class Campaign(models.Model):
 class Beneficiaire(models.Model):
 	'''In this model, we will store every category of beneficiaries for ssme campaign'''
 	designation = models.CharField(max_length=100)
-	nombre_mois_min = models.IntegerField()
-	nombre_mois_max = models.IntegerField()
+	nombre_mois_min = models.IntegerField(null=True, blank=True)
+	nombre_mois_max = models.IntegerField(null=True, blank=True)
 	def __unicode__(self):
 		return self.designation
-	
+
 	def get_absolute_url(self):
 		return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
-	
+
 	class Meta:
 		ordering = ('designation',)
 
@@ -145,17 +145,21 @@ class CampaignBeneficiary(models.Model):
         unique_together = ('campaign', 'order_in_sms',)
 
     def __unicode__(self):
-        return "%s from %s to %s " % (self.beneficiary.designation, self.campaign.start_date , self.campaign.end_date)
+        return self.beneficiary.designation
 
     def get_absolute_url(self):
         return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 
 
 class CampaignBeneficiaryCDS(models.Model):
-    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    campaign = models.ForeignKey(Campaign)
     cds = models.ForeignKey(CDS)
     population_attendu = models.IntegerField(null=True)
     population_obtenue = models.IntegerField(null=True)
+
+    def __unicode__(self):
+        return "{0} on {1}".format(self.beneficiary.designation, self.cds.name)
+
 
 class CampaignProduct(models.Model):
 	'''With this model we will be able to define and identify concerned medecines for a given campaign'''

@@ -1,0 +1,24 @@
+{% extends "base_layout.html" %}
+{% load i18n %}
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+{{ wizard.form.media }}
+{{ wizard.management_form }}
+{% if wizard.form.forms %}
+    {{ wizard.form.management_form }}
+    {% for form in wizard.form.forms %}
+        <p>{{ form.as_table }}</p>
+    {% endfor %}
+{% else %}
+    {{ wizard.form.as_table }}
+{% endif %}
+
+{% if wizard.steps.prev %}
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
+<button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>
+{% endif %}
+<input type="submit" name="submit" value="{% trans "submit" %}" />
+</form>
+
+{% endblock content %}
