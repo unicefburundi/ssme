@@ -1,0 +1,34 @@
+{% extends "base_layout.html" %}
+
+{% block page_title %}
+<ul class="nav nav-tabs">
+  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
+  <li {% block activereception %}{% endblock activereception %} ><a href="#reception"   data-toggle="tab">Reception</a></li>
+  <li {% block activefinal %}{% endblock activefinal %} ><a href="#final"   data-toggle="tab">Final</a></li>
+{% endblock page_title  %}
+
+{% block content %}
+<div class="col-md-10">
+    <div class="tab-content">
+    <hr>
+              <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
+                <h4><i class="glyphicon glyphicon-comment"></i></h4>
+                {% block beneficiary %}
+                    <p>About Beneficiary</p>
+                {% endblock beneficiary %}
+              </div>
+              <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
+                <h4><i class="glyphicon glyphicon-cog"></i></h4>
+                {% block reception %}
+                    <p>About Reception</p>
+                {% endblock reception %}
+              </div>
+              <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
+                <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
+                {% block final %}
+                    <p>About FInal</p>
+                {% endblock final %}
+              </div>
+    </div>
+</div>
+{% endblock content %}

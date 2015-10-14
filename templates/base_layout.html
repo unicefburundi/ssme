@@ -123,17 +123,9 @@
                 <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Beneficiaries</a></li>
               </ul>
           </li>
-          <!--<li>
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Reports <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'ssme_activities.report_list' %}">Reports</a></li>
-                <li><a href="{% url 'ssme_activities.reportbeneficiary_list' %}">Reports Beneficiary</a></li>
-                <li><a href="{% url 'ssme_activities.reportproductreception_list' %}">Reports Product Reception</a></li>
-                <li><a href="{% url 'ssme_activities.reportproductremainstock_list' %}">Reports Product Remaining Stock</a></li>
-              </ul>
-          </li>-->
-
+          <li>
+              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
+          </li>
         {% endif %}
       </ul>
 

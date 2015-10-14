@@ -26,6 +26,10 @@ urlpatterns = patterns('',
     url(r'^profile/(?P<pk>\d+)/$', ProfileUserDetailView.as_view(), name="profile_user_detail"),
     url(r'^profile_edit/(?P<pk>\d+)/$', ProfileUserUpdateView.as_view(), name="profileuser_update"),
     url(r'^create_campaign/$', CampaignWizard.as_view(FORMS), name="ssme_activities.campaign_create"),
+
+    # Reports
+    url(r'^reports/$', get_reports, name="reports"),
+
 )
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()
@@ -35,7 +39,4 @@ urlpatterns += CampaignBeneficiaryCRUDL().as_urlpatterns()
 urlpatterns += CampaignBeneficiaryProductCRUDL().as_urlpatterns()
 urlpatterns += CampaignProductCRUDL().as_urlpatterns()
 urlpatterns += ReportCRUDL().as_urlpatterns()
-urlpatterns += ReportBeneficiaryCRUDL().as_urlpatterns()
-urlpatterns += ReportProductReceptionCRUDL().as_urlpatterns()
-urlpatterns += ReportProductRemainStockCRUDL().as_urlpatterns()
 urlpatterns += ProfileUserCRUDL().as_urlpatterns()

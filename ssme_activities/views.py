@@ -187,34 +187,6 @@ class ReportCRUDL(SmartCRUDL):
         search_fields = ('text__icontains', 'cds__name__icontains')
         default_order = 'cds'
 
-# ReportBeneficiary
-class ReportBeneficiaryCRUDL(SmartCRUDL):
-    actions = ('read', 'list')
-    model = ReportBeneficiary
-
-    class List(SmartListView):
-        fields = ('campaign_beneficiary.beneficiary', 'campaign_beneficiary.campaign','report', 'report.cds', 'reception_date', 'received_number')
-        search_fields = ('report__text__icontains', 'campaign_beneficiary__beneficiary__designation__icontains')
-        default_order = 'report'
-
-# ReportProductReception
-class ReportProductReceptionCRUDL(SmartCRUDL):
-    actions = ('read', 'list')
-    model = ReportProductReception
-
-    class List(SmartListView):
-        search_fields = ('report__text__icontains', 'campaign_product__product__name__icontains')
-        default_order = 'report'
-
-# ReportProductRemainStock
-class ReportProductRemainStockCRUDL(SmartCRUDL):
-    actions = ('read', 'list')
-    model = ReportProductRemainStock
-
-    class List(SmartListView):
-        search_fields = ('report__text__icontains', 'campaign_product__product__name__icontains')
-        default_order = 'report'
-
 # ProfileUser
 class ProfileUserCRUDL(SmartCRUDL):
     actions = ('update', 'list', 'read')
@@ -264,3 +236,7 @@ class CampaignWizard(SessionWizardView):
         #         orders.add(i['order_in_sms'])
 
         return HttpResponseRedirect(campaign.get_absolute_url())
+
+# Reports
+def get_reports(request):
+    return render(request, "ssme_activities/reports.html")
