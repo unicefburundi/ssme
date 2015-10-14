@@ -114,6 +114,9 @@ def handel_rapidpro_request(request):
 	if(incoming_data['message_type']=='RUPTURE_STOCK'):
 		#The contact who sent the current message want to report a stock out
 		record_stock_out(incoming_data)
+	if(incoming_data['message_type']=='POPULATION_CIBLE'):
+		#The contact who sent the current message want to report a stock out
+		record_population_cible(incoming_data)
 
 
 

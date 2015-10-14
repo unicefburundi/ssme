@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS
 import re
 import datetime
 import requests
@@ -30,7 +30,16 @@ def check_number_of_values(args):
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
-
+	if(args['message_type']=='POPULATION_CIBLE'):
+		if len(args['text'].split(' ')) < 2:
+			args['valide'] = False
+			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+		if len(args['text'].split(' ')) > 2:
+			args['valide'] = False
+			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+		if len(args['text'].split(' ')) == 2:
+			args['valide'] = True
+			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 
 
 def identify_the_opened_campaign(args):
@@ -381,14 +390,14 @@ def record_sds(args):
 	if not args['valide']:
 		return
 
-	#Let's check if the number of values sent by the phone user is the expected one
-	check_number_of_incoming_prod_variables(args)
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
 
-	#Let's check if the person who send this message is a reporter
-	check_if_is_reporter(args)
+	#Let's check if the number of values sent by the phone user is the expected one
+	check_number_of_incoming_prod_variables(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
@@ -409,7 +418,9 @@ def record_sds(args):
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
 
 	priority = 1
-	
+
+	message_to_send = "Le message enregistre est ("
+
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
@@ -418,11 +429,17 @@ def record_sds(args):
 
 		the_concerned_prod_campaign = prod_camp[0]
 		
+
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
+
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
 		priority = priority + 1
 	
-
+	args['info_to_contact'] = message_to_send+")."
 #------------------------------------------------------------------
 
 
@@ -448,14 +465,14 @@ def record_sr(args):
 	if not args['valide']:
 		return
 
-	#Let's check if the number of values sent by the phone user is the expected one
-	check_number_of_incoming_prod_variables(args)
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
 
-	#Let's check if the person who send this message is a reporter
-	check_if_is_reporter(args)
+	#Let's check if the number of values sent by the phone user is the expected one
+	check_number_of_incoming_prod_variables(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
@@ -476,7 +493,9 @@ def record_sr(args):
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_RECU')
 
 	priority = 1
-	
+
+	message_to_send = "Le message enregistre est ("
+
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
@@ -484,11 +503,17 @@ def record_sr(args):
 		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
+
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 		
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
 
 		priority = priority + 1
-
+	
+	args['info_to_contact'] = message_to_send+")."
 #------------------------------------------------------------------
 
 
@@ -514,14 +539,14 @@ def record_sf(args):
 	if not args['valide']:
 		return
 
-	#Let's check if the number of values sent by the phone user is the expected one
-	check_number_of_incoming_prod_variables(args)
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
 
-	#Let's check if the person who send this message is a reporter
-	check_if_is_reporter(args)
+	#Let's check if the number of values sent by the phone user is the expected one
+	check_number_of_incoming_prod_variables(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
@@ -542,6 +567,8 @@ def record_sf(args):
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
 
 	priority = 1
+
+	message_to_send = "Le message enregistre est ("
 	
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
@@ -550,11 +577,17 @@ def record_sf(args):
 		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
+
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 		
 		report_prod = ReportProductRemainStock.objects.create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'], remain_quantity = value, report = the_created_report)
 
 		priority = priority + 1
 
+	args['info_to_contact'] = message_to_send+")."
 #-------------------------------------------------------------------
 
 
@@ -649,14 +682,14 @@ def record_beneficiaries(args):
 	if not args['valide']:
 		return
 
-	#Let's check if the phone user sent expected number of values
-	check_number_of_incoming_variables(args)
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
 
-	#Let's check if the person who send this message is a reporter
-	check_if_is_reporter(args)
+	#Let's check if the phone user sent expected number of values
+	check_number_of_incoming_variables(args)
 	print(args['valide'])
 	if not args['valide']:
 		return
@@ -677,6 +710,8 @@ def record_beneficiaries(args):
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'BENEFICIAIRE')
 
 	priority = 1
+
+	message_to_send = "Le message enregistre est ("
 	
 	while (priority <= args['number_of_concerned_beneficiaries']):
 		#We record each beneficiary number
@@ -685,10 +720,17 @@ def record_beneficiaries(args):
 		ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_ben_campaign = ben_camp[0]
+
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_ben_campaign.beneficiary.designation+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_ben_campaign.beneficiary.designation+" : "+value
 		
 		report_ben = ReportBeneficiary.objects.create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], received_number = value, report = the_created_report)
 
 		priority = priority + 1
+
+	args['info_to_contact'] = message_to_send+")."
 		
 #--------------------------------------------------------------------
 
@@ -774,10 +816,6 @@ def alert_for_stock_out(args):
 		
 def record_stock_out(args):
 	''' This function is used to record a stock out report '''
-	#Let's check if the message sent is composed by an expected number of values
-	check_number_of_values(args)
-	if not args['valide']:
-		return
 
 	#Let's identify the opened campaign
 	identify_the_opened_campaign(args)
@@ -794,6 +832,11 @@ def record_stock_out(args):
 	#Let's check if the person who send this message is a reporter
 	check_if_is_reporter(args)
 	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the message sent is composed by an expected number of values
+	check_number_of_values(args)
 	if not args['valide']:
 		return
 
@@ -821,7 +864,7 @@ def record_stock_out(args):
 		prod_camp = prod_camp[0]
 		stock_out_report_object = ReportStockOut.objects.create(campaign_product = prod_camp, remaining_stock = value, report = the_created_report)
 
-		args['info_to_contact'] = "Votre rapport est bien recu."
+		#args['info_to_contact'] = "Votre rapport est bien recu."
 		
 		args['cds_name'] = args['cds'].name
 		args['product_name'] = stock_out_report_object.campaign_product.product.name
@@ -836,9 +879,80 @@ def record_stock_out(args):
 		print("remaining_stock")
 		print(args['remaining_stock'])
 
+		args['info_to_contact'] = "Le rapport de rupture de stock de '"+args['product_name']+"', lieu '"+args['cds_name']+"' est bien enregistre."
 
 		#Let's make an alert to the concerned persons
 		alert_for_stock_out(args)
 
 
 	
+#------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+#===========================================Population Cible===========================================
+def check_beneficiaries_value(args):
+	expression = r'^[0-9]+$'
+	value = args['text'].split(' ')[1]
+	if re.search(expression, value) is None:
+		args['valide'] = False
+		args['info_to_contact'] = "Erreur. La valeur envoyee pour la population cible n est pas valide."
+	else:
+		args['valide'] = True
+		args['info_to_contact'] = "Le nombre envoye pour la population cible est valide."
+	
+def record_population_cible(args):
+	''' This function is used to record 'Population cible' '''
+	
+	#Let's identify the opened campaign
+	identify_the_opened_campaign(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's identify the number of products for this campaign
+	identify_number_of_concerned_products(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the person who send this message is a reporter
+	check_if_is_reporter(args)
+	print(args['valide'])
+	if not args['valide']:
+		return
+
+	#Let's check if the message sent is composed by an expected number of values
+	check_number_of_values(args)
+	if not args['valide']:
+		return
+
+	#Let's check if the number of target beneficiaries is valid
+	check_beneficiaries_value(args)
+	if not args['valide']:
+		return
+
+
+	#Let's record the target population
+	the_cds = args['cds']
+	the_campaign = args['opened_campaign']
+	value = args['text'].split(' ')[1]
+
+	the_eventuals_existing_camp_cds = CampaignCDS.objects.filter(campaign = the_campaign, cds = the_cds)
+	
+	if len(the_eventuals_existing_camp_cds) > 0:
+		#There is one or more such CampaignCDS object(s). We update an existing one.
+		one_existing_camp_cds = the_eventuals_existing_camp_cds[0]
+		one_existing_camp_cds.population_cible = value
+		one_existing_camp_cds.save()
+	else:
+		#It have not been given before. We create it.
+		the_new_camp_cds = CampaignCDS.objects.create(campaign = the_campaign, cds = the_cds, population_cible = value)
+
+	args['valide'] = True
+	args['info_to_contact'] = "Le message envoye est bien enregistre."
+
