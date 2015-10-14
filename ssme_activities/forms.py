@@ -4,6 +4,8 @@ from ssme_activities.models import *
 from betterforms.multiform import MultiModelForm
 from collections import OrderedDict
 from django.forms.models import inlineformset_factory
+from django.utils.translation import ugettext as _
+
 
 class UserCreationForm(UserCreationForm):
     """
@@ -104,4 +106,16 @@ class CampaignForm2(forms.ModelForm):
 class CampaignForm3(forms.ModelForm):
     class Meta:
         model = CampaignBeneficiary
+        fields = '__all__'
+
+class ProductForm(forms.ModelForm):
+    DOSAGE_CHOICES = (
+        ('Dose', _('Dose')),
+        ('Comprime', _('Pill')),
+        ('Injection', _('Injection')),
+    )
+    unite_de_mesure = forms.ChoiceField(required=False, choices=DOSAGE_CHOICES)
+
+    class Meta:
+        model = Product
         fields = '__all__'

@@ -148,7 +148,7 @@ class ProductCRUDL(SmartCRUDL):
         default_order = 'name'
 
     class Create(SmartCreateView):
-        pass
+        form_class = ProductForm
 
 # CampaignBeneficiary
 class CampaignBeneficiaryCRUDL(SmartCRUDL):
