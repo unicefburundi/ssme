@@ -90,11 +90,12 @@
               </a>
               <ul class="dropdown-menu">
               {% if user.is_superuser %}
-                <li><a href="{% url 'profile_user' %}">Users</a></li>
-                <li><a href="{% url 'moh_facility' %}">Facilities</a></li>
-                <li><a href="{% url 'ssme_activities.campaign_create' %}">Create Campaigns</a></li>
-                <li><a href="{% url 'ssme_activities.product_list' %}">Products</a></li>
-                <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Beneficiaries</a></li>
+                <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profile User</a></li>
+                <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campaign</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Campaign Beneficiary</a></li>
+                <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Campaign Beneficiary Product</a></li>
+                <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campaign Product</a></li>
                 {% endif %}
               </ul>
           </li>

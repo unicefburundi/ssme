@@ -18,7 +18,7 @@ class ProfileUser(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
     telephone = models.CharField(validators=[phone_regex], blank=True, help_text=_('The telephone to contact you.'), max_length=16)
     level= models.CharField(max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
-    moh_facility = models.IntegerField(null=True, blank=True, help_text=_('Code of the MoH facility'))
+    moh_facility = models.CharField(max_length=8, null=True, blank=True, help_text=_('Code of the MoH facility'))
 
     def __unicode__(self):
         return self.user.name
