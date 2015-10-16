@@ -31,6 +31,16 @@ def campaigns(request):
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
+def get_report_by_code(code, model):
+    queryset = model.objects.all()
+    if len(code)<=2 :
+        queryset = queryset.filter(report__cds__district__province__code=int(code))
+    if len(code)>2 and len(code)<=4 :
+        queryset = queryset.filter(report__cds__district__code=int(code))
+    if len(code)>4 :
+        queryset = queryset.filter(report__cds__code=code)
+    return queryset
+
 #Province
 class ProvinceCreateView(CreateView):
     model = Province
@@ -241,12 +251,12 @@ class CampaignWizard(SessionWizardView):
 
 # Reports
 def get_reports(request):
-    # import ipdb; ipdb.set_trace()
-    report_benef = ReportBeneficiaryTable(ReportBeneficiary.objects.all())
+    mycode = myfacility(request)
+    report_benef = ReportBeneficiaryTable(get_report_by_code(mycode['mycode'], ReportBeneficiary))
     RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(ReportProductRemainStock.objects.all())
+    report_remain = ReportProductRemainStockTable(get_report_by_code(mycode['mycode'],ReportProductRemainStock))
     RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(ReportProductReception.objects.all())
+    report_reception = ReportProductReceptionTable(get_report_by_code(mycode['mycode'],ReportProductReception))
     RequestConfig(request).configure(report_reception)
 
     return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
