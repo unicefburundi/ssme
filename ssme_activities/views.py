@@ -206,7 +206,7 @@ class ReportCRUDL(SmartCRUDL):
 
 # ProfileUser
 class ProfileUserCRUDL(SmartCRUDL):
-    actions = ('update', 'list', 'read')
+    actions = ('update', 'list', 'read', 'delete')
     model = ProfileUser
 
     class List(SmartListView):
