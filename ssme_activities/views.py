@@ -12,7 +12,8 @@ from django_tables2   import RequestConfig
 from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import F
-from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
 
 def dashboard(request):
     return render(request, 'base_layout.html')
@@ -33,15 +34,16 @@ def campaigns(request):
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
-def get_benef_by_code(code, model):
+def get_report_by_code(request, code, model):
     queryset = model.objects.all()
+    if not code and request.user.groups.filter(name='Central') :
+        return queryset
     if len(code)<=2 :
-        queryset = queryset.filter(report__cds__district__province__code=int(code))
+        return queryset.filter(report__cds__district__province__code=int(code))
     if len(code)>2 and len(code)<=4 :
-        queryset = queryset.filter(report__cds__district__code=int(code))
+        return queryset.filter(report__cds__district__code=int(code))
     if len(code)>4 :
-        queryset = queryset.filter(report__cds__code=code)
-    return queryset
+        return queryset.filter(report__cds__code=code)
 
 #Province
 class ProvinceCreateView(CreateView):
@@ -213,7 +215,7 @@ class ReportCRUDL(SmartCRUDL):
 
 # ProfileUser
 class ProfileUserCRUDL(SmartCRUDL):
-    actions = ('update', 'list', 'read')
+    actions = ('update', 'list', 'read', 'delete')
     model = ProfileUser
 
     class List(SmartListView):
@@ -261,35 +263,42 @@ class CampaignWizard(SessionWizardView):
 
         return HttpResponseRedirect(campaign.get_absolute_url())
 
-# Reports
+@login_required
 def get_reports(request):
-    report_benef = ReportBeneficiaryTable(ReportBeneficiary.objects.all())
+    mycode = myfacility(request)
+    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
     RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(ReportProductRemainStock.objects.all())
+    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
     RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(ReportProductReception.objects.all())
+    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
     RequestConfig(request).configure(report_reception)
 
     return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
 
+@login_required
 def get_reports2(request):
-    th_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     mycode = myfacility(request)
-    queryset_benef = get_report_by_code(mycode['mycode'], ReportBeneficiary)
+    headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    mycode = myfacility(request)
+    queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
-    benef_list = []
+    body = []
     for i in dates_benef:
         # import ipdb; ipdb.set_trace()
-        res, ress = [i['reception_date']], {}
-        for t in th_benef:
+        res, ress = i, {}
+        for t in headers:
             # import ipdb; ipdb.set_trace()
             ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
             if not ress:
-                res.append(0)
+                res.update({t['beneficiaires']:0})
             else:
                 # import ipdb; ipdb.set_trace()
-                res.append( ress[0]['received_number'])
-        benef_list.append(res)
+                res.update({t['beneficiaires']:ress[0]['received_number']})
+        body.append(res)
+    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
+    RequestConfig(request).configure(report_remain)
+    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
+    RequestConfig(request).configure(report_reception)
 
-    return  render(request, "ssme_activities/reports.html", {'benef_list':benef_list })
+    return  render(request, "ssme_activities/reports.html", {'body':body, 'headers': headers, 'report_remain': report_remain, 'report_reception' : report_reception })
 
