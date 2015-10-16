@@ -37,6 +37,9 @@ def beneficiaries(request):
 
 def get_report_by_code(request, code, model):
     queryset = model.objects.all()
+    import ipdb; ipdb.set_trace()
+    if not queryset :
+        return queryset
     if not code and request.user.groups.filter(name='Central') :
         return queryset
     if len(code)<=2 :
@@ -101,15 +104,19 @@ class UserSignupView(CreateView):
         profile.save()
         # import ipdb; ipdb.set_trace()
         if form['user'].cleaned_data['password1'] == '' or form['user'].cleaned_data['password2'] == '':
-            reset_form = PasswordResetForm({'email': user.email})
-            assert reset_form.is_valid()
-            reset_form.save(
-                request=self.request,
-                use_https=self.request.is_secure(),
-                subject_template_name='registration/account_creation_subject.txt',
-                email_template_name='registration/account_creation_email.html',
-            )
-        messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
+            try:
+                reset_form = PasswordResetForm({'email': user.email})
+                assert reset_form.is_valid()
+                reset_form.save(
+                    request=self.request,
+                    use_https=self.request.is_secure(),
+                    subject_template_name='registration/account_creation_subject.txt',
+                    email_template_name='registration/account_creation_email.html',
+                )
+                messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
+            except:
+                messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
+                pass
         return redirect(self.get_success_url(user))
 
 class ProfileUserListView(ListView):

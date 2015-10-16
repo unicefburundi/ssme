@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load staticfiles  extras_utils %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -127,9 +127,11 @@
               </ul>
           </li>
           {% endif %}
-          <li>
+          {% if user|has_group:"Central" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" %}
+            <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
           </li>
+          {% endif %}
         {% endif %}
       </ul>
 
