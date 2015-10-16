@@ -10,7 +10,9 @@ from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import myfacility
 from django_tables2   import RequestConfig
 from ssme_activities.tables import *
-
+from django.contrib.auth.forms import PasswordResetForm
+from django.db.models import F
+from django.http import JsonResponse
 
 def dashboard(request):
     return render(request, 'base_layout.html')
@@ -30,6 +32,16 @@ def campaigns(request):
 
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
+
+def get_benef_by_code(code, model):
+    queryset = model.objects.all()
+    if len(code)<=2 :
+        queryset = queryset.filter(report__cds__district__province__code=int(code))
+    if len(code)>2 and len(code)<=4 :
+        queryset = queryset.filter(report__cds__district__code=int(code))
+    if len(code)>4 :
+        queryset = queryset.filter(report__cds__code=code)
+    return queryset
 
 #Province
 class ProvinceCreateView(CreateView):
@@ -84,6 +96,16 @@ class UserSignupView(CreateView):
         user.groups.add(group[0])
         profile.user = user
         profile.save()
+        # import ipdb; ipdb.set_trace()
+        if form['user'].cleaned_data['password1'] == '' or form['user'].cleaned_data['password2'] == '':
+            reset_form = PasswordResetForm({'email': user.email})
+            assert reset_form.is_valid()
+            reset_form.save(
+                request=self.request,
+                use_https=self.request.is_secure(),
+                subject_template_name='registration/account_creation_subject.txt',
+                email_template_name='registration/account_creation_email.html',
+            )
         return redirect(self.get_success_url(user))
 
 class ProfileUserListView(ListView):
@@ -241,7 +263,6 @@ class CampaignWizard(SessionWizardView):
 
 # Reports
 def get_reports(request):
-    # import ipdb; ipdb.set_trace()
     report_benef = ReportBeneficiaryTable(ReportBeneficiary.objects.all())
     RequestConfig(request).configure(report_benef)
     report_remain = ReportProductRemainStockTable(ReportProductRemainStock.objects.all())
@@ -250,3 +271,25 @@ def get_reports(request):
     RequestConfig(request).configure(report_reception)
 
     return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
+
+def get_reports2(request):
+    th_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    mycode = myfacility(request)
+    queryset_benef = get_report_by_code(mycode['mycode'], ReportBeneficiary)
+    dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
+    benef_list = []
+    for i in dates_benef:
+        # import ipdb; ipdb.set_trace()
+        res, ress = [i['reception_date']], {}
+        for t in th_benef:
+            # import ipdb; ipdb.set_trace()
+            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+            if not ress:
+                res.append(0)
+            else:
+                # import ipdb; ipdb.set_trace()
+                res.append( ress[0]['received_number'])
+        benef_list.append(res)
+
+    return  render(request, "ssme_activities/reports.html", {'benef_list':benef_list })
+

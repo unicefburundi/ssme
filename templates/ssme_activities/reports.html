@@ -1,6 +1,6 @@
 {% extends "base_layout.html" %}
 {% load render_table from django_tables2 %}
-
+{% load extras_utils2  %}
 {% block page_title %}
 <ul class="nav nav-tabs">
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
@@ -17,7 +17,28 @@
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                 {% block beneficiary %}
                     <div class="col-md-11">
-                      {% render_table report_benef %}
+                      <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-export-types=['csv','excel']>
+                        <thead>
+                          <tr>
+                            <th> Date</th>
+                            <th> 6-11 mois </th>
+                            <th> 12-23 mois </th>
+                            <th> 24-59 mois </th>
+                            <th> 5-14 ans </th>
+                            <th> Femmes anceintes</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in benef_list  %}
+                            <tr>
+                            {% for t in i  %}
+                              <td>{{t}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock beneficiary %}
@@ -26,7 +47,7 @@
                 <h4><i class="glyphicon glyphicon-cog"></i></h4>
                 {% block reception %}
                     <div class="col-md-11">
-                      {% render_table report_reception %}
+
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock reception %}
@@ -35,7 +56,7 @@
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block final %}
                     <div class="col-md-11">
-                      {% render_table report_remain %}
+
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}
