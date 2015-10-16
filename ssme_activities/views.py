@@ -31,14 +31,19 @@ def campaigns(request):
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
-def get_report_by_code(code, model):
+def get_report_by_code(request, code, model):
     queryset = model.objects.all()
+    if code == None :
+        if request.user.is_superuser :
+            return queryset
+        else:
+            return []
     if len(code)<=2 :
-        queryset = queryset.filter(report__cds__district__province__code=int(code))
+        return queryset.filter(report__cds__district__province__code=int(code))
     if len(code)>2 and len(code)<=4 :
-        queryset = queryset.filter(report__cds__district__code=int(code))
+        return queryset.filter(report__cds__district__code=int(code))
     if len(code)>4 :
-        queryset = queryset.filter(report__cds__code=code)
+        return queryset.filter(report__cds__code=code)
     return queryset
 
 #Province
@@ -252,11 +257,11 @@ class CampaignWizard(SessionWizardView):
 # Reports
 def get_reports(request):
     mycode = myfacility(request)
-    report_benef = ReportBeneficiaryTable(get_report_by_code(mycode['mycode'], ReportBeneficiary))
+    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
     RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(get_report_by_code(mycode['mycode'],ReportProductRemainStock))
+    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
     RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(get_report_by_code(mycode['mycode'],ReportProductReception))
+    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
     RequestConfig(request).configure(report_reception)
 
     return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
