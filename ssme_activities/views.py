@@ -13,6 +13,7 @@ from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def dashboard(request):
@@ -108,6 +109,7 @@ class UserSignupView(CreateView):
                 subject_template_name='registration/account_creation_subject.txt',
                 email_template_name='registration/account_creation_email.html',
             )
+        messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
         return redirect(self.get_success_url(user))
 
 class ProfileUserListView(ListView):

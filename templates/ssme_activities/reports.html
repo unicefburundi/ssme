@@ -46,7 +46,7 @@
                 <h4><i class="glyphicon glyphicon-cog"></i></h4>
                 {% block reception %}
                     <div class="col-md-11">
-
+                      {% render_table report_reception %}
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock reception %}
@@ -55,7 +55,7 @@
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block final %}
                     <div class="col-md-11">
-
+                      {% render_table report_remain %}
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}
