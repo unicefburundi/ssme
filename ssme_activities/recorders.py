@@ -346,7 +346,7 @@ def complete_registration(args):
 			if len(check_duplication1) > 0:
 				#This reporter is doing registration twice
 				args['valide'] = False
-				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Merci."
+				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Vous etes deja enregistre. Merci."
 				the_one_existing_temp.delete()
 				return
 
@@ -359,7 +359,7 @@ def complete_registration(args):
 		else:
 			the_one_existing_temp.delete()
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye le numero de telephone du superviseur de differentes manieres."
+			args['info_to_contact'] = "Vous avez envoye le numero de telephone du superviseur de differentes manieres. Veuillez reenvoyer le message commencant par rg. Merci"
 
 
 
