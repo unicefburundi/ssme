@@ -21,16 +21,16 @@
                         <thead>
                           <tr>
                             <th>Date</th>
-                            {% for header in headers %}
+                            {% for header in headers_benef %}
                               <th>{{header.beneficiaires}}</th>
                             {% endfor %}
                           </tr>
                         </thead>
                         <tbody>
-                          {% for i in body  %}
+                          {% for i in body_benef  %}
                             <tr>
                             <td>{{i.reception_date}}</td>
-                            {% for t in headers  %}
+                            {% for t in headers_benef  %}
                               <td>{{i|getit:t.beneficiaires}}</td>
                             {% endfor %}
                           </tr>
@@ -46,7 +46,26 @@
                 <h4><i class="glyphicon glyphicon-cog"></i></h4>
                 {% block reception %}
                     <div class="col-md-11">
-                      {% render_table report_reception %}
+                      <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-export-types=['csv','excel']>
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            {% for header in headers_recept %}
+                              <th>{{header.products}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body_reception  %}
+                            <tr>
+                            <td>{{i.reception_date}}</td>
+                            {% for t in headers_recept  %}
+                              <td>{{i|getit:t.products}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock reception %}
@@ -55,7 +74,6 @@
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block final %}
                     <div class="col-md-11">
-                      {% render_table report_remain %}
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}
