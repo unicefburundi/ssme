@@ -90,7 +90,7 @@ class UserSignupView(CreateView):
     template_name = 'registration/create_profile.html'
 
     def get_success_url(self, user):
-        return reverse( 'profile_user_detail', kwargs = {'pk': user.id},)
+        return reverse( 'profile_user_detail', kwargs = {'pk': user},)
 
     def form_valid(self, form):
         # Save the user first, because the profile needs a user before it
