@@ -37,10 +37,9 @@ def beneficiaries(request):
 
 def get_report_by_code(request, code, model):
     queryset = model.objects.all()
-    if code == None :
-        if request.user.is_superuser :
-            return queryset
-    if not code and request.user.groups.filter(name='Central') :
+    if not queryset :
+        return queryset
+    if not code and request.user.groups.filter(name='CEN') :
         return queryset
     if len(code)<=2 :
         return queryset.filter(report__cds__district__province__code=int(code))
@@ -91,7 +90,7 @@ class UserSignupView(CreateView):
     template_name = 'registration/create_profile.html'
 
     def get_success_url(self, user):
-        return reverse( 'profile_user_detail', kwargs = {'pk': user.id},)
+        return reverse( 'profile_user_detail', kwargs = {'pk': user})
 
     def form_valid(self, form):
         # Save the user first, because the profile needs a user before it

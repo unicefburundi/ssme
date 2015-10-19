@@ -100,10 +100,12 @@
                 {% endif %}
               </ul>
           </li>
-          <li>
+        {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
+            <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
           </li>
-	<ul class="nav navbar-nav navbar-right">
+          {% endif %}	<ul class="nav navbar-nav navbar-right">
+
 	  {% block login %}
           {% if request.user and request.user.is_authenticated %}
           <li>
