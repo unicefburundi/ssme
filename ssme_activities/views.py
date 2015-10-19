@@ -117,7 +117,7 @@ class UserSignupView(CreateView):
             except:
                 messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
                 pass
-        return redirect(self.get_success_url(user))
+        return redirect(self.get_success_url(profile.id))
 
 class ProfileUserListView(ListView):
     model = ProfileUser
