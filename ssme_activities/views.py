@@ -254,24 +254,37 @@ class CampaignWizard(SessionWizardView):
 @login_required
 def get_reports(request):
     mycode = myfacility(request)
-    headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     mycode = myfacility(request)
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = queryset_benef.values('reception_date').distinct()
-    body = []
+    body_benef = []
     for i in dates_benef:
         res, ress = i, {}
-        for t in headers:
+        for t in headers_benef:
             ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
             if not ress:
                 res.update({t['beneficiaires']:0})
             else:
                 res.update({t['beneficiaires']:ress[0]['received_number']})
-        body.append(res)
-    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
-    RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
-    RequestConfig(request).configure(report_reception)
+        body_benef.append(res)
+    #reception
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+    queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
+    dates_reception = queryset_reception.values('reception_date').distinct()
+    body_reception = []
+    for i in dates_reception:
+        res, ress = i, {}
+        for t in headers_recept:
+            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity')
+            if not ress:
+                res.update({t['products']:0})
+            else:
+                res.update({t['products']:ress[0]['received_quantity']})
+        body_reception.append(res)
 
-    return  render(request, "ssme_activities/reports.html", {'body':body, 'headers': headers, 'report_remain': report_remain, 'report_reception' : report_reception })
+    # report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
+    # RequestConfig(request).configure(report_reception)
+
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception })
 
