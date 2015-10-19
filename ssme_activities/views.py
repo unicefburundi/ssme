@@ -10,6 +10,10 @@ from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import myfacility
 from django_tables2   import RequestConfig
 from ssme_activities.tables import *
+from django.contrib.auth.forms import PasswordResetForm
+from django.db.models import F
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def dashboard(request):
@@ -30,6 +34,20 @@ def campaigns(request):
 
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
+
+def get_report_by_code(request, code, model):
+    queryset = model.objects.all()
+    import ipdb; ipdb.set_trace()
+    if not queryset :
+        return queryset
+    if not code and request.user.groups.filter(name='Central') :
+        return queryset
+    if len(code)<=2 :
+        return queryset.filter(report__cds__district__province__code=int(code))
+    if len(code)>2 and len(code)<=4 :
+        return queryset.filter(report__cds__district__code=int(code))
+    if len(code)>4 :
+        return queryset.filter(report__cds__code=code)
 
 #Province
 class ProvinceCreateView(CreateView):
@@ -84,6 +102,21 @@ class UserSignupView(CreateView):
         user.groups.add(group[0])
         profile.user = user
         profile.save()
+        # import ipdb; ipdb.set_trace()
+        if form['user'].cleaned_data['password1'] == '' or form['user'].cleaned_data['password2'] == '':
+            try:
+                reset_form = PasswordResetForm({'email': user.email})
+                assert reset_form.is_valid()
+                reset_form.save(
+                    request=self.request,
+                    use_https=self.request.is_secure(),
+                    subject_template_name='registration/account_creation_subject.txt',
+                    email_template_name='registration/account_creation_email.html',
+                )
+                messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
+            except:
+                messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
+                pass
         return redirect(self.get_success_url(user))
 
 class ProfileUserListView(ListView):
@@ -191,7 +224,7 @@ class ReportCRUDL(SmartCRUDL):
 
 # ProfileUser
 class ProfileUserCRUDL(SmartCRUDL):
-    actions = ('update', 'list', 'read')
+    actions = ('update', 'list', 'read', 'delete')
     model = ProfileUser
 
     class List(SmartListView):
@@ -239,14 +272,42 @@ class CampaignWizard(SessionWizardView):
 
         return HttpResponseRedirect(campaign.get_absolute_url())
 
-# Reports
+@login_required
 def get_reports(request):
-    # import ipdb; ipdb.set_trace()
-    report_benef = ReportBeneficiaryTable(ReportBeneficiary.objects.all())
+    mycode = myfacility(request)
+    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
     RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(ReportProductRemainStock.objects.all())
+    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
     RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(ReportProductReception.objects.all())
+    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
     RequestConfig(request).configure(report_reception)
 
     return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
+
+@login_required
+def get_reports2(request):
+    mycode = myfacility(request)
+    headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    mycode = myfacility(request)
+    queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
+    dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
+    body = []
+    for i in dates_benef:
+        # import ipdb; ipdb.set_trace()
+        res, ress = i, {}
+        for t in headers:
+            # import ipdb; ipdb.set_trace()
+            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+            if not ress:
+                res.update({t['beneficiaires']:0})
+            else:
+                # import ipdb; ipdb.set_trace()
+                res.update({t['beneficiaires']:ress[0]['received_number']})
+        body.append(res)
+    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
+    RequestConfig(request).configure(report_remain)
+    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
+    RequestConfig(request).configure(report_reception)
+
+    return  render(request, "ssme_activities/reports.html", {'body':body, 'headers': headers, 'report_remain': report_remain, 'report_reception' : report_reception })
+

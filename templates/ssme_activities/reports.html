@@ -1,6 +1,6 @@
 {% extends "base_layout.html" %}
 {% load render_table from django_tables2 %}
-
+{% load extras_utils2  %}
 {% block page_title %}
 <ul class="nav nav-tabs">
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
@@ -17,7 +17,27 @@
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                 {% block beneficiary %}
                     <div class="col-md-11">
-                      {% render_table report_benef %}
+                      <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-export-types=['csv','excel']>
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            {% for header in headers %}
+                              <th>{{header.beneficiaires}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body  %}
+                            <tr>
+                            <td>{{i.reception_date}}</td>
+                            {% for t in headers  %}
+                              <td>{{i|getit:t.beneficiaires}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock beneficiary %}

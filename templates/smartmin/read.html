@@ -7,13 +7,15 @@
 
 <div id="pjax" id="read-view">
   <div class="row">
-    <div class="col-md-12 buttons">
+    {% if user.is_superuser %}
+      <div class="col-md-12 buttons">
       {% block read-buttons %}
       {% if view.edit_button %}
-      <a class="btn btn-primary pull-right" href="../../update/{{ object.id }}/">{% trans "edit" %}</a>
+      <a class="btn btn-primary pull-right" href="../../update/{{ object.id }}/">{% trans "Edit" %}</a>
       {% endif %}
       {% endblock %}
     </div>
+    {% endif %}
   </div>
 
   <div class="row">

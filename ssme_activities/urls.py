@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^create_campaign/$', CampaignWizard.as_view(FORMS), name="ssme_activities.campaign_create"),
 
     # Reports
-    url(r'^reports/$', get_reports, name="reports"),
+    url(r'^reports/$', get_reports2, name="reports"),
 
 )
 
