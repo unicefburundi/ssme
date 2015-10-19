@@ -13,30 +13,30 @@ def check_number_of_values(args):
 	if(args['message_type']=='SELF_REGISTRATION'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='RUPTURE_STOCK'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='POPULATION_CIBLE'):
 		if len(args['text'].split(' ')) < 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 2:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
@@ -136,10 +136,10 @@ def check_number_of_incoming_prod_variables(args):
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
@@ -346,7 +346,7 @@ def complete_registration(args):
 			if len(check_duplication1) > 0:
 				#This reporter is doing registration twice
 				args['valide'] = False
-				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Merci."
+				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Vous etes deja enregistre. Merci."
 				the_one_existing_temp.delete()
 				return
 
@@ -359,7 +359,7 @@ def complete_registration(args):
 		else:
 			the_one_existing_temp.delete()
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye le numero de telephone du superviseur de differentes manieres."
+			args['info_to_contact'] = "Vous avez envoye le numero de telephone du superviseur de differentes manieres. Veuillez reenvoyer le message commencant par rg. Merci"
 
 
 
@@ -643,10 +643,10 @@ def check_number_of_incoming_variables(args):
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs."
+		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs."
+		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
@@ -772,7 +772,7 @@ def check_stock_out_values_validity(args):
 
 	if len(campaign_product) < 1:
 		args['valide'] = False
-		args['info_to_contact'] = "Erreur. Pas de produits de priorite "+str(priority)+"."
+		args['info_to_contact'] = "Erreur. Pas de produits de priorite "+str(priority)+". Veuillez reenvoyer le message corrige."
 	else:
 		one_campaign_product = campaign_product[0]
 

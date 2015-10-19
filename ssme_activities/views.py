@@ -10,6 +10,10 @@ from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import myfacility
 from django_tables2   import RequestConfig
 from ssme_activities.tables import *
+from django.contrib.auth.forms import PasswordResetForm
+from django.db.models import F
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 
 def dashboard(request):
@@ -36,15 +40,14 @@ def get_report_by_code(request, code, model):
     if code == None :
         if request.user.is_superuser :
             return queryset
-        else:
-            return []
+    if not code and request.user.groups.filter(name='Central') :
+        return queryset
     if len(code)<=2 :
         return queryset.filter(report__cds__district__province__code=int(code))
     if len(code)>2 and len(code)<=4 :
         return queryset.filter(report__cds__district__code=int(code))
     if len(code)>4 :
         return queryset.filter(report__cds__code=code)
-    return queryset
 
 #Province
 class ProvinceCreateView(CreateView):
@@ -99,7 +102,21 @@ class UserSignupView(CreateView):
         user.groups.add(group[0])
         profile.user = user
         profile.save()
-        return redirect(self.get_success_url(user))
+        if form['user'].cleaned_data['password1'] == '' or form['user'].cleaned_data['password2'] == '':
+            try:
+                reset_form = PasswordResetForm({'email': user.email})
+                assert reset_form.is_valid()
+                reset_form.save(
+                    request=self.request,
+                    use_https=self.request.is_secure(),
+                    subject_template_name='registration/account_creation_subject.txt',
+                    email_template_name='registration/account_creation_email.html',
+                )
+                messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
+            except:
+                messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
+                pass
+        return redirect(self.get_success_url(profile.id))
 
 class ProfileUserListView(ListView):
     model = ProfileUser
@@ -129,22 +146,14 @@ class CampaignCRUDL(SmartCRUDL):
     permissions = False
 
     class List(SmartListView):
-        # import ipdb; ipdb.set_trace()
         search_fields = ('going_on__icontains', )
         default_order = 'going_on'
 
         def derive_queryset(self, *args, **kwargs):
             queryset = super(CampaignCRUDL.List, self).derive_queryset(*args, **kwargs)
-            # import ipdb; ipdb.set_trace()
             myfacilities =  myfacility(self.request)
             if myfacilities['mycode'] == None :
                 return queryset
-            # elif len(str(myfacilities['mycode'])) >=5 :
-            #     return queryset.filter(cds__code=myfacilities['mycode'])
-            # elif 3 <= len(str(myfacilities['mycode'])) <=4 :
-            #     return queryset.filter(cds__district__code=myfacilities['mycode'])
-            # elif 1 <= len(str(myfacilities['mycode'])) <= 2 :
-            #     return queryset.filter(cds__district__province__code=myfacilities['mycode'])
             else:
                 return Campaign.objects.none()
 
@@ -216,21 +225,15 @@ class ProfileUserCRUDL(SmartCRUDL):
 
 #Campaign
 
-# class CDSCampaignFormSet1(CDSCampaignFormSet):
-#     cds =
-
-
 FORMS = [("campaign", CampaignForm1),
          ("product", ProductsFormSet),
          ("beneficiary", BeneficiaryFormSet),
-         # ("cds", CDSCampaignFormSet)
          ]
 
 
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
-        # import ipdb; ipdb.set_trace()
         products, orders = set(), set()
         for i in form_dict['product'].cleaned_data:
             if (i != {}) and (i['product'] not in products) and (i['order_in_sms'] not in orders):
@@ -245,23 +248,30 @@ class CampaignWizard(SessionWizardView):
                 beneficiaries.add(i['beneficiary'])
                 orders.add(i['order_in_sms'])
 
-        # cdss, orders = set(), set()
-        # for i in form_dict['cds'].cleaned_data:
-        #     if (i != {}) and (i['cds'] not in cdss):
-        #         CampaignBeneficiaryCDS.objects.get_or_create(campaign=campaign, cds= i['cds'], population_attendu=i['population_attendu'], )
-        #         cdss.add(i['beneficiary'])
-        #         orders.add(i['order_in_sms'])
-
         return HttpResponseRedirect(campaign.get_absolute_url())
 
-# Reports
+
+@login_required
 def get_reports(request):
     mycode = myfacility(request)
-    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
-    RequestConfig(request).configure(report_benef)
+    headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    mycode = myfacility(request)
+    queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
+    dates_benef = queryset_benef.values('reception_date').distinct()
+    body = []
+    for i in dates_benef:
+        res, ress = i, {}
+        for t in headers:
+            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+            if not ress:
+                res.update({t['beneficiaires']:0})
+            else:
+                res.update({t['beneficiaires']:ress[0]['received_number']})
+        body.append(res)
     report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
     RequestConfig(request).configure(report_remain)
     report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
     RequestConfig(request).configure(report_reception)
 
-    return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
+    return  render(request, "ssme_activities/reports.html", {'body':body, 'headers': headers, 'report_remain': report_remain, 'report_reception' : report_reception })
+

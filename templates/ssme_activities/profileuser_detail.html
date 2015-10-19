@@ -1,10 +1,20 @@
 {% extends "base_layout.html" %}
 
 {% block content %}
-<h2>{{ object.user.name|  capfirst }} ' s Profile</h2>
+{% if messages %}
+<div class="row">
+    <div class="messages col-md-6">
+    {% for message in messages %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+</div>
+<div class="row">
+    <h2>{{ object.user.name|  capfirst }} ' s Profile</h2>
 <div class="container">
     <div class="row">
-        <div class="col-md-3"></div>
+        <div class="col-md-1"></div>
         <div class="col-md-6">
             <dl  class="dl-horizontal">
             <dt>Name :</dt>
@@ -39,8 +49,9 @@
             {% endif %}
         </dl>
         </div>
-        <div class="col-md-3"></div>
+        <div class="col-md-5"></div>
     </div>
+</div>
 </div>
 {% if object.user.name == user.name %}
 <p><a href="{% url 'profileuser_update' pk=user.id %}">Edit my profile</a></p>

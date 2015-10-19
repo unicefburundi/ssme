@@ -1,3 +1,4 @@
+{% load extras_utils %}
 <!doctype html>
 <head>
   <meta charset="utf-8">
@@ -97,15 +98,11 @@
                 <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Campaign Beneficiary Product</a></li>
                 <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campaign Product</a></li>
                 {% endif %}
-
               </ul>
           </li>
           <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
           </li>
-          {% endif %}
-	</ul>
-
 	<ul class="nav navbar-nav navbar-right">
 	  {% block login %}
           {% if request.user and request.user.is_authenticated %}
