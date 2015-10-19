@@ -249,20 +249,9 @@ class CampaignWizard(SessionWizardView):
 
         return HttpResponseRedirect(campaign.get_absolute_url())
 
+
 @login_required
 def get_reports(request):
-    mycode = myfacility(request)
-    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
-    RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
-    RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
-    RequestConfig(request).configure(report_reception)
-
-    return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
-
-@login_required
-def get_reports2(request):
     mycode = myfacility(request)
     headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     mycode = myfacility(request)
