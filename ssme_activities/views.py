@@ -11,7 +11,7 @@ from ssme.context_processor import myfacility
 from django_tables2   import RequestConfig
 from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
-from django.db.models import F
+from django.db.models import F, Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -275,11 +275,12 @@ def get_reports(request):
     for i in dates_reception:
         res, ress = i, {}
         for t in headers_recept:
-            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity')
+            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+
             if not ress:
                 res.update({t['products']:0})
             else:
-                res.update({t['products']:ress[0]['received_quantity']})
+                res.update({t['products']:ress['total']})
         body_reception.append(res)
 
     # report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))

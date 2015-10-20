@@ -3,6 +3,9 @@
 {% load extras_utils2  %}
 {% block page_title %}
 <ul class="nav nav-tabs">
+<div class="page-header">
+  <h3>Reports at {{mymoh_facility}}</h3>
+</div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
   <li {% block activereception %}{% endblock activereception %} ><a href="#reception"   data-toggle="tab">Reception</a></li>
   <li {% block activefinal %}{% endblock activefinal %} ><a href="#final"   data-toggle="tab">Final</a></li>
