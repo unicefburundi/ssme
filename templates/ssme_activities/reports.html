@@ -1,21 +1,26 @@
 {% extends "base_layout.html" %}
-{% load render_table from django_tables2 %}
 {% load extras_utils2  %}
 {% block page_title %}
 <ul class="nav nav-tabs">
 <div class="page-header">
   <h3>Reports at {{mymoh_facility}}</h3>
 </div>
-  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
-  <li {% block activereception %}{% endblock activereception %} ><a href="#reception"   data-toggle="tab">Reception</a></li>
-  <li {% block activefinal %}{% endblock activefinal %} ><a href="#final"   data-toggle="tab">Final</a></li>
+  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
+    <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+  </li>
+  <li {% block activereception %}{% endblock activereception %} >
+    <a href="#reception"   data-toggle="tab">Reception</a>
+  </li>
+  <li {% block activefinal %}{% endblock activefinal %} >
+    <a href="#final"   data-toggle="tab">Final</a>
+  </li>
+</ul>
 {% endblock page_title  %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <div class="col-md-10">
     <div class="tab-content">
-    <hr>
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                 {% block beneficiary %}

@@ -1,14 +1,15 @@
 {% extends "base_layout.html" %}
 {% load render_table from django_tables2 %}
-
+{% load extras_utils2  %}
 {% block page_title %}
 <h4><i class="glyphicon glyphicon-list-alt"></i> {{ object.name|  capfirst }} District</h4>
 {% endblock page_title %}
 
+
 {% block content %}
 {% if object %}
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-3">
             <dl class="dl-horizontal">
                 <dt>Name of the District : </dt>
                 <p> {{object.name}}</p>
@@ -18,6 +19,107 @@
                 <p> {{object.province}}</p>
             </dl>
         </div>
+        <div class="col-md-8">
+            <ul class="nav nav-tabs">
+              <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
+                <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+              </li>
+              <li {% block activereception %}{% endblock activereception %} >
+                <a href="#reception"   data-toggle="tab">Reception</a>
+              </li>
+              <li {% block activefinal %}{% endblock activefinal %} >
+                <a href="#final"   data-toggle="tab">Final</a>
+              </li>
+            </ul>
+            <div class="tab-content">
+              <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
+                <h4><i class="glyphicon glyphicon-comment"></i></h4>
+                    {% block beneficiary %}
+                        <div class="col-md-11">
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                            <thead>
+                              <tr>
+                                <th>CDS</th>
+                                {% for header in headers_benef %}
+                                  <th>{{header.beneficiaires}}</th>
+                                {% endfor %}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for i in body_benef  %}
+                                <tr>
+                                <td>{{i.cds}}</td>
+                                {% for t in headers_benef  %}
+                                    <td>{{i|getit:t.beneficiaires}}</td>
+                                {% endfor %}
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+
+                          </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    {% endblock beneficiary %}
+                  </div>
+                  <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
+                    <h4><i class="glyphicon glyphicon-cog"></i></h4>
+                    {% block reception %}
+                        <div class="col-md-11">
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                {% for header in headers_recept %}
+                                  <th>{{header.products}}</th>
+                                {% endfor %}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for i in body_reception  %}
+                                <tr>
+                                <td>{{i.reception_date}}</td>
+                                {% for t in headers_recept  %}
+                                  <td>{{i|getit:t.products}}</td>
+                                {% endfor %}
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    {% endblock reception %}
+                  </div>
+                  <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
+                    <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
+                    {% block final %}
+                        <div class="col-md-11">
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                {% for header in headers_recept %}
+                                  <th>{{header.products}}</th>
+                                {% endfor %}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {% for i in body_remain  %}
+                                <tr>
+                                <td>{{i.concerned_date}}</td>
+                                {% for t in headers_recept  %}
+                                  <td>{{i|getit:t.products}}</td>
+                                {% endfor %}
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    {% endblock final %}
+                  </div>
+        </div>
+        </div>
+        <div class="col-md-1"></div>
     </div>
 {% else %}
 No Patient in this District
