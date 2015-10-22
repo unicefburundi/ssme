@@ -77,6 +77,26 @@
                 <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                 {% block final %}
                     <div class="col-md-11">
+                      <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-export-types=['csv','excel']>
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            {% for header in headers_recept %}
+                              <th>{{header.products}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body_remain  %}
+                            <tr>
+                            <td>{{i.concerned_date}}</td>
+                            {% for t in headers_recept  %}
+                              <td>{{i|getit:t.products}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}

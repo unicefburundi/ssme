@@ -104,7 +104,10 @@
             <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
           </li>
-          {% endif %}	<ul class="nav navbar-nav navbar-right">
+          {% endif %}
+          {% endif %}
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
 
 	  {% block login %}
           {% if request.user and request.user.is_authenticated %}
