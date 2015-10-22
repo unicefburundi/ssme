@@ -48,6 +48,47 @@ def get_report_by_code(request, code, model):
     if len(code)>4 :
         return queryset.filter(report__cds__code=code)
 
+def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs):
+    body_benef = []
+    for i in dates_benef:
+        res, ress = i, {}
+        for t in headers_benef:
+            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+            if not ress:
+                res.update({t['beneficiaires']:0})
+            else:
+                res.update({t['beneficiaires']:ress[0]['received_number']})
+        body_benef.append(res)
+    return body_benef
+
+def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs):
+    body_reception = []
+    for i in dates_reception:
+        res, ress = i, {}
+        for t in headers_recept:
+            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+
+            if not ress:
+                res.update({t['products']:0})
+            else:
+                res.update({t['products']:ress['total']})
+        body_reception.append(res)
+    return body_reception
+
+def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
+    body_remain = []
+    for i in dates_remain:
+        res, ress = i, {}
+        for t in headers_recept:
+            ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+
+            if not ress:
+                res.update({t['products']:0})
+            else:
+                res.update({t['products']:ress['total']})
+        body_remain.append(res)
+    return body_remain
+
 #Province
 class ProvinceCreateView(CreateView):
     model = Province
@@ -252,53 +293,25 @@ class CampaignWizard(SessionWizardView):
 
 @login_required
 def get_reports(request):
+    # beneficiaires
     mycode = myfacility(request)
     headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
-    mycode = myfacility(request)
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = queryset_benef.values('reception_date').distinct()
-    body_benef = []
-    for i in dates_benef:
-        res, ress = i, {}
-        for t in headers_benef:
-            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
-            if not ress:
-                res.update({t['beneficiaires']:0})
-            else:
-                res.update({t['beneficiaires']:ress[0]['received_number']})
-        body_benef.append(res)
+    body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
     #reception
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
     dates_reception = queryset_reception.values('reception_date').distinct()
-    body_reception = []
-    for i in dates_reception:
-        res, ress = i, {}
-        for t in headers_recept:
-            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
-
-            if not ress:
-                res.update({t['products']:0})
-            else:
-                res.update({t['products']:ress['total']})
-        body_reception.append(res)
+    body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
 
     # Remain
-
-    #reception
-    queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
-    dates_reception = queryset_reception.values('concerned_date').distinct()
-    body_remain = []
-    for i in dates_reception:
-        res, ress = i, {}
-        for t in headers_recept:
-            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
-
-            if not ress:
-                res.update({t['products']:0})
-            else:
-                res.update({t['products']:ress['total']})
-        body_remain.append(res)
+    queryset_remain = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
+    dates_remain = queryset_remain.values('concerned_date').distinct()
+    body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
 
+@login_required
+def get_reports2(request):
+    pass
