@@ -77,7 +77,7 @@
                             <tbody>
                               {% for i in body_reception  %}
                                 <tr>
-                                <td>{{i.reception_date}}</td>
+                                <td>{{i.cds}}</td>
                                 {% for t in headers_recept  %}
                                   <td>{{i|getit:t.products}}</td>
                                 {% endfor %}

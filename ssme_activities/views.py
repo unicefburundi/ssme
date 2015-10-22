@@ -79,18 +79,32 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         return body_benef
 
 def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs):
-    body_reception = []
-    for i in dates_reception:
-        res, ress = i, {}
-        for t in headers_recept:
-            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+    body_reception = {}
+    if not dates_reception:
+        res, ress, queryset_reception = today, {}, queryset_reception.filter( report__cds=kwargs.get('cds').id)
+        if not queryset_reception :
+            return []
+        else:
+            for t in headers_recept:
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                if not ress['total']:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_reception.update(res)
+        return body_reception
+    else:
+        for i in dates_reception:
+            res, ress = i, {}
+            for t in headers_recept:
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
 
-            if not ress:
-                res.update({t['products']:0})
-            else:
-                res.update({t['products']:ress['total']})
-        body_reception.append(res)
-    return body_reception
+                if not ress:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_reception.append(res)
+        return body_reception
 
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
     body_remain = []
@@ -145,15 +159,21 @@ class DistrictDetailView(DetailView):
                 pass
             else :
                 res.update({'cds':cds})
-                # import ipdb; ipdb.set_trace()
                 body_benef.append(res)
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         #reception
         headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
-        dates_reception = queryset_reception.values('reception_date').distinct()
-        body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
+        dates_reception = []
+        body_reception = []
+        for cds in cdss :
+            res = get_reception(queryset_reception, dates_reception, headers_recept, cds=cds)
+            if  res == []:
+                pass
+            else :
+                res.update({'cds':cds})
+                body_reception.append(res)
         context['body_reception'] = body_reception
         context['headers_recept'] = headers_recept
 
