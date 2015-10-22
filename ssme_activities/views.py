@@ -283,8 +283,22 @@ def get_reports(request):
                 res.update({t['products']:ress['total']})
         body_reception.append(res)
 
-    # report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
-    # RequestConfig(request).configure(report_reception)
+    # Remain
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception })
+    #reception
+    queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
+    dates_reception = queryset_reception.values('concerned_date').distinct()
+    body_remain = []
+    for i in dates_reception:
+        res, ress = i, {}
+        for t in headers_recept:
+            ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+
+            if not ress:
+                res.update({t['products']:0})
+            else:
+                res.update({t['products']:ress['total']})
+        body_remain.append(res)
+
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
 
