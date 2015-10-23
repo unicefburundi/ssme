@@ -67,6 +67,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                 body_benef.update(res)
             return body_benef
     else:
+        body_benef = []
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
@@ -94,6 +95,7 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
             body_reception.update(res)
         return body_reception
     else:
+        body_reception = []
         for i in dates_reception:
             res, ress = i, {}
             for t in headers_recept:
