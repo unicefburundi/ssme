@@ -40,8 +40,6 @@ def get_report_by_code(request, code, model):
     queryset = model.objects.all()
     if not queryset :
         return queryset
-    if not code and request.user.groups.filter(name='CEN') :
-        return queryset
     if len(code)<=2 :
         return queryset.filter(report__cds__district__province__code=int(code))
     if len(code)>2 and len(code)<=4 :
@@ -388,6 +386,11 @@ class CampaignWizard(SessionWizardView):
 def get_reports(request):
     # beneficiaires
     mycode = myfacility(request)
+    if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
+        messages.warning(request, 'You have no valid MoH facility attached to your profile. Please contact the Admin')
+        url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
+        return HttpResponseRedirect(url)
+
     headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = queryset_benef.values('reception_date').distinct()
@@ -404,7 +407,3 @@ def get_reports(request):
     body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
-
-@login_required
-def get_reports2(request):
-    pass
