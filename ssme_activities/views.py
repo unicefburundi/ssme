@@ -109,18 +109,33 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
         return body_reception
 
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
-    body_remain = []
-    for i in dates_remain:
-        res, ress = i, {}
-        for t in headers_recept:
-            ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+    body_remain = {}
+    if not dates_remain:
+        res, ress, queryset_remain = today, {}, queryset_remain.filter( report__cds=kwargs.get('cds').id)
+        if not queryset_remain :
+            return []
+        else:
+            for t in headers_recept:
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date__lte=today['reception_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+                if not ress['total']:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_remain.update(res)
+        return body_remain
+    else:
+        body_remain = []
+        for i in dates_remain:
+            res, ress = i, {}
+            for t in headers_recept:
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
 
-            if not ress:
-                res.update({t['products']:0})
-            else:
-                res.update({t['products']:ress['total']})
-        body_remain.append(res)
-    return body_remain
+                if not ress:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_remain.append(res)
+        return body_remain
 
 #Province
 class ProvinceCreateView(CreateView):
@@ -153,10 +168,10 @@ class DistrictDetailView(DetailView):
         #benef
         headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
-        dates_benef = []
+        dates_today = []
         body_benef = []
         for cds in cdss :
-            res = get_benef(queryset_benef, dates_benef, headers_benef, cds=cds)
+            res = get_benef(queryset_benef, dates_today, headers_benef, cds=cds)
             if  res == []:
                 pass
             else :
@@ -167,10 +182,9 @@ class DistrictDetailView(DetailView):
         #reception
         headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
-        dates_reception = []
         body_reception = []
         for cds in cdss :
-            res = get_reception(queryset_reception, dates_reception, headers_recept, cds=cds)
+            res = get_reception(queryset_reception, dates_today, headers_recept, cds=cds)
             if  res == []:
                 pass
             else :
@@ -181,8 +195,14 @@ class DistrictDetailView(DetailView):
 
         # Remain
         queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
-        dates_remain = queryset_remain.values('concerned_date').distinct()
-        body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+        body_remain = []
+        for cds in cdss :
+            res = get_remain(queryset_remain, dates_today, headers_recept, cds=cds)
+            if  res == []:
+                pass
+            else :
+                res.update({'cds':cds})
+                body_remain.append(res)
         context['body_remain'] = body_remain
         return context
 
