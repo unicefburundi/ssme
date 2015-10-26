@@ -131,6 +131,15 @@
             <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
           </li>
+          <li>
+              {% if user|has_group:"CDS" %}
+                <a href="{% url 'cds_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% elif user|has_group:"BDS" %}
+                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% elif user|has_group:"BPS" %}
+                <a href="{% url 'province_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% endif %}
+          </li>
           {% endif %}
         {% endif %}
       </ul>

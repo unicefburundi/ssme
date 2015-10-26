@@ -1,12 +1,12 @@
 from ssme_activities.models import CDS, District, Province, ProfileUser
 
-def get_name_of_mohfacility(level='',code=''):
+def get_name_mohfacility(level='',code=''):
     if level=='CDS':
-        return CDS.objects.get(code=code).name
+        return CDS.objects.get(code=code)
     if level=='BDS':
-        return District.objects.get(code=code).name
+        return District.objects.get(code=code)
     if level=='BPS':
-        return Province.objects.get(code=code).name
+        return Province.objects.get(code=code)
     if level=='CEN':
         return 'Central'
 
@@ -17,6 +17,6 @@ def myfacility(request):
     except TypeError:
         return {}
     if not created:
-        mymoh_facility = get_name_of_mohfacility(myprofile.level, myprofile.moh_facility)
+        mymoh_facility = get_name_mohfacility(myprofile.level, myprofile.moh_facility)
 
     return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility  }
