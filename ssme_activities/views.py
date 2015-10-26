@@ -52,14 +52,16 @@ def get_report_by_code(request, code, model):
 def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
     body_benef = {}
     if not dates_benef:
-        res, ress, queryset_benef = today, {}, queryset_benef.filter( report__cds=kwargs.get('cds').id)
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_benef = queryset_benef.filter( report__cds=kwargs.get('cds').id)
+        else:
+            queryset_benef = queryset_benef.filter( report__cds__district=kwargs.get('district').id)
         if not queryset_benef :
             return []
         else:
             for t in headers_benef:
                 ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
-
-                # import ipdb; ipdb.set_trace()
                 if not ress['total']:
                     res.update({t['beneficiaires']:0})
                 else:
@@ -82,7 +84,11 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
 def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs):
     body_reception = {}
     if not dates_reception:
-        res, ress, queryset_reception = today, {}, queryset_reception.filter( report__cds=kwargs.get('cds').id)
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_reception = queryset_reception.filter( report__cds=kwargs.get('cds').id)
+        else:
+            queryset_reception = queryset_reception.filter( report__cds__district=kwargs.get('district').id)
         if not queryset_reception :
             return []
         else:
@@ -111,7 +117,11 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
     body_remain = {}
     if not dates_remain:
-        res, ress, queryset_remain = today, {}, queryset_remain.filter( report__cds=kwargs.get('cds').id)
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds').id)
+        else:
+            queryset_remain = queryset_remain.filter( report__cds__district=kwargs.get('district').id)
         if not queryset_remain :
             return []
         else:
@@ -148,6 +158,51 @@ class ProvinceListView(ListView):
 
 class ProvinceDetailView(DetailView):
     model = Province
+
+    def get_context_data(self, **kwargs):
+        context = super(ProvinceDetailView, self).get_context_data(**kwargs)
+        mycode = str(context['object'].code)
+        districts = District.objects.filter(province__code=mycode)
+        #benef
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
+        dates_today = []
+        body_benef = []
+        for district in districts :
+            res = get_benef(queryset_benef, dates_today, headers_benef, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_benef.append(res)
+        context['body_benef'] = body_benef
+        context['headers_benef'] = headers_benef
+        #reception
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
+        body_reception = []
+        for district in districts :
+            res = get_reception(queryset_reception, dates_today, headers_recept, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_reception.append(res)
+        context['body_reception'] = body_reception
+        context['headers_recept'] = headers_recept
+
+        # Remain
+        queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
+        body_remain = []
+        for district in districts :
+            res = get_remain(queryset_remain, dates_today, headers_recept, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_remain.append(res)
+        context['body_remain'] = body_remain
+        return context
 
 # District
 class DistrictCreateView(CreateView):
@@ -217,6 +272,32 @@ class CDSListView(ListView):
 
 class CDSDetailView(DetailView):
     model = CDS
+
+    def get_context_data(self, **kwargs):
+        context = super(CDSDetailView, self).get_context_data(**kwargs)
+        mycode = str(context['object'].code)
+
+        # beneficiaires
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
+        dates_benef = queryset_benef.values('reception_date').distinct()
+        body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
+        #reception
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
+        dates_reception = queryset_reception.values('reception_date').distinct()
+        body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
+
+        # Remain
+        queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
+        dates_remain = queryset_remain.values('concerned_date').distinct()
+        body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+        context['body_benef'] = body_benef
+        context['body_reception'] = body_reception
+        context['body_remain'] = body_remain
+        context['headers_recept'] = headers_recept
+        context['headers_benef'] = headers_benef
+        return context
 
 # ProfileUser
 class UserSignupView(CreateView):
@@ -385,14 +466,15 @@ class CampaignWizard(SessionWizardView):
 
 
 @login_required
-def get_reports(request):
-    # beneficiaires
+def get_reports(request, **kwargs):
     mycode = myfacility(request)
+    if  'cds' in kwargs:
+        mycode['mycode'] = kwargs.get('cds').code
     if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
         messages.warning(request, 'You have no valid MoH facility attached to your profile. Please contact the Admin')
         url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
         return HttpResponseRedirect(url)
-
+    # beneficiaires
     headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = queryset_benef.values('reception_date').distinct()
