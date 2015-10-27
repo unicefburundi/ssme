@@ -483,17 +483,32 @@ def get_reports(request, **kwargs):
     # beneficiaires
     headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
-    dates_benef = queryset_benef.values('reception_date').distinct()
-    body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
+    dates_benef = []
+    body_benef = []
+    if not queryset_benef:
+        pass
+    else:
+        dates_benef = queryset_benef.values('reception_date').distinct()
+        body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
     #reception
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
-    dates_reception = queryset_reception.values('reception_date').distinct()
-    body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
+    dates_reception = []
+    body_reception = []
+    if not queryset_reception:
+        pass
+    else:
+        dates_reception = queryset_reception.values('reception_date').distinct()
+        body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
 
     # Remain
     queryset_remain = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
-    dates_remain = queryset_remain.values('concerned_date').distinct()
-    body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+    dates_remain = []
+    body_remain = []
+    if not queryset_remain:
+        pass
+    else:
+        dates_remain = queryset_remain.values('concerned_date').distinct()
+        body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
