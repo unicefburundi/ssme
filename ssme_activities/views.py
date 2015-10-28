@@ -63,7 +63,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
             return []
         else:
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).distinct().values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
                     res.update({t['beneficiaires']:0})
                 else:
@@ -97,7 +97,7 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
             return []
         else:
             for t in headers_recept:
-                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).distinct().values('received_quantity').aggregate(total=Sum('received_quantity'))
                 if not ress['total']:
                     res.update({t['products']:0})
                 else:
@@ -131,7 +131,7 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
             return []
         else:
             for t in headers_recept:
-                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date__lte=today['reception_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date__lte=today['reception_date'], products=t['products']).distinct().values('remain_quantity').aggregate(total=Sum('remain_quantity'))
                 if not ress['total']:
                     res.update({t['products']:0})
                 else:
