@@ -55,8 +55,10 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         res, ress = today, {}
         if 'cds' in kwargs :
             queryset_benef = queryset_benef.filter( report__cds=kwargs.get('cds').id)
-        else:
+        elif 'district' in kwargs:
             queryset_benef = queryset_benef.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_benef = queryset_benef.filter( report__cds__district__province=kwargs.get('province').id)
         if not queryset_benef :
             return []
         else:
@@ -73,7 +75,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).order_by('-id').values('received_number')
                 if not ress:
                     res.update({t['beneficiaires']:0})
                 else:
@@ -87,8 +89,10 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
         res, ress = today, {}
         if 'cds' in kwargs :
             queryset_reception = queryset_reception.filter( report__cds=kwargs.get('cds').id)
-        else:
+        elif 'district' in kwargs:
             queryset_reception = queryset_reception.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_reception = queryset_reception.filter( report__cds__district__province=kwargs.get('province').id)
         if not queryset_reception :
             return []
         else:
@@ -105,12 +109,11 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
         for i in dates_reception:
             res, ress = i, {}
             for t in headers_recept:
-                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
-
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).order_by('-id').values('received_quantity')
                 if not ress:
                     res.update({t['products']:0})
                 else:
-                    res.update({t['products']:ress['total']})
+                    res.update({t['products']:ress[0]['received_quantity']})
             body_reception.append(res)
         return body_reception
 
@@ -120,8 +123,10 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
         res, ress = today, {}
         if 'cds' in kwargs :
             queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds').id)
-        else:
+        elif 'district' in kwargs:
             queryset_remain = queryset_remain.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_remain = queryset_remain.filter( report__cds__district__province=kwargs.get('province').id)
         if not queryset_remain :
             return []
         else:
@@ -138,12 +143,11 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
         for i in dates_remain:
             res, ress = i, {}
             for t in headers_recept:
-                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
-
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).order_by('-id').values('remain_quantity')
                 if not ress:
                     res.update({t['products']:0})
                 else:
-                    res.update({t['products']:ress['total']})
+                    res.update({t['products']:ress[0]['remain_quantity']})
             body_remain.append(res)
         return body_remain
 
@@ -512,3 +516,7 @@ def get_reports(request, **kwargs):
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
+# Central
+class CentralDetail(ListView):
+    queryset = Province.objects.all()
+    template_name = "registration/edit_profile.html"
