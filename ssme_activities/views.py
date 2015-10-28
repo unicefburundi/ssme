@@ -75,11 +75,11 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).order_by('-id').values('received_number')
-                if not ress:
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                if not ress['total']:
                     res.update({t['beneficiaires']:0})
                 else:
-                    res.update({t['beneficiaires']:ress[0]['received_number']})
+                    res.update({t['beneficiaires']:ress['total']})
             body_benef.append(res)
         return body_benef
 
@@ -109,11 +109,11 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
         for i in dates_reception:
             res, ress = i, {}
             for t in headers_recept:
-                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).order_by('-id').values('received_quantity')
-                if not ress:
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                if not ress['total'] :
                     res.update({t['products']:0})
                 else:
-                    res.update({t['products']:ress[0]['received_quantity']})
+                    res.update({t['products']:ress['total']})
             body_reception.append(res)
         return body_reception
 
@@ -143,11 +143,11 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
         for i in dates_remain:
             res, ress = i, {}
             for t in headers_recept:
-                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).order_by('-id').values('remain_quantity')
-                if not ress:
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+                if not ress['total'] :
                     res.update({t['products']:0})
                 else:
-                    res.update({t['products']:ress[0]['remain_quantity']})
+                    res.update({t['products']:ress['total']})
             body_remain.append(res)
         return body_remain
 
