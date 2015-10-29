@@ -217,7 +217,8 @@ class ReportBeneficiary(models.Model):
         return self.report.text
 
     class Meta:
-        ordering = ('reception_date',)
+        # ordering = ('reception_date',)
+        get_latest_by = 'id'
 
 class ReportProductReception(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
@@ -229,7 +230,7 @@ class ReportProductReception(models.Model):
         return self.report.text
 
     class Meta:
-        ordering = ('reception_date',)
+        get_latest_by = 'id'
 
 class ReportProductRemainStock(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
@@ -241,7 +242,7 @@ class ReportProductRemainStock(models.Model):
         return self.report.text
 
     class Meta:
-        ordering = ('report',)
+        get_latest_by = 'id'
 
 
 class Temporary(models.Model):
