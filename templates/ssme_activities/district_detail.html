@@ -35,12 +35,12 @@
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>
                     {% block beneficiary %}
                         <div class="col-md-11">
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
-                                <th>CDS</th>
+                                <th data-footer-formatter="totalTextFormatter">CDS</th>
                                 {% for header in headers_benef %}
-                                  <th>{{header.beneficiaires}}</th>
+                                  <th data-footer-formatter="sumFormatter">{{header.beneficiaires}}</th>
                                 {% endfor %}
                               </tr>
                             </thead>
@@ -64,12 +64,12 @@
                     <h4><i class="glyphicon glyphicon-cog"></i></h4>
                     {% block reception %}
                         <div class="col-md-11">
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
-                                <th>CDS</th>
+                                <th data-footer-formatter="totalTextFormatter">CDS</th>
                                 {% for header in headers_recept %}
-                                  <th>{{header.products}}</th>
+                                  <th data-footer-formatter="sumFormatter">{{header.products}}</th>
                                 {% endfor %}
                               </tr>
                             </thead>
@@ -92,12 +92,12 @@
                     <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
                     {% block final %}
                         <div class="col-md-11">
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel']>
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
-                                <th>CDS</th>
+                                <th data-footer-formatter="totalTextFormatter">CDS</th>
                                 {% for header in headers_recept %}
-                                  <th>{{header.products}}</th>
+                                  <th data-footer-formatter="sumFormatter">{{header.products}}</th>
                                 {% endfor %}
                               </tr>
                             </thead>

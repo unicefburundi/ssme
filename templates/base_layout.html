@@ -26,6 +26,28 @@
       $(function() {
       $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
       });
+      function runningFormatter(value, row, index) {
+          return index;
+      };
+
+      function totalTextFormatter(data) {
+          return 'Total';
+      };
+
+      function totalFormatter(data) {
+          return data.length;
+      };
+
+      function sumFormatter(data) {
+          field = this.field;
+          return data.reduce(function(sum, row) {
+              return sum + (+row[field]);
+          }, 0);
+      };
+
+      function avgFormatter(data) {
+          return sumFormatter.call(this, data) / data.length;
+      };
     </script>
     {% block css_section %}
         <!-- Bootstrap core CSS -->
