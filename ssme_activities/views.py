@@ -158,7 +158,7 @@ class ProvinceCreateView(CreateView):
 
 class ProvinceListView(ListView):
     model = Province
-    paginate_by = 25
+    paginate_by = 100
 
 class ProvinceDetailView(DetailView):
     model = Province
@@ -215,7 +215,7 @@ class DistrictCreateView(CreateView):
 
 class DistrictListView(ListView):
     model = District
-    paginate_by = 25
+    paginate_by = 100
 
 class DistrictDetailView(DetailView):
     model = District
@@ -272,7 +272,7 @@ class CDSCreateView(CreateView):
 
 class CDSListView(ListView):
     model = CDS
-    paginate_by = 25
+    paginate_by = 1000
 
 class CDSDetailView(DetailView):
     model = CDS
