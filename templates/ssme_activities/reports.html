@@ -24,7 +24,7 @@
 <div class="col-md-10">
     <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
-                <h4><i class="glyphicon glyphicon-comment"></i></h4>
+                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                 {% block beneficiary %}
                     <div class="col-md-11">
                       <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -54,7 +54,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock beneficiary %}
               </div>
               <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
-                <h4><i class="glyphicon glyphicon-cog"></i></h4>
+                <h4><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
                 {% block reception %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -83,7 +83,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock reception %}
               </div>
               <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
-                <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
+                <h4><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
                 {% block final %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"

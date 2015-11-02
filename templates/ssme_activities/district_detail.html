@@ -1,7 +1,7 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
 {% block page_title %}
-<h4><i class="glyphicon glyphicon-list-alt"></i> {{ object.name|  capfirst }} District</h4>
+<h5><i class="glyphicon glyphicon-list-alt"></i> {{ object.name|  capfirst }} District</h5>
 {% endblock page_title %}
 
 
@@ -32,7 +32,7 @@
             </ul>
             <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
-                <h4><i class="glyphicon glyphicon-comment"></i></h4>
+                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block beneficiary %}
                         <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
@@ -61,7 +61,7 @@
                     {% endblock beneficiary %}
                   </div>
                   <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
-                    <h4><i class="glyphicon glyphicon-cog"></i></h4>
+                    <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block reception %}
                         <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
@@ -89,7 +89,7 @@
                     {% endblock reception %}
                   </div>
                   <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
-                    <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
+                    <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block final %}
                         <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
