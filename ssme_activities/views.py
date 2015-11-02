@@ -63,11 +63,13 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                 return []
             else:
                 for t in headers_benef:
-                    ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).distinct().values('received_number').latest()
+                    # import ipdb; ipdb.set_trace()
+                    ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                     if not ress:
                         res.update({t['beneficiaires']:0})
                     else:
-                        res.update({t['beneficiaires']:ress[0]['received_number']})
+                        ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
+                        res.update({t['beneficiaires']:ress['received_number']})
                     body_benef.update(res)
                 return body_benef
         elif 'district' in kwargs:
@@ -78,11 +80,12 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
             return []
         else:
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).distinct().values('received_number').aggregate(total=Sum('received_number'))
-                if not ress['total']:
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                if not ress:
                     res.update({t['beneficiaires']:0})
                 else:
-                    res.update({t['beneficiaires']:ress['total']})
+                    ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
+                    res.update({t['beneficiaires']:ress['received_number']})
                 body_benef.update(res)
             return body_benef
     else:
@@ -174,6 +177,14 @@ class ProvinceCreateView(CreateView):
 class ProvinceListView(ListView):
     model = Province
     paginate_by = 100
+
+    # def  get_context_data(self, **kwargs):
+    #     context = super(ProvinceListView, self).get_context_data(**kwargs)
+    #     mycode = str(context['object'].code)
+    #     if self.request.user.is_superuser and not mycode:
+    #         provinces = Province.objects.all()
+    #     else  :
+    #         return context
 
 class ProvinceDetailView(DetailView):
     model = Province
