@@ -7,8 +7,13 @@ from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 
 class CampaignBeneficiaryProductAdmin(admin.ModelAdmin):
-    exclude = ('id',)
     list_display = ('campaign_beneficiary', 'campaign_product', 'dosage')
+
+class CampaignBeneficiaryAdmin(admin.ModelAdmin):
+    list_display = ('campaign','beneficiary','order_in_sms')
+
+class CampaignProductAdmin(admin.ModelAdmin):
+    list_display = ('campaign','product','order_in_sms')
 
 User = get_user_model()
 
@@ -62,8 +67,8 @@ admin.site.register(Reporter)
 admin.site.register(Campaign)
 admin.site.register(Beneficiaire)
 admin.site.register(Product)
-admin.site.register(CampaignBeneficiary)
-admin.site.register(CampaignProduct)
+admin.site.register(CampaignBeneficiary, CampaignBeneficiaryAdmin)
+admin.site.register(CampaignProduct, CampaignProductAdmin)
 admin.site.register(CampaignBeneficiaryProduct, CampaignBeneficiaryProductAdmin)
 admin.site.register(Report)
 admin.site.register(ReportBeneficiary)
