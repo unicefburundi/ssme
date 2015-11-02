@@ -28,7 +28,7 @@
                 {% block beneficiary %}
                     <div class="col-md-11">
                       <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
                         <thead>
                           <tr>
                             <th data-footer-formatter="totalTextFormatter">Date</th>
@@ -87,12 +87,12 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% block final %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true"`>
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
                         <thead>
                           <tr>
                             <th data-footer-formatter="totalTextFormatter">Date</th>
                             {% for header in headers_recept %}
-                              <th data-footer-formatter="sumFormatter">{{header.products}}</th>
+                              <th >{{header.products}}</th>
                             {% endfor %}
                           </tr>
                         </thead>
