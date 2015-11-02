@@ -6,6 +6,10 @@ from django.contrib import admin
 from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 
+class CampaignBeneficiaryProductAdmin(admin.ModelAdmin):
+    exclude = ('id',)
+    list_display = ('campaign_beneficiary', 'campaign_product', 'dosage')
+
 User = get_user_model()
 
 class UserAdmin(NamedUserAdmin):
@@ -60,7 +64,7 @@ admin.site.register(Beneficiaire)
 admin.site.register(Product)
 admin.site.register(CampaignBeneficiary)
 admin.site.register(CampaignProduct)
-admin.site.register(CampaignBeneficiaryProduct)
+admin.site.register(CampaignBeneficiaryProduct, CampaignBeneficiaryProductAdmin)
 admin.site.register(Report)
 admin.site.register(ReportBeneficiary)
 admin.site.register(ReportProductReception)
