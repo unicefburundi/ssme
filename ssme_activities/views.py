@@ -49,12 +49,27 @@ def get_report_by_code(request, code, model):
     if len(code)>4 :
         return queryset.filter(report__cds__code=code)
 
+def get_benef_cds(queryset_benef, cds, **kwargs):
+    queryset_benef.filter(reception_date__lte=today['reception_date'], campaign_beneficiary__beneficiary__designation="12-23 mois").values('received_number', 'reception_date').distinct('reception_date')
+
 def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
     body_benef = {}
+    # import ipdb; ipdb.set_trace()
     if not dates_benef:
         res, ress = today, {}
         if 'cds' in kwargs :
             queryset_benef = queryset_benef.filter( report__cds=kwargs.get('cds').id)
+            if not queryset_benef :
+                return []
+            else:
+                for t in headers_benef:
+                    ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).distinct().values('received_number').latest()
+                    if not ress:
+                        res.update({t['beneficiaires']:0})
+                    else:
+                        res.update({t['beneficiaires']:ress[0]['received_number']})
+                    body_benef.update(res)
+                return body_benef
         elif 'district' in kwargs:
             queryset_benef = queryset_benef.filter( report__cds__district=kwargs.get('district').id)
         elif 'province' in kwargs:
