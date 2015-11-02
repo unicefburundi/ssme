@@ -1,4 +1,5 @@
 from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS
+from django.db.models import Q
 import re
 import datetime
 import requests
@@ -269,7 +270,7 @@ def save_temporary_the_reporter(args):
 
 			Temporary.objects.create(phone_number = the_phone_number,cds = the_concerned_cds,supervisor_phone_number = the_supervisor_phone_number_no_space)
 			args['valide'] = True
-			args['info_to_contact'] = "Merci. Veuillez confirmer le numero du superviseur s il vous plait."
+			args['info_to_contact'] = "Merci. Veuillez confirmer le numero de telephone du superviseur s il vous plait."
 
 
 def check_has_already_session(args):
@@ -328,32 +329,75 @@ def complete_registration(args):
 		args['info_to_contact'] = "Votre message n est pas considere."
 	else:
 		the_one_existing_temp = the_existing_temp[0]
+
+
 		#if (the_one_existing_temp.supervisor_phone_number == the_sup_phone_number_without_spaces):
 		if (the_sup_phone_number_without_spaces in the_one_existing_temp.supervisor_phone_number) and (len(the_sup_phone_number_without_spaces) >= 8):
 			#The confirmation of the phone number of the supervisor pass
 
-			#Let's check if this reporter is not already registered for this CDS
-			check_duplication = Reporter.objects.filter(phone_number = the_one_existing_temp.phone_number,cds = the_one_existing_temp.cds)
+
+			#Let's check if this contact is not registered with this CDS and this supervisor Phone number
+			#If it is the case, this contact is doing an unnecessary registration
+			check_duplication = Reporter.objects.filter(phone_number = the_one_existing_temp.phone_number, cds = the_one_existing_temp.cds, supervisor_phone_number = the_one_existing_temp.supervisor_phone_number)
 			if len(check_duplication) > 0:
-				#This reporter is doing registration twice on the same CDS
-				args['valide'] = False
-				args['info_to_contact'] = "Erreur. Vous vous etes deja enregistre sur ce meme CDS. Merci."
-				the_one_existing_temp.delete()
-				return
-	
-			#Let's check if this reporter is not already registered
-			check_duplication1 = Reporter.objects.filter(phone_number = the_one_existing_temp.phone_number)
-			if len(check_duplication1) > 0:
-				#This reporter is doing registration twice
+				#Already registered and nothing to update
 				args['valide'] = False
 				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Vous etes deja enregistre. Merci."
 				the_one_existing_temp.delete()
 				return
 
+			check_duplication = ''
+
+
+			#Let's check if the contact wants to update his cds
+			check_duplication = Reporter.objects.filter(~Q(cds = the_one_existing_temp.cds), phone_number = the_one_existing_temp.phone_number, supervisor_phone_number = the_one_existing_temp.supervisor_phone_number)
+			if len(check_duplication) > 0:
+				#this contact wants to update his CDS
+				check_duplication = check_duplication[0]
+				check_duplication.cds = the_one_existing_temp.cds
+				check_duplication.save()
+				args['valide'] = True
+				args['info_to_contact'] = "Mise a jour du CDS reussie. Votre nouveau CDS est : "+the_one_existing_temp.cds.name
+				the_one_existing_temp.delete()
+				return
+
+			check_duplication = ''
+
+
+
+			#Let's check if the contact wants to update the phone number of his supervisor
+			check_duplication = Reporter.objects.filter(~Q(supervisor_phone_number = the_one_existing_temp.supervisor_phone_number), phone_number = the_one_existing_temp.phone_number, cds = the_one_existing_temp.cds)
+			if len(check_duplication) > 0:
+				#this contact wants to update the phone number of his supervisor
+				check_duplication = check_duplication[0]
+				check_duplication.supervisor_phone_number = the_one_existing_temp.supervisor_phone_number
+				check_duplication.save()
+				args['valide'] = True
+				args['info_to_contact'] = "Mise a jour reussie. Le nouveau numero de telephone de votre superviseur est : "+the_one_existing_temp.supervisor_phone_number+". Merci."
+				the_one_existing_temp.delete()
+				return
+
+			check_duplication = ''
+
+	
+
+			#Let's check if the contact wants to update both the CDS and the phone number of his supervisor
+			check_duplication = Reporter.objects.filter(~Q(cds = the_one_existing_temp.cds), ~Q(supervisor_phone_number = the_one_existing_temp.supervisor_phone_number), phone_number = the_one_existing_temp.phone_number)
+			if len(check_duplication) > 0:
+				#this contact wants to update the phone number of his supervisor
+				check_duplication = check_duplication[0]
+				check_duplication.cds = the_one_existing_temp.cds
+				check_duplication.supervisor_phone_number = the_one_existing_temp.supervisor_phone_number
+				check_duplication.save()
+				args['valide'] = True
+				args['info_to_contact'] = "Mise a jour reussie. Le nouveau numero de votre superviseur est : "+the_one_existing_temp.supervisor_phone_number+" et le nouveau CDS est :"+the_one_existing_temp.cds
+				the_one_existing_temp.delete()
+				return
+			
+			
+			#This contact is doing a first registration. Let's record him/her
 			Reporter.objects.create(phone_number = the_one_existing_temp.phone_number,cds = the_one_existing_temp.cds,supervisor_phone_number = the_one_existing_temp.supervisor_phone_number)
-
 			the_one_existing_temp.delete()
-
 			args['valide'] = True
 			args['info_to_contact'] = "Vous vous etes enregistre correctement."
 		else:
