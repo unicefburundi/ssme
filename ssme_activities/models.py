@@ -217,7 +217,6 @@ class ReportBeneficiary(models.Model):
         return self.report.text
 
     class Meta:
-        # ordering = ('reception_date',)
         get_latest_by = 'id'
 
 class ReportProductReception(models.Model):
