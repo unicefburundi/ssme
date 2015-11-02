@@ -67,7 +67,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                     if not ress:
                         res.update({t['beneficiaires']:0})
                     else:
-                        res.update({t['beneficiaires']:ress[0]['received_number']})
+                        res.update({t['beneficiaires']:ress['received_number']})
                     body_benef.update(res)
                 return body_benef
         elif 'district' in kwargs:
