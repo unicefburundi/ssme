@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, District, Province, ProfileUser
+from ssme_activities.models import CDS, District, Province, ProfileUser, Campaign
 
 def get_name_mohfacility(level='',code=''):
     if level=='CDS':
@@ -18,5 +18,6 @@ def myfacility(request):
         return {}
     if not created:
         mymoh_facility = get_name_mohfacility(myprofile.level, myprofile.moh_facility)
+    campaign = Campaign.objects.filter(going_on=True)
 
-    return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility  }
+    return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign[0] }
