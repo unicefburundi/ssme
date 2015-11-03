@@ -8,13 +8,14 @@ from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import myfacility
-from django_tables2   import RequestConfig
 from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
-from django.db.models import F
+from django.db.models import F, Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+import datetime
 
+today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 def dashboard(request):
     return render(request, 'base_layout.html')
@@ -37,10 +38,9 @@ def beneficiaries(request):
 
 def get_report_by_code(request, code, model):
     queryset = model.objects.all()
-    import ipdb; ipdb.set_trace()
     if not queryset :
         return queryset
-    if not code and request.user.groups.filter(name='Central') :
+    if request.user.is_superuser and not code :
         return queryset
     if len(code)<=2 :
         return queryset.filter(report__cds__district__province__code=int(code))
@@ -49,6 +49,122 @@ def get_report_by_code(request, code, model):
     if len(code)>4 :
         return queryset.filter(report__cds__code=code)
 
+
+def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
+    body_benef = {}
+    if not dates_benef:
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_benef = queryset_benef.filter( report__cds=kwargs.get('cds').id)
+            if not queryset_benef :
+                return []
+            else:
+                for t in headers_benef:
+                    ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                    if not ress:
+                        res.update({t['beneficiaires']:0})
+                    else:
+                        ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
+                        res.update({t['beneficiaires']:ress['received_number']})
+                    body_benef.update(res)
+                return body_benef
+        elif 'district' in kwargs:
+            queryset_benef = queryset_benef.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_benef = queryset_benef.filter( report__cds__district__province=kwargs.get('province').id)
+        if not queryset_benef :
+            return []
+        else:
+            for t in headers_benef:
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                if not ress:
+                    res.update({t['beneficiaires']:0})
+                else:
+                    ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
+                    res.update({t['beneficiaires']:ress['received_number']})
+                body_benef.update(res)
+            return body_benef
+    else:
+        body_benef = []
+        for i in dates_benef:
+            res, ress = i, {}
+            for t in headers_benef:
+                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                if not ress['total']:
+                    res.update({t['beneficiaires']:0})
+                else:
+                    res.update({t['beneficiaires']:ress['total']})
+            body_benef.append(res)
+        return body_benef
+
+def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs):
+    body_reception = {}
+    if not dates_reception:
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_reception = queryset_reception.filter( report__cds=kwargs.get('cds').id)
+        elif 'district' in kwargs:
+            queryset_reception = queryset_reception.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_reception = queryset_reception.filter( report__cds__district__province=kwargs.get('province').id)
+        if not queryset_reception :
+            return []
+        else:
+            for t in headers_recept:
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                if not ress['total']:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_reception.update(res)
+        return body_reception
+    else:
+        body_reception = []
+        for i in dates_reception:
+            res, ress = i, {}
+            for t in headers_recept:
+                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date=i['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                if not ress['total'] :
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_reception.append(res)
+        return body_reception
+
+def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
+    body_remain = {}
+    if not dates_remain:
+        res, ress = today, {}
+        if 'cds' in kwargs :
+            queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds').id)
+        elif 'district' in kwargs:
+            queryset_remain = queryset_remain.filter( report__cds__district=kwargs.get('district').id)
+        elif 'province' in kwargs:
+            queryset_remain = queryset_remain.filter( report__cds__district__province=kwargs.get('province').id)
+        if not queryset_remain :
+            return []
+        else:
+            for t in headers_recept:
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date__lte=today['reception_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+                if not ress['total']:
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_remain.update(res)
+        return body_remain
+    else:
+        body_remain = []
+        for i in dates_remain:
+            res, ress = i, {}
+            for t in headers_recept:
+                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+                if not ress['total'] :
+                    res.update({t['products']:0})
+                else:
+                    res.update({t['products']:ress['total']})
+            body_remain.append(res)
+        return body_remain
+
 #Province
 class ProvinceCreateView(CreateView):
     model = Province
@@ -56,10 +172,63 @@ class ProvinceCreateView(CreateView):
 
 class ProvinceListView(ListView):
     model = Province
-    paginate_by = 25
+    paginate_by = 100
+
+    # def  get_context_data(self, **kwargs):
+    #     context = super(ProvinceListView, self).get_context_data(**kwargs)
+    #     mycode = str(context['object'].code)
+    #     if self.request.user.is_superuser and not mycode:
+    #         provinces = Province.objects.all()
+    #     else  :
+    #         return context
 
 class ProvinceDetailView(DetailView):
     model = Province
+
+    def get_context_data(self, **kwargs):
+        context = super(ProvinceDetailView, self).get_context_data(**kwargs)
+        mycode = str(context['object'].code)
+        districts = District.objects.filter(province__code=mycode)
+        #benef
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
+        dates_today = []
+        body_benef = []
+        for district in districts :
+            res = get_benef(queryset_benef, dates_today, headers_benef, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_benef.append(res)
+        context['body_benef'] = body_benef
+        context['headers_benef'] = headers_benef
+        #reception
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
+        body_reception = []
+        for district in districts :
+            res = get_reception(queryset_reception, dates_today, headers_recept, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_reception.append(res)
+        context['body_reception'] = body_reception
+        context['headers_recept'] = headers_recept
+
+        # Remain
+        queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
+        body_remain = []
+        for district in districts :
+            res = get_remain(queryset_remain, dates_today, headers_recept, district=district)
+            if  res == []:
+                pass
+            else :
+                res.update({'district':district})
+                body_remain.append(res)
+        context['body_remain'] = body_remain
+        return context
 
 # District
 class DistrictCreateView(CreateView):
@@ -68,10 +237,55 @@ class DistrictCreateView(CreateView):
 
 class DistrictListView(ListView):
     model = District
-    paginate_by = 25
+    paginate_by = 100
 
 class DistrictDetailView(DetailView):
     model = District
+
+    def get_context_data(self, **kwargs):
+        context = super(DistrictDetailView, self).get_context_data(**kwargs)
+        mycode = str(context['object'].code)
+        cdss = CDS.objects.filter(district__code=mycode)
+        #benef
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
+        dates_today = []
+        body_benef = []
+        for cds in cdss :
+            res = get_benef(queryset_benef, dates_today, headers_benef, cds=cds)
+            if  res == []:
+                pass
+            else :
+                res.update({'cds':cds})
+                body_benef.append(res)
+        context['body_benef'] = body_benef
+        context['headers_benef'] = headers_benef
+        #reception
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
+        body_reception = []
+        for cds in cdss :
+            res = get_reception(queryset_reception, dates_today, headers_recept, cds=cds)
+            if  res == []:
+                pass
+            else :
+                res.update({'cds':cds})
+                body_reception.append(res)
+        context['body_reception'] = body_reception
+        context['headers_recept'] = headers_recept
+
+        # Remain
+        queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
+        body_remain = []
+        for cds in cdss :
+            res = get_remain(queryset_remain, dates_today, headers_recept, cds=cds)
+            if  res == []:
+                pass
+            else :
+                res.update({'cds':cds})
+                body_remain.append(res)
+        context['body_remain'] = body_remain
+        return context
 
 # CDS
 class CDSCreateView(CreateView):
@@ -80,10 +294,41 @@ class CDSCreateView(CreateView):
 
 class CDSListView(ListView):
     model = CDS
-    paginate_by = 25
+    paginate_by = 1000
 
 class CDSDetailView(DetailView):
     model = CDS
+
+    def get_context_data(self, **kwargs):
+        context = super(CDSDetailView, self).get_context_data(**kwargs)
+        mycode = str(context['object'].code)
+
+        # beneficiaires
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
+        dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
+        body_benef = []
+        if queryset_benef:
+            body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
+        #reception
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
+        dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
+        body_reception = []
+        if queryset_reception:
+            body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
+        # Remain
+        queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
+        dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
+        body_remain  = []
+        if queryset_remain:
+            body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+        context['body_benef'] = body_benef
+        context['body_reception'] = body_reception
+        context['body_remain'] = body_remain
+        context['headers_recept'] = headers_recept
+        context['headers_benef'] = headers_benef
+        return context
 
 # ProfileUser
 class UserSignupView(CreateView):
@@ -91,7 +336,7 @@ class UserSignupView(CreateView):
     template_name = 'registration/create_profile.html'
 
     def get_success_url(self, user):
-        return reverse( 'profile_user_detail', kwargs = {'pk': user.id},)
+        return reverse( 'profile_user_detail', kwargs = {'pk': user})
 
     def form_valid(self, form):
         # Save the user first, because the profile needs a user before it
@@ -102,7 +347,6 @@ class UserSignupView(CreateView):
         user.groups.add(group[0])
         profile.user = user
         profile.save()
-        # import ipdb; ipdb.set_trace()
         if form['user'].cleaned_data['password1'] == '' or form['user'].cleaned_data['password2'] == '':
             try:
                 reset_form = PasswordResetForm({'email': user.email})
@@ -117,7 +361,7 @@ class UserSignupView(CreateView):
             except:
                 messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
                 pass
-        return redirect(self.get_success_url(user))
+        return redirect(self.get_success_url(profile.id))
 
 class ProfileUserListView(ListView):
     model = ProfileUser
@@ -147,22 +391,14 @@ class CampaignCRUDL(SmartCRUDL):
     permissions = False
 
     class List(SmartListView):
-        # import ipdb; ipdb.set_trace()
         search_fields = ('going_on__icontains', )
         default_order = 'going_on'
 
         def derive_queryset(self, *args, **kwargs):
             queryset = super(CampaignCRUDL.List, self).derive_queryset(*args, **kwargs)
-            # import ipdb; ipdb.set_trace()
             myfacilities =  myfacility(self.request)
             if myfacilities['mycode'] == None :
                 return queryset
-            # elif len(str(myfacilities['mycode'])) >=5 :
-            #     return queryset.filter(cds__code=myfacilities['mycode'])
-            # elif 3 <= len(str(myfacilities['mycode'])) <=4 :
-            #     return queryset.filter(cds__district__code=myfacilities['mycode'])
-            # elif 1 <= len(str(myfacilities['mycode'])) <= 2 :
-            #     return queryset.filter(cds__district__province__code=myfacilities['mycode'])
             else:
                 return Campaign.objects.none()
 
@@ -234,21 +470,15 @@ class ProfileUserCRUDL(SmartCRUDL):
 
 #Campaign
 
-# class CDSCampaignFormSet1(CDSCampaignFormSet):
-#     cds =
-
-
 FORMS = [("campaign", CampaignForm1),
          ("product", ProductsFormSet),
          ("beneficiary", BeneficiaryFormSet),
-         # ("cds", CDSCampaignFormSet)
          ]
 
 
 class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
-        # import ipdb; ipdb.set_trace()
         products, orders = set(), set()
         for i in form_dict['product'].cleaned_data:
             if (i != {}) and (i['product'] not in products) and (i['order_in_sms'] not in orders):
@@ -263,51 +493,51 @@ class CampaignWizard(SessionWizardView):
                 beneficiaries.add(i['beneficiary'])
                 orders.add(i['order_in_sms'])
 
-        # cdss, orders = set(), set()
-        # for i in form_dict['cds'].cleaned_data:
-        #     if (i != {}) and (i['cds'] not in cdss):
-        #         CampaignBeneficiaryCDS.objects.get_or_create(campaign=campaign, cds= i['cds'], population_attendu=i['population_attendu'], )
-        #         cdss.add(i['beneficiary'])
-        #         orders.add(i['order_in_sms'])
-
         return HttpResponseRedirect(campaign.get_absolute_url())
 
-@login_required
-def get_reports(request):
-    mycode = myfacility(request)
-    report_benef = ReportBeneficiaryTable(get_report_by_code(request, mycode['mycode'], ReportBeneficiary))
-    RequestConfig(request).configure(report_benef)
-    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
-    RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
-    RequestConfig(request).configure(report_reception)
-
-    return render(request, "ssme_activities/reports.html", {'report_benef': report_benef, 'report_remain': report_remain, 'report_reception' : report_reception })
 
 @login_required
-def get_reports2(request):
+def get_reports(request, **kwargs):
     mycode = myfacility(request)
-    headers = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
-    mycode = myfacility(request)
+    if  'cds' in kwargs:
+        mycode['mycode'] = kwargs.get('cds').code
+    if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
+        messages.warning(request, 'You have no valid MoH facility attached to your profile. Please contact the Admin')
+        url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
+        return HttpResponseRedirect(url)
+    # beneficiaires
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
-    dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
-    body = []
-    for i in dates_benef:
-        # import ipdb; ipdb.set_trace()
-        res, ress = i, {}
-        for t in headers:
-            # import ipdb; ipdb.set_trace()
-            ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
-            if not ress:
-                res.update({t['beneficiaires']:0})
-            else:
-                # import ipdb; ipdb.set_trace()
-                res.update({t['beneficiaires']:ress[0]['received_number']})
-        body.append(res)
-    report_remain = ReportProductRemainStockTable(get_report_by_code(request, mycode['mycode'],ReportProductRemainStock))
-    RequestConfig(request).configure(report_remain)
-    report_reception = ReportProductReceptionTable(get_report_by_code(request, mycode['mycode'],ReportProductReception))
-    RequestConfig(request).configure(report_reception)
+    dates_benef = []
+    body_benef = []
+    if not queryset_benef:
+        pass
+    else:
+        dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
+        body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
+    #reception
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+    queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
+    dates_reception = []
+    body_reception = []
+    if not queryset_reception:
+        pass
+    else:
+        dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
+        body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
 
-    return  render(request, "ssme_activities/reports.html", {'body':body, 'headers': headers, 'report_remain': report_remain, 'report_reception' : report_reception })
+    # Remain
+    queryset_remain = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
+    dates_remain = []
+    body_remain = []
+    if not queryset_remain:
+        pass
+    else:
+        dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
+        body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
+# Central
+class CentralDetail(ListView):
+    queryset = Province.objects.all()
+    template_name = "registration/edit_profile.html"

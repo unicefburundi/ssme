@@ -28,5 +28,5 @@ def not_in_bps_group(user):
 
 def not_in_central_group(user):
     if user:
-        return user.groups.filter(name='Central').count() == 0
+        return user.groups.filter(name='CEN').count() == 0
     return False

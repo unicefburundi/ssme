@@ -1,36 +1,47 @@
 {% extends "base_layout.html" %}
-{% load render_table from django_tables2 %}
 {% load extras_utils2  %}
 {% block page_title %}
 <ul class="nav nav-tabs">
-  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} ><a href="#beneficiary"   data-toggle="tab">Beneficiary</a></li>
-  <li {% block activereception %}{% endblock activereception %} ><a href="#reception"   data-toggle="tab">Reception</a></li>
-  <li {% block activefinal %}{% endblock activefinal %} ><a href="#final"   data-toggle="tab">Final</a></li>
+<div class="page-header">
+  <h3>Reports at {{mymoh_facility}} level.</h3>
+</div>
+  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
+    <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+  </li>
+  <li {% block activereception %}{% endblock activereception %} >
+    <a href="#reception"   data-toggle="tab">Received Stock</a>
+  </li>
+  <li {% block activefinal %}{% endblock activefinal %} >
+    <a href="#final"   data-toggle="tab">Final Stock</a>
+  </li>
+</ul>
 {% endblock page_title  %}
 
 {% block content %}
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<script>
+</script>
 <div class="col-md-10">
     <div class="tab-content">
-    <hr>
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
-                <h4><i class="glyphicon glyphicon-comment"></i></h4>
+                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                 {% block beneficiary %}
                     <div class="col-md-11">
-                      <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-export-types=['csv','excel']>
+                      <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
                         <thead>
                           <tr>
-                            <th>Date</th>
-                            {% for header in headers %}
-                              <th>{{header.beneficiaires}}</th>
+                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            {% for header in headers_benef %}
+                              <th data-footer-formatter="sumFormatter">{{header.beneficiaires}}</th>
                             {% endfor %}
                           </tr>
                         </thead>
                         <tbody>
-                          {% for i in body  %}
+                          {% for i in body_benef  %}
                             <tr>
                             <td>{{i.reception_date}}</td>
-                            {% for t in headers  %}
+                            {% for t in headers_benef  %}
                               <td>{{i|getit:t.beneficiaires}}</td>
                             {% endfor %}
                           </tr>
@@ -43,19 +54,59 @@
                 {% endblock beneficiary %}
               </div>
               <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
-                <h4><i class="glyphicon glyphicon-cog"></i></h4>
+                <h4><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
                 {% block reception %}
                     <div class="col-md-11">
-                      {% render_table report_reception %}
+                      <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
+                        <thead>
+                          <tr>
+                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            {% for header in headers_recept %}
+                              <th data-footer-formatter="sumFormatter">{{header.products}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body_reception  %}
+                            <tr>
+                            <td>{{i.reception_date}}</td>
+                            {% for t in headers_recept  %}
+                              <td>{{i|getit:t.products}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock reception %}
               </div>
               <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
-                <h4><i class="glyphicon glyphicon-list-alt"></i></h4>
+                <h4><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
                 {% block final %}
                     <div class="col-md-11">
-                      {% render_table report_remain %}
+                      <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
+                        <thead>
+                          <tr>
+                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            {% for header in headers_recept %}
+                              <th >{{header.products}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body_remain  %}
+                            <tr>
+                            <td>{{i.concerned_date}}</td>
+                            {% for t in headers_recept  %}
+                              <td>{{i|getit:t.products}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}

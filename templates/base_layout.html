@@ -26,6 +26,28 @@
       $(function() {
       $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
       });
+      function runningFormatter(value, row, index) {
+          return index;
+      };
+
+      function totalTextFormatter(data) {
+          return 'Total';
+      };
+
+      function totalFormatter(data) {
+          return data.length;
+      };
+
+      function sumFormatter(data) {
+          field = this.field;
+          return data.reduce(function(sum, row) {
+              return sum + (+row[field]);
+          }, 0);
+      };
+
+      function avgFormatter(data) {
+          return sumFormatter.call(this, data) / data.length;
+      };
     </script>
     {% block css_section %}
         <!-- Bootstrap core CSS -->
@@ -127,9 +149,18 @@
               </ul>
           </li>
           {% endif %}
-          {% if user|has_group:"Central" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" %}
+          {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
             <li>
               <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
+          </li>
+          <li>
+              {% if user|has_group:"CDS" %}
+                <a href="{% url 'cds_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% elif user|has_group:"BDS" %}
+                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% elif user|has_group:"BPS" %}
+                <a href="{% url 'province_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
+              {% endif %}
           </li>
           {% endif %}
         {% endif %}
