@@ -342,7 +342,7 @@ def complete_registration(args):
 			if len(check_duplication) > 0:
 				#Already registered and nothing to update
 				args['valide'] = False
-				args['info_to_contact'] = "Erreur. Vous n avez pas le droit de vous enregistrer plus d une seule fois. Vous etes deja enregistre. Merci."
+				args['info_to_contact'] = "Erreur. Vous etes deja enregistre sur ce CDS et avec le meme numero de telephone du superviseur. Envoyer votre rapport ou X pour sortir."
 				the_one_existing_temp.delete()
 				return
 
