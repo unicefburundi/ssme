@@ -3,7 +3,7 @@
 {% block page_title %}
 <ul class="nav nav-tabs">
 <div class="page-header">
-  <h3>Reports at {{mymoh_facility}} level.</h3>
+  <h4>Reports at {{mymoh_facility}} level.</h4>
 </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
     <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
@@ -56,7 +56,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock beneficiary %}
               </div>
               <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
-                <h4><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
+                <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                 {% block reception %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -85,14 +85,14 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock reception %}
               </div>
               <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
-                <h4><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h4>
+                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                 {% block final %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
 data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
                         <thead>
                           <tr>
-                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            <th data-footer-formatter="consumptionTextFormatter">Date</th>
                             {% for header in headers_recept %}
                               <th >{{header.products}}</th>
                             {% endfor %}

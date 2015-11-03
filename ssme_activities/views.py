@@ -386,7 +386,7 @@ class ReporterDetailView(DetailView):
 
 # Campaign
 class CampaignCRUDL(SmartCRUDL):
-    actions = ('read', 'list')
+    actions = ('read', 'list', 'create', 'update', 'delete')
     model = Campaign
     permissions = False
 
@@ -394,13 +394,27 @@ class CampaignCRUDL(SmartCRUDL):
         search_fields = ('going_on__icontains', )
         default_order = 'going_on'
 
-        def derive_queryset(self, *args, **kwargs):
-            queryset = super(CampaignCRUDL.List, self).derive_queryset(*args, **kwargs)
-            myfacilities =  myfacility(self.request)
-            if myfacilities['mycode'] == None :
-                return queryset
+    class Create(SmartCreateView):
+        form_class = CampaignForm1
+
+        def form_valid(self, form):
+            messages.success(self.request, 'Campaign created {0} .'.format(form.cleaned_data['name']))
+            return super(SmartCreateView, self).form_valid(form)
+
+        def post(self, request, *args, **kwargs):
+            """
+            Handles POST requests, instantiating a form instance with the passed
+            POST variables and then checked for validity.
+            """
+            form_class = self.get_form_class()
+            form = self.get_form(form_class)
+            if form.is_valid():
+                self.form_valid(form)
+                url = reverse('ssme_activities.campaignbeneficiary_create')
+                return HttpResponseRedirect(url)
             else:
-                return Campaign.objects.none()
+                return self.form_invalid(form)
+
 
 
 # Beneficiaire
@@ -423,7 +437,6 @@ class ProductCRUDL(SmartCRUDL):
 
 # CampaignBeneficiary
 class CampaignBeneficiaryCRUDL(SmartCRUDL):
-    actions = ('read', 'list')
     model = CampaignBeneficiary
 
     class List(SmartListView):
@@ -506,7 +519,7 @@ def get_reports(request, **kwargs):
         url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
         return HttpResponseRedirect(url)
     # beneficiaires
-    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = []
     body_benef = []
