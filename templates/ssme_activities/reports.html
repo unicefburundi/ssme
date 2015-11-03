@@ -6,13 +6,15 @@
   <h3>Reports at {{mymoh_facility}} level.</h3>
 </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-    <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+    <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
   </li>
   <li {% block activereception %}{% endblock activereception %} >
-    <a href="#reception"   data-toggle="tab">Received Stock</a>
+    <!-- <a href="#reception"   data-toggle="tab">Received Stock</a> -->
+	<a href="#reception"   data-toggle="tab">Stocks Recus</a>
   </li>
   <li {% block activefinal %}{% endblock activefinal %} >
-    <a href="#final"   data-toggle="tab">Final Stock</a>
+    <!-- <a href="#final"   data-toggle="tab">Final Stock</a> -->
+	<a href="#final"   data-toggle="tab">Stock Final</a>
   </li>
 </ul>
 {% endblock page_title  %}
