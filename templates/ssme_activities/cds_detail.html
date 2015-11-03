@@ -13,8 +13,8 @@
                 <p> {{object.name}}</p>
                 <dt>Code of the CDS : </dt>
                 <p> {{object.code}}</p>
-                <dt>Population total : </dt>
-                <p> {{pop_total.population_cible}}</p>
+                <dt>Pop total attendue: </dt>
+                <p id="pop_total"> {{pop_total.population_cible}}</p>
                 <dt>District : </dt>
                 <p> {{object.district}}</p>
                 <dt>Province : </dt>
@@ -46,7 +46,7 @@
                           <tr>
                             <th data-footer-formatter="totalTextFormatter">Date</th>
                             {% for header in headers_benef %}
-                              <th data-footer-formatter="sumFormatter">{{header.beneficiaires}}</th>
+                              <th data-footer-formatter="beneficeFormatter">{{header.beneficiaires}}</th>
                             {% endfor %}
                           </tr>
                         </thead>
@@ -103,7 +103,7 @@
                           <tr>
                             <th data-footer-formatter="consumptionTextFormatter">Date</th>
                             {% for header in headers_recept %}
-                              <th >{{header.products}}</th>
+                              <th data-footer-formatter="consumptionFormatter">{{header.products}}</th>
                             {% endfor %}
                           </tr>
                         </thead>

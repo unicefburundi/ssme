@@ -49,6 +49,19 @@
           }, 0);
       };
 
+      function beneficeFormatter(data) {
+          pop_total = $("#pop_total").html();
+          field = this.field;
+          var pourcentage = 0;
+          somme = 0;
+          return data.reduce(function(sum, row) {
+              console.log(sum);
+              som = sum + (+row[field]);
+              somme = sum + (+row[field]);
+              return somme;
+          }, 0);
+      };
+
       function avgFormatter(data) {
           return sumFormatter.call(this, data) / data.length;
       };

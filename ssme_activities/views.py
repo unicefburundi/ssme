@@ -36,6 +36,20 @@ def campaigns(request):
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
+def get_pop_total(request, code=''):
+    pop_total = CampaignCDS.objects.values('population_cible').aggregate(population_cible=Sum('population_cible'))
+    if request.user.is_superuser and not code :
+        return pop_total
+    if not pop_total:
+        pop_total= {}
+        pop_total['population_cible'] = 0
+    elif len(code)<=2 :
+        return pop_total.filter(cds__district__province__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
+    if len(code)>2 and len(code)<=4 :
+        return pop_total.filter(cds__district__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
+    if len(code)>4 :
+        return pop_total.filter(cds__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
+
 def get_report_by_code(request, code, model):
     queryset = model.objects.all()
     if not queryset :
@@ -189,6 +203,14 @@ class ProvinceDetailView(DetailView):
         context = super(ProvinceDetailView, self).get_context_data(**kwargs)
         mycode = str(context['object'].code)
         districts = District.objects.filter(province__code=mycode)
+        pop_total = CampaignCDS.objects.filter(cds__district__province__code=mycode)
+        if not pop_total:
+            pop_total= {}
+            pop_total['population_cible'] = 0
+        else:
+            pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
+        context['pop_total'] = pop_total
+        #benef
         #benef
         headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
@@ -246,6 +268,13 @@ class DistrictDetailView(DetailView):
         context = super(DistrictDetailView, self).get_context_data(**kwargs)
         mycode = str(context['object'].code)
         cdss = CDS.objects.filter(district__code=mycode)
+        pop_total = CampaignCDS.objects.filter(cds__district__code=mycode)
+        if not pop_total:
+            pop_total= {}
+            pop_total['population_cible'] = 0
+        else:
+            pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
+        context['pop_total'] = pop_total
         #benef
         headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
@@ -524,6 +553,10 @@ def get_reports(request, **kwargs):
         messages.warning(request, 'You have no valid MoH facility attached to your profile. Please contact the Admin')
         url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
         return HttpResponseRedirect(url)
+
+    # pop total
+    pop_total = get_pop_total(request, mycode['mycode'])
+
     # beneficiaires
     headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
@@ -555,7 +588,7 @@ def get_reports(request, **kwargs):
         dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain })
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total })
 # Central
 class CentralDetail(ListView):
     queryset = Province.objects.all()
