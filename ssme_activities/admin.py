@@ -15,6 +15,10 @@ class CampaignBeneficiaryAdmin(admin.ModelAdmin):
 class CampaignProductAdmin(admin.ModelAdmin):
     list_display = ('campaign','product','order_in_sms')
 
+class ReportAdmin(admin.ModelAdmin):
+    search_fields = ('text', 'category')
+    list_display = ('text', 'category', 'cds')
+
 User = get_user_model()
 
 class UserAdmin(NamedUserAdmin):
@@ -70,7 +74,7 @@ admin.site.register(Product)
 admin.site.register(CampaignBeneficiary, CampaignBeneficiaryAdmin)
 admin.site.register(CampaignProduct, CampaignProductAdmin)
 admin.site.register(CampaignBeneficiaryProduct, CampaignBeneficiaryProductAdmin)
-admin.site.register(Report)
+admin.site.register(Report, ReportAdmin)
 admin.site.register(ReportBeneficiary)
 admin.site.register(ReportProductReception)
 admin.site.register(ReportProductRemainStock)

@@ -519,7 +519,7 @@ def get_reports(request, **kwargs):
         url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
         return HttpResponseRedirect(url)
     # beneficiaires
-    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = []
     body_benef = []
