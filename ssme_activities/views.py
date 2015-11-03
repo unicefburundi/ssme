@@ -302,7 +302,12 @@ class CDSDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CDSDetailView, self).get_context_data(**kwargs)
         mycode = str(context['object'].code)
-
+        pop_total = CampaignCDS.objects.filter(cds__code=mycode)
+        if not pop_total:
+            pop_total= {}
+            pop_total['population_cible'] = 0
+        else:
+            pop_total = pop_total.latest('id')
         # beneficiaires
         headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
@@ -328,6 +333,7 @@ class CDSDetailView(DetailView):
         context['body_remain'] = body_remain
         context['headers_recept'] = headers_recept
         context['headers_benef'] = headers_benef
+        context['pop_total'] = pop_total
         return context
 
 # ProfileUser

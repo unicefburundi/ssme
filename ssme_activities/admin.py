@@ -15,6 +15,9 @@ class CampaignBeneficiaryAdmin(admin.ModelAdmin):
 class CampaignProductAdmin(admin.ModelAdmin):
     list_display = ('campaign','product','order_in_sms')
 
+class CampaignCDSAdmin(admin.ModelAdmin):
+    list_display = ('campaign', 'cds', 'population_cible')
+
 class ReportAdmin(admin.ModelAdmin):
     search_fields = ('text', 'category')
     list_display = ('text', 'category', 'cds')
@@ -82,4 +85,4 @@ admin.site.register(Temporary)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReportStockOut)
-admin.site.register(CampaignCDS)
+admin.site.register(CampaignCDS, CampaignCDSAdmin)
