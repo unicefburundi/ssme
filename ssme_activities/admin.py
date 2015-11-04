@@ -7,10 +7,10 @@ from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 
 class CampaignBeneficiaryProductAdmin(admin.ModelAdmin):
-    list_display = ('campaign_beneficiary', 'campaign_product', 'dosage')
+    list_display = ('campaign_beneficiary', 'campaign_product', 'dosage', 'pourcentage_attendu')
 
 class CampaignBeneficiaryAdmin(admin.ModelAdmin):
-    list_display = ('campaign','beneficiary','order_in_sms')
+    list_display = ('campaign','beneficiary','order_in_sms', 'pourcentage_attendu')
 
 class CampaignProductAdmin(admin.ModelAdmin):
     list_display = ('campaign','product','order_in_sms')

@@ -589,7 +589,12 @@ def get_reports(request, **kwargs):
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total })
+
 # Central
-class CentralDetail(ListView):
-    queryset = Province.objects.all()
-    template_name = "registration/edit_profile.html"
+def date_handler(obj):
+    return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
+def get_reports_json(request):
+    data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).values('beneficiaires',  'reception_date','received_number')], default=date_handler)
+
+    return HttpResponse(data, content_type='application/json')
