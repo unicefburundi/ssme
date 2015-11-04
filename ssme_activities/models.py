@@ -139,6 +139,7 @@ class CampaignBeneficiary(models.Model):
     campaign = models.ForeignKey(Campaign)
     beneficiary = models.ForeignKey(Beneficiaire)
     order_in_sms = models.IntegerField()
+    pourcentage_attendu = models.FloatField(default=0.0, null=True)
 
     class Meta:
         ordering = ('beneficiary',)
@@ -183,6 +184,7 @@ class CampaignBeneficiaryProduct(models.Model):
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     campaign_product = models.ForeignKey(CampaignProduct)
     dosage = models.FloatField(null = True)
+    pourcentage_attendu = models.FloatField(default=0.0, null=True)
 
     def __unicode__(self):
         return self.campaign_beneficiary.beneficiary.designation
