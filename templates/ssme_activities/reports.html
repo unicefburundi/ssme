@@ -3,7 +3,7 @@
 {% block page_title %}
 <ul class="nav nav-tabs">
 <div class="page-header">
-  <h4>Reports at {{mymoh_facility}} level  with {{pop_total.population_cible}}</h4>
+  <h4>Reports at {{mymoh_facility}} level  with "{{pop_total.population_cible}}" expected population.</h4>
 </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
     <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
@@ -48,7 +48,7 @@ $(function(){
 <div class="col-md-10">
     <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
-                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
+                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block beneficiary %}
                     <div class="col-md-11">
                       <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -64,7 +64,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                         <tbody>
                           {% for i in body_benef  %}
                             <tr>
-                            <td>{{i.reception_date}}</td>
+                            <td>{{i.reception_date|date:"d M, Y"}}</td>
                             {% for t in headers_benef  %}
                               <td>{{i|getit:t.beneficiaires}}</td>
                             {% endfor %}
@@ -78,7 +78,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock beneficiary %}
               </div>
               <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
-                <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
+                <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block reception %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -94,7 +94,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                         <tbody>
                           {% for i in body_reception  %}
                             <tr>
-                            <td>{{i.reception_date}}</td>
+                            <td>{{i.reception_date|date:"d M, Y" }}</td>
                             {% for t in headers_recept  %}
                               <td>{{i|getit:t.products}}</td>
                             {% endfor %}
@@ -107,7 +107,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock reception %}
               </div>
               <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
+                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block final %}
                     <div class="col-md-11">
                       <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -123,7 +123,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                         <tbody>
                           {% for i in body_remain  %}
                             <tr>
-                            <td>{{i.concerned_date}}</td>
+                            <td>{{i.concerned_date|date:"d M, Y"}}</td>
                             {% for t in headers_recept  %}
                               <td>{{i|getit:t.products}}</td>
                             {% endfor %}
@@ -136,7 +136,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                 {% endblock final %}
               </div>
               <div class="tab-pane {% block activedraft1 %}{% endblock activedraft1 %}" id="draft">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
+                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block draft %}
                     <div class="col-md-11">
                     <div id="output"></div>
