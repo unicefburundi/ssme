@@ -29,7 +29,7 @@ urlpatterns = patterns('',
 
     # Reports
     url(r'^reports/$', get_reports, name="reports"),
-    url(r'^central/$', CentralDetail.as_view(), name="central"),
+    url(r'^central/$', get_reports_json, name="central"),
 
 )
 

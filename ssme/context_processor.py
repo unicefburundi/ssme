@@ -1,4 +1,6 @@
-from ssme_activities.models import CDS, District, Province, ProfileUser, Campaign
+from ssme_activities.models import CDS, District, Province, ProfileUser, Campaign, CampaignBeneficiary
+from django.db.models import F
+
 
 def get_name_mohfacility(level='',code=''):
     if level=='CDS':
@@ -23,3 +25,11 @@ def myfacility(request):
         campaign = ['no campaign']
 
     return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign[0] }
+
+def get_per_category_taux(request):
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    taux = {}
+    # import ipdb; ipdb.set_trace()
+    for i in headers_benef:
+        taux.update({str(i['beneficiaires']): CampaignBeneficiary.objects.filter(beneficiary__designation=i['beneficiaires'])[0].pourcentage_attendu})
+    return taux

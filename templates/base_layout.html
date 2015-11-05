@@ -49,10 +49,39 @@
           }, 0);
       };
 
+      function benefFormatter(data) {
+        var pop_total = $("#pop_total").html();
+        var total = 0;
+        field = this.field;
+        if(pop_total==0){
+          $.each(data, function (i, row) {
+              total += +(row[field]);
+          });
+          return  total ;
+        }
+        else{
+          var taux = "{{taux|safe}}";
+          taux = eval( "(" + taux + ")" );
+          var pop_attendue = (pop_total*taux[this.title]/100)
+          $.each(data, function (i, row) {
+              total += +(row[field]);
+          });
+          return '<strong>' + total + '</strong>'+ '    [' + (total/pop_attendue).toFixed(2)+ '%]';
+        }
+    }
+
       function avgFormatter(data) {
           return sumFormatter.call(this, data) / data.length;
       };
     </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.10/c3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/c3.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/pivot.min.css' %}">
+    <script src="{% static 'js/d3.min.js' %}"></script>
+    <script src="{% static 'js/pivot.min.js' %}"></script>
+    <script src="{% static 'js/c3_renderers.min.js' %}"></script>
+    <script src="{% static 'js/pivot.fr.min.js' %}"></script>
+    <script src="{% static 'js/export_renderers.min.js' %}"></script>
     {% block css_section %}
         <!-- Bootstrap core CSS -->
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
