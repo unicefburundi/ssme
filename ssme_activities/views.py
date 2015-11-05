@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
-from ssme.context_processor import myfacility
+from ssme.context_processor import myfacility, get_per_category_taux
 from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import F, Sum
@@ -37,9 +37,9 @@ def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
 def get_pop_total(request, code=''):
-    pop_total = CampaignCDS.objects.values('population_cible').aggregate(population_cible=Sum('population_cible'))
+    pop_total = CampaignCDS.objects.all()
     if request.user.is_superuser and not code :
-        return pop_total
+        return pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
     if not pop_total:
         pop_total= {}
         pop_total['population_cible'] = 0
@@ -188,14 +188,6 @@ class ProvinceListView(ListView):
     model = Province
     paginate_by = 100
 
-    # def  get_context_data(self, **kwargs):
-    #     context = super(ProvinceListView, self).get_context_data(**kwargs)
-    #     mycode = str(context['object'].code)
-    #     if self.request.user.is_superuser and not mycode:
-    #         provinces = Province.objects.all()
-    #     else  :
-    #         return context
-
 class ProvinceDetailView(DetailView):
     model = Province
 
@@ -212,7 +204,7 @@ class ProvinceDetailView(DetailView):
         context['pop_total'] = pop_total
         #benef
         #benef
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -276,7 +268,7 @@ class DistrictDetailView(DetailView):
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
         #benef
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -338,7 +330,7 @@ class CDSDetailView(DetailView):
         else:
             pop_total = pop_total.latest('id')
         # beneficiaires
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct()
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
         body_benef = []
@@ -587,8 +579,9 @@ def get_reports(request, **kwargs):
     else:
         dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+    taux = get_per_category_taux(request)
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total })
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux})
 
 # Central
 def date_handler(obj):
