@@ -4,7 +4,7 @@
 <ul class="nav nav-tabs">
 <div class="page-header">
   <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
-</div>
+  </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
     <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
   </li>
@@ -12,7 +12,10 @@
     <!-- <a href="#reception"   data-toggle="tab">Received Stock</a> -->
 	<a href="#reception"   data-toggle="tab">Stocks Recus</a>
   </li>
-<li {% block activedraft %}{% endblock activedraft %} >
+  <li {% block activefinal %}{% endblock activefinal %} >
+    <a href="#final"   data-toggle="tab">Final Stock</a>
+  </li>
+  <li {% block activedraft %}{% endblock activedraft %} >
     <!-- <a href="#final"   data-toggle="tab">Final Stock</a> -->
   <a href="#draft"   data-toggle="tab">Quelque calculs</a>
   </li>
