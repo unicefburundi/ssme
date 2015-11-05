@@ -3,7 +3,7 @@
 {% block page_title %}
 <ul class="nav nav-tabs">
 <div class="page-header">
-  <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:"100% de"}}</span> patients.</h5>
+  <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
 </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
     <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>

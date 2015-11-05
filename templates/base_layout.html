@@ -51,17 +51,23 @@
 
       function benefFormatter(data) {
         var pop_total = $("#pop_total").html();
-        var taux = "{{taux|safe}}";
-        taux = eval( "(" + taux + ")" );
         var total = 0;
         field = this.field;
-        console.log(taux[this.title]);
-        var pop_attendue = (pop_total*taux[this.title]/100)
-        console.log(pop_attendue);
-        $.each(data, function (i, row) {
-            total += +(row[field]);
-        });
-        return  total + '    [' + (total/pop_attendue).toFixed(2)+ '%]';
+        if(pop_total==0){
+          $.each(data, function (i, row) {
+              total += +(row[field]);
+          });
+          return  total ;
+        }
+        else{
+          var taux = "{{taux|safe}}";
+          taux = eval( "(" + taux + ")" );
+          var pop_attendue = (pop_total*taux[this.title]/100)
+          $.each(data, function (i, row) {
+              total += +(row[field]);
+          });
+          return '<strong>' + total + '</strong>'+ '    [' + (total/pop_attendue).toFixed(2)+ '%]';
+        }
     }
 
       function avgFormatter(data) {
