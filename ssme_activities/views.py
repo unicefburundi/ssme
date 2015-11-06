@@ -416,7 +416,7 @@ class ReporterDetailView(DetailView):
 
 # Campaign
 class CampaignCRUDL(SmartCRUDL):
-    actions = ('read', 'list', 'create', 'update', 'delete')
+    actions = ('read', 'list')
     model = Campaign
     permissions = False
 
@@ -449,6 +449,7 @@ class CampaignCRUDL(SmartCRUDL):
 
 # Beneficiaire
 class BeneficiaireCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = Beneficiaire
 
     class List(SmartListView):
@@ -456,6 +457,7 @@ class BeneficiaireCRUDL(SmartCRUDL):
         default_order = 'designation'
 # Product
 class ProductCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = Product
 
     class List(SmartListView):
@@ -467,10 +469,11 @@ class ProductCRUDL(SmartCRUDL):
 
 # CampaignBeneficiary
 class CampaignBeneficiaryCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
     model = CampaignBeneficiary
 
     class List(SmartListView):
-        search_fields = ('beneficiary__icontains', )
+        search_fields = ('beneficiary__designation__icontains', )
         default_order = 'beneficiary'
 
 # CampaignBeneficiaryProduct
@@ -479,7 +482,7 @@ class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
     model = CampaignBeneficiaryProduct
 
     class List(SmartListView):
-        search_fields = ('campaign_beneficiary__icontains', 'campaign_product__icontains')
+        search_fields = ('campaign_beneficiary__beneficiary__designation__icontains', 'campaign_product__product__name__icontains')
         default_order = 'campaign_beneficiary'
 
 # CampaignProduct
@@ -488,7 +491,7 @@ class CampaignProductCRUDL(SmartCRUDL):
     model = CampaignProduct
 
     class List(SmartListView):
-        search_fields = ('product__icontains', )
+        search_fields = ('product__name__icontains', )
         default_order = 'product'
 
 # CampaignCDS
@@ -501,9 +504,6 @@ class CampaignCDSCRUDL(SmartCRUDL):
         search_fields = ('cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
         default_order = 'cds'
 
-    class Export( SmartXlsView):
-        pass
-
 # CampaignProduct
 class ReportCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -511,7 +511,7 @@ class ReportCRUDL(SmartCRUDL):
 
     class List(SmartListView):
         fields = ('text', 'reporting_date', 'concerned_date',  'category', 'cds', 'cds.district', 'cds.district.province')
-        search_fields = ('text__icontains', 'cds__name__icontains')
+        search_fields = ('text__icontains', 'cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
         default_order = 'cds'
 
 # ProfileUser
