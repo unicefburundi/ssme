@@ -53,7 +53,7 @@
         var pop_total = $("#pop_total").html();
         var total = 0;
         field = this.field;
-        if(pop_total==0){
+        if(pop_total===0){
           $.each(data, function (i, row) {
               total += +(row[field]);
           });

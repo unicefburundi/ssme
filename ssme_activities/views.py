@@ -242,6 +242,7 @@ class ProvinceDetailView(DetailView):
                 res.update({'district':district})
                 body_remain.append(res)
         context['body_remain'] = body_remain
+        context['taux'] = get_per_category_taux(self.request)
         return context
 
 # District
@@ -306,6 +307,7 @@ class DistrictDetailView(DetailView):
                 res.update({'cds':cds})
                 body_remain.append(res)
         context['body_remain'] = body_remain
+        context['taux'] = get_per_category_taux(self.request)
         return context
 
 # CDS
@@ -355,6 +357,7 @@ class CDSDetailView(DetailView):
         context['headers_recept'] = headers_recept
         context['headers_benef'] = headers_benef
         context['pop_total'] = pop_total
+        context['taux'] = get_per_category_taux(self.request)
         return context
 
 # ProfileUser
