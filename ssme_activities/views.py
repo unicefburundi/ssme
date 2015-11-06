@@ -54,7 +54,7 @@ def get_report_by_code(request, code, model):
     queryset = model.objects.all()
     if not queryset :
         return queryset
-    if request.user.is_superuser and not code :
+    if not code :
         return queryset
     if len(code)<=2 :
         return queryset.filter(report__cds__district__province__code=int(code))
