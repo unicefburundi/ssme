@@ -491,6 +491,16 @@ class CampaignProductCRUDL(SmartCRUDL):
         search_fields = ('product__icontains', )
         default_order = 'product'
 
+# CampaignCDS
+class CampaignCDSCRUDL(SmartCRUDL):
+    actions = ('read', 'list')
+    model = CampaignCDS
+
+    class List(SmartListView):
+        fields = ('cds', 'population_cible', 'cds.district.name', 'cds.district.province.name')
+        search_fields = ('cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
+        default_order = 'cds'
+
 # CampaignProduct
 class ReportCRUDL(SmartCRUDL):
     actions = ('read', 'list')
