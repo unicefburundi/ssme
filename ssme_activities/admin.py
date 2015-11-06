@@ -20,7 +20,7 @@ class CampaignProductAdmin(admin.ModelAdmin):
 class CampaignCDSAResource(resources.ModelResource):
     class Meta:
         model = CampaignCDS
-        fields = ('cds', 'population_cible', 'cds__district__name', 'cds__district__province__name')
+        fields = ('cds__name', 'population_cible', 'cds__district__name', 'cds__district__province__name')
 
 class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignCDSAResource
