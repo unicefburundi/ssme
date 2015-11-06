@@ -38,7 +38,7 @@ def beneficiaries(request):
 
 def get_pop_total(request, code=''):
     pop_total = CampaignCDS.objects.all()
-    if request.user.is_superuser and not code :
+    if  not code :
         return pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
     if not pop_total:
         pop_total= {}
@@ -500,6 +500,9 @@ class CampaignCDSCRUDL(SmartCRUDL):
         fields = ('cds', 'population_cible', 'cds.district.name', 'cds.district.province.name')
         search_fields = ('cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
         default_order = 'cds'
+
+    class Export( SmartXlsView):
+        pass
 
 # CampaignProduct
 class ReportCRUDL(SmartCRUDL):
