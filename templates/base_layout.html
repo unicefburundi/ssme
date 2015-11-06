@@ -62,12 +62,12 @@
         else{
           var taux = "{{taux|safe}}";
           taux = eval( "(" + taux + ")" );
-          var pop_attendue = (pop_total*taux[this.title]/100)
+          var pop_attendue = (pop_total*taux[this.title]/100);
           $.each(data, function (i, row) {
               total += +(row[field]);
           });
           if (pop_attendue != 0){
-            return '<strong>' + total + '</strong>'+ '    [' + (total/pop_attendue).toFixed(2)+ '%]';
+            return '<strong>' + total + '</strong>'+ '    [' + ((total*100)/pop_attendue).toFixed(2)+ '%]';
           }
           return '<strong>' + total + '</strong>';
         }
