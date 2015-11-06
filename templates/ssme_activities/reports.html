@@ -15,7 +15,7 @@
   <li {% block activefinal %}{% endblock activefinal %} >
     <a href="#final"   data-toggle="tab">Final Stock</a>
   </li>
-  {% if user.is_superuser %}
+  {% if user.is_staff %}
     <li {% block activedraft %}{% endblock activedraft %} >
       <!-- <a href="#final"   data-toggle="tab">Final Stock</a> -->
       <a href="#draft"   data-toggle="tab">Quelque calculs</a>
@@ -116,7 +116,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                     <div class="col-md-1"></div>
                 {% endblock final %}
               </div>
-              {% if user.is_superuser %}
+              {% if user.is_staff %}
               <div class="tab-pane {% block activedraft1 %}{% endblock activedraft1 %}" id="draft">
                 <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block draft %}

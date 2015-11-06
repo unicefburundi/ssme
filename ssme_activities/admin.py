@@ -5,6 +5,8 @@ from authtools.admin import NamedUserAdmin
 from django.contrib import admin
 from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
+from import_export import resources
+from import_export.admin import ExportMixin
 
 class CampaignBeneficiaryProductAdmin(admin.ModelAdmin):
     list_display = ('campaign_beneficiary', 'campaign_product', 'dosage', 'pourcentage_attendu')
@@ -15,8 +17,21 @@ class CampaignBeneficiaryAdmin(admin.ModelAdmin):
 class CampaignProductAdmin(admin.ModelAdmin):
     list_display = ('campaign','product','order_in_sms')
 
-class CampaignCDSAdmin(admin.ModelAdmin):
-    list_display = ('campaign', 'cds', 'population_cible')
+class CampaignCDSAResource(resources.ModelResource):
+    class Meta:
+        model = CampaignCDS
+        fields = ('cds', 'population_cible', 'cds__district__name', 'cds__district__province__name')
+
+class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = CampaignCDSAResource
+    list_display = ('campaign', 'cds', 'population_cible', 'district', 'province')
+    search_fields = ('cds__name', 'cds__district__name', 'cds__district__province__name')
+
+    def district(self, obj):
+        return obj.cds.district.name
+
+    def province(self, obj):
+        return obj.cds.district.province.name
 
 class ReportAdmin(admin.ModelAdmin):
     search_fields = ('text', 'category')
