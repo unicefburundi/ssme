@@ -258,13 +258,18 @@ class Temporary(models.Model):
         return self.phone_number
 
 class CampaignCDS(models.Model):
-	campaign = models.ForeignKey(Campaign)
-	cds = models.ForeignKey(CDS)
-	population_cible = models.IntegerField(null = True)
-	enfant_moins_5_ans = models.IntegerField(null = True)
+    campaign = models.ForeignKey(Campaign)
+    cds = models.ForeignKey(CDS)
+    population_cible = models.IntegerField(null = True)
+    enfant_moins_5_ans = models.IntegerField(null = True)
+
+    def __unicode__(self):
+        return "{0} expects {1}".format(self.cds, self.population_cible)
 
 class ReportStockOut(models.Model):
-	campaign_product = models.ForeignKey(CampaignProduct)
-	report = models.ForeignKey(Report)
-	remaining_stock = models.FloatField()
+    campaign_product = models.ForeignKey(CampaignProduct)
+    report = models.ForeignKey(Report)
+    remaining_stock = models.FloatField()
 
+    def __unicode__(self):
+        return "{0} report stock-out of {1} with a remaining stock {2}".format(self.report.cds, self.campaign_product.product.name, self.remaining_stock)

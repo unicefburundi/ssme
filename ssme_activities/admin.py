@@ -7,7 +7,6 @@ from ssme_activities.models import  *
 from ssme_activities.forms import UserCreationForm
 from import_export import resources
 from import_export.admin import ExportMixin
-from django.contrib.admin import DateFieldListFilter
 
 
 class CampaignBeneficiaryProductResource(resources.ModelResource):
@@ -142,6 +141,29 @@ class ReportProductRemainStockAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.report.cds.district.province.name
 
+class ReportStockOutResource(resources.ModelResource):
+    class Meta:
+        model = ReportStockOut
+        fields = ('remaining_stock', 'campaign_product__product__name',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+
+class ReportStockOutAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ReportStockOutResource
+    search_fields = ('campaign_product__product__name',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+    list_filter = ('report__cds__district__name', )
+    list_display = ('cds','product', 'remaining_stock',  'district', 'province', )
+
+    def product(self, obj):
+        return obj.campaign_product.product.name
+
+    def cds(self, obj):
+        return obj.report.cds.name
+
+    def district(self, obj):
+        return obj.report.cds.district.name
+
+    def province(self, obj):
+        return obj.report.cds.district.province.name
+
 User = get_user_model()
 
 class UserAdmin(NamedUserAdmin):
@@ -204,5 +226,5 @@ admin.site.register(ReportProductRemainStock, ReportProductRemainStockAdmin)
 admin.site.register(Temporary)
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(ReportStockOut)
+admin.site.register(ReportStockOut, ReportStockOutAdmin)
 admin.site.register(CampaignCDS, CampaignCDSAdmin)
