@@ -604,6 +604,6 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 def get_reports_json(request):
-    data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).values('beneficiaires',  'reception_date','received_number')], default=date_handler)
+    data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
