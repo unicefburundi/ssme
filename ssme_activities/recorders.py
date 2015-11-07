@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, Beneficiaire, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, Product, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS
 from django.db.models import Q
 import re
 import datetime
@@ -46,7 +46,7 @@ def check_number_of_values(args):
 def identify_the_opened_campaign(args):
 	'''This function identifies an opened campaign. More than one campaign can not be opened at the same time'''
 	campaign = Campaign.objects.filter(going_on = True)
-	
+
 	if len(campaign) < 1:
 		#There is no opened campaign
 		args['valide'] = False
@@ -73,7 +73,7 @@ def check_if_is_reporter(args):
 		return
 
 	one_concerned_reporter = concerned_reporter[0]
-	
+
 	if not one_concerned_reporter.cds:
 		#The CDS of this reporter is not known
 		args['valide'] = False
@@ -95,7 +95,7 @@ def check_date_is_in_camp_period(args):
 		args['valide'] = False
 		args['info_to_contact'] = "Erreur. La date indiquee n est pas valide."
 		return
-	
+
 
 	sent_date = args['text'].split(' ')[1][0:2]+"-"+args['text'].split(' ')[1][2:4]+"-20"+args['text'].split(' ')[1][4:]
 
@@ -119,7 +119,7 @@ def check_date_is_in_camp_period(args):
 		args['valide'] = False
 		args['info_to_contact'] = "Erreur. La date indiquee n est pas encore arrivee."
 		return
-	
+
 
 
 
@@ -164,10 +164,10 @@ def check_product_values_validity(args):
 	''' This function checks if the values sent by the phone user are the expected ones '''
 
 	priority = 1
-	
+
 	while ((priority <= args['number_of_concerned_products']) and (priority > 0)):
 		value = args['text'].split(' ')[priority+1]
-	
+
 		#Let's identify the concerned CampaignProduct
 		campaign_product = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -187,7 +187,7 @@ def check_product_values_validity(args):
 				args['valide'] = False
 				args['info_to_contact'] = "Erreur. La valeur envoyee en position "+str(priority)+" n est pas valide."
 				priority = -1
-			
+
 		priority = priority + 1
 	if args['valide']:
 		args['info_to_contact'] = "Ok."
@@ -379,7 +379,7 @@ def complete_registration(args):
 
 			check_duplication = ''
 
-	
+
 
 			#Let's check if the contact wants to update both the CDS and the phone number of his supervisor
 			check_duplication = Reporter.objects.filter(~Q(cds = the_one_existing_temp.cds), ~Q(supervisor_phone_number = the_one_existing_temp.supervisor_phone_number), phone_number = the_one_existing_temp.phone_number)
@@ -393,8 +393,8 @@ def complete_registration(args):
 				args['info_to_contact'] = "Mise a jour reussie. Le nouveau numero de votre superviseur est : "+the_one_existing_temp.supervisor_phone_number+" et le nouveau CDS est :"+the_one_existing_temp.cds
 				the_one_existing_temp.delete()
 				return
-			
-			
+
+
 			#This contact is doing a first registration. Let's record him/her
 			Reporter.objects.create(phone_number = the_one_existing_temp.phone_number,cds = the_one_existing_temp.cds,supervisor_phone_number = the_one_existing_temp.supervisor_phone_number)
 			the_one_existing_temp.delete()
@@ -468,11 +468,11 @@ def record_sds(args):
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
-	
+
 		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
-		
+
 
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
 
@@ -482,7 +482,7 @@ def record_sds(args):
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
 		priority = priority + 1
-	
+
 	args['info_to_contact'] = message_to_send+")."
 #------------------------------------------------------------------
 
@@ -543,7 +543,7 @@ def record_sr(args):
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
-	
+
 		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
@@ -552,11 +552,11 @@ def record_sr(args):
 			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
 		else:
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
-		
+
 		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
 
 		priority = priority + 1
-	
+
 	args['info_to_contact'] = message_to_send+")."
 #------------------------------------------------------------------
 
@@ -613,11 +613,11 @@ def record_sf(args):
 	priority = 1
 
 	message_to_send = "Le message enregistre est ("
-	
+
 	while (priority <= args['number_of_concerned_products']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
-	
+
 		prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_prod_campaign = prod_camp[0]
@@ -626,7 +626,7 @@ def record_sf(args):
 			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
 		else:
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
-		
+
 		report_prod = ReportProductRemainStock.objects.create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'], remain_quantity = value, report = the_created_report)
 
 		priority = priority + 1
@@ -699,7 +699,7 @@ def check_number_of_incoming_variables(args):
 def check_beneficiary_values_valid(args):
 	''' This function checks if the values sent by the phone user are the one expected '''
 	priority = 1
-	
+
 	while ((priority <= args['number_of_concerned_beneficiaries']) and (priority > 0)):
 		value = args['text'].split(' ')[priority+1]
 		expression = r'^[0-9]+$'
@@ -749,18 +749,18 @@ def record_beneficiaries(args):
 	print(args['valide'])
 	if not args['valide']:
 		return
-	
+
 	#Let's record the a beneficiary report
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'BENEFICIAIRE')
 
 	priority = 1
 
 	message_to_send = "Le message enregistre est ("
-	
+
 	while (priority <= args['number_of_concerned_beneficiaries']):
 		#We record each beneficiary number
 		value = args['text'].split(' ')[priority+1]
-	
+
 		ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_ben_campaign = ben_camp[0]
@@ -769,13 +769,13 @@ def record_beneficiaries(args):
 			message_to_send = message_to_send+""+the_concerned_ben_campaign.beneficiary.designation+" : "+value
 		else:
 			message_to_send = message_to_send+", "+the_concerned_ben_campaign.beneficiary.designation+" : "+value
-		
+
 		report_ben = ReportBeneficiary.objects.create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], received_number = value, report = the_created_report)
 
 		priority = priority + 1
 
 	args['info_to_contact'] = message_to_send+")."
-		
+
 #--------------------------------------------------------------------
 
 
@@ -826,18 +826,18 @@ def check_stock_out_values_validity(args):
 		else:
 			#value can be an integer
 			expression = r'^([0-9]+.[0-9]+)|([0-9]+)$'
-			
+
 		if re.search(expression, value) is None:
 			args['valide'] = False
 			args['info_to_contact'] = "Erreur. La quantite restante envoye n est pas valide."
-		
+
 	if args['valide']:
 		args['info_to_contact'] = "Ok."
 
 
 def alert_for_stock_out(args):
 	''' This function alerts in case of a stock out '''
-	
+
 	url = 'https://api.rapidpro.io/api/v1/broadcasts.json'
 	token = getattr(settings,'TOKEN','')
 
@@ -848,16 +848,16 @@ def alert_for_stock_out(args):
 		the_sup_phone_number = "tel:"+args['the_sender'].supervisor_phone_number
 		data = {"urns": [the_sup_phone_number],"text": args['message_to_send_for_alert']}
 
-		
+
 		response = requests.post(url, headers={'Content-type': 'application/json', 'Authorization': 'Token %s' % token}, data = json.dumps(data))
 		print(response.content)
 
 
 	#Secondly, let's send this alert to the computer users who have this CDS in charge.
-	
-	
-		
-		
+
+
+
+
 def record_stock_out(args):
 	''' This function is used to record a stock out report '''
 
@@ -909,7 +909,7 @@ def record_stock_out(args):
 		stock_out_report_object = ReportStockOut.objects.create(campaign_product = prod_camp, remaining_stock = value, report = the_created_report)
 
 		#args['info_to_contact'] = "Votre rapport est bien recu."
-		
+
 		args['cds_name'] = args['cds'].name
 		args['product_name'] = stock_out_report_object.campaign_product.product.name
 		args['remaining_stock'] = value
@@ -929,7 +929,7 @@ def record_stock_out(args):
 		alert_for_stock_out(args)
 
 
-	
+
 #------------------------------------------------------------------------------------------------------
 
 
@@ -948,10 +948,10 @@ def check_beneficiaries_value(args):
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Le nombre envoye pour la population cible est valide."
-	
+
 def record_population_cible(args):
 	''' This function is used to record 'Population cible' '''
-	
+
 	#Let's identify the opened campaign
 	identify_the_opened_campaign(args)
 	print(args['valide'])
@@ -987,7 +987,7 @@ def record_population_cible(args):
 	value = args['text'].split(' ')[1]
 
 	the_eventuals_existing_camp_cds = CampaignCDS.objects.filter(campaign = the_campaign, cds = the_cds)
-	
+
 	if len(the_eventuals_existing_camp_cds) > 0:
 		#There is one or more such CampaignCDS object(s). We update an existing one.
 		one_existing_camp_cds = the_eventuals_existing_camp_cds[0]
