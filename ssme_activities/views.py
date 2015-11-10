@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from smartmin.views import *
 from formtools.wizard.views import SessionWizardView
-from ssme.context_processor import myfacility, get_per_category_taux
+from ssme.context_processor import *
 from ssme_activities.tables import *
 from django.contrib.auth.forms import PasswordResetForm
 from django.db.models import F, Sum
@@ -358,6 +358,8 @@ class CDSDetailView(DetailView):
         context['headers_benef'] = headers_benef
         context['pop_total'] = pop_total
         context['taux'] = get_per_category_taux(self.request)
+        context['estimation'] = estimate(self.request, mycode)
+        context['recus'] = total_received(self.request, mycode)
         return context
 
 # ProfileUser
@@ -607,3 +609,26 @@ def get_reports_json(request):
     data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
+
+##########
+# Estimations  #
+##########
+
+def estimate(request, cds=''):
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    benefs = []
+    for h in headers_benef:
+        benef = ReportBeneficiary.objects.filter(report__cds__code=cds, campaign_beneficiary__beneficiary__designation=h['beneficiaires']).aggregate(Sum('received_number'))
+        for i in CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=h['beneficiaires']):
+            benef.update({ str(i.campaign_product.product.name): int(i.dosage * benef['received_number__sum']) })
+        benef.update(h)
+        benefs.append(benef)
+    return convert(benefs)
+
+def total_received(request, cds='010101'):
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+    recus = {}
+    for h in headers_recept:
+        recu = ReportProductReception.objects.filter(report__cds__code=cds, campaign_product__product__name=h['products']).aggregate(Sum('received_quantity'))
+        recus.update({str(h['products']): recu['received_quantity__sum']})
+    return convert(recus)

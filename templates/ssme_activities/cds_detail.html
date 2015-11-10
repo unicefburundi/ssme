@@ -24,10 +24,10 @@
         <div class="col-md-8">
             <ul class="nav nav-tabs">
                 <div class="page-header">
-                  <h3>Reports at {{ object.name|  capfirst }} CDS</h3>
+                  <h3>Rapports au CDS : {{ object.name|  capfirst }}</h3>
                 </div>
                   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-                    <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+                    <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
                   </li>
                   <li {% block activereception %}{% endblock activereception %} >
                     <a href="#reception"   data-toggle="tab">Received Stock</a>
@@ -35,6 +35,11 @@
                   <li {% block activefinal %}{% endblock activefinal %} >
                     <a href="#final"   data-toggle="tab">Final Stock</a>
                   </li>
+                  {% if user.is_staff %}
+                    <li {% block activeestimation %}{% endblock activeestimation %} >
+                      <a href="#estimation"   data-toggle="tab">Estimation Beneficiares</a>
+                    </li>
+                {% endif %}
             </ul>
             <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
@@ -122,6 +127,33 @@
                     <div class="col-md-1"></div>
                 {% endblock final %}
               </div>
+              <div class="tab-pane {% block activeestimation1 %}{% endblock activeestimation1 %}" id="estimation">
+                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
+                {% block estimation %}
+                    <div class="col-md-12">
+                    <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
+                        <thead>
+                          <tr>
+                            <th data-footer-formatter="receivedTextFormatter">Beneficiaires</th>
+                            {% for header in headers_recept %}
+                              <th data-footer-formatter="receivedFormatter">{{header.products}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in estimation  %}
+                            <tr>
+                            <td>{{i.beneficiaires}}</td>
+                            {% for t in headers_recept  %}
+                                <td>{{i|get_item:t.products|default:0}} </td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                    </table>
+                    </div>
+                {% endblock estimation %}
+              </div>
             </div>
         </div>
         <div class="col-md-1">
@@ -132,4 +164,27 @@
 {% else %}
 No Patient in this CDS
 {% endif %}
+<script>
+function receivedTextFormatter(data) {
+          return '<strong class="text-primary" >SR - Tot/prod</strong>';
+      };
+
+  function receivedFormatter(data) {
+        var recus = "{{recus|safe}}";
+        recus = eval( "(" + recus + ")" );
+        var total = 0;
+        field = this.field;
+        $.each(data, function (i, row) {
+              total += +(row[field]);
+          });
+        diff =  recus[this.title] - total;
+        if (diff <0) {
+          return  '<strong class="text-danger" >' + diff + '</strong>';
+        }
+        else{
+          return  '<strong class="text-primary" >' + diff + '</strong>';
+        };
+
+      }
+</script>
 {% endblock content %}

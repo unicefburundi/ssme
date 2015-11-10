@@ -6,3 +6,7 @@ register = template.Library()
 def getit(value, arg):
     # import ipdb; ipdb.set_trace()
     return value[arg]
+
+@register.filter(name='get_item')
+def get_item(dictionary, key):
+    return dictionary.get(key)
