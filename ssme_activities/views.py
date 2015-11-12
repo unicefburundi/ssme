@@ -620,7 +620,11 @@ def estimate(request, cds=''):
     for h in headers_benef:
         benef = ReportBeneficiary.objects.filter(report__cds__code=cds, campaign_beneficiary__beneficiary__designation=h['beneficiaires']).aggregate(Sum('received_number'))
         for i in CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=h['beneficiaires']):
-            benef.update({ str(i.campaign_product.product.name): int(i.dosage * benef['received_number__sum']) })
+            # import ipdb; ipdb.set_trace()
+            if benef['received_number__sum']:
+                benef.update({ str(i.campaign_product.product.name): int(i.dosage * benef['received_number__sum']) })
+            else:
+                benef.update({ str(i.campaign_product.product.name): 0 })
         benef.update(h)
         benefs.append(benef)
     return convert(benefs)
