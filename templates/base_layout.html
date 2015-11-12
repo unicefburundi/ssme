@@ -62,6 +62,7 @@
         else{
           var taux = "{{taux|safe}}";
           taux = eval( "(" + taux + ")" );
+          // console.log(taux);
           var pop_attendue = (pop_total*taux[this.title]/100);
           $.each(data, function (i, row) {
               total += +(row[field]);
@@ -123,11 +124,11 @@
           {% if user.is_authenticated %}
             <li role="presentation" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-user"></i> {{user.name|capfirst}}</a>
             <ul class="dropdown-menu">
-            <li><a href="{% url 'profile_user_detail' pk=user.id %}"> Profile</a></li>
+            <li><a href="{% url 'profile_user_detail' pk=user.id %}"> Profil</a></li>
               </ul>
             </li>
             {% if mylevel %}
-                <li><a href="#">Level : {{mylevel}}</a></li>
+                <li><a href="#">Niveau : {{mylevel}}</a></li>
             {% endif %}
             <!-- <li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a> -->
 			<li><a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Se déconnecter</a>
@@ -155,7 +156,7 @@
       {% if user.is_staff %}
 
             <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> List<span class="caret"></span>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Listes<span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
                 <li><a href="{% url 'province_list' %}">Provinces</a></li>
@@ -176,14 +177,12 @@
       {% endif %}
           {% if user.is_superuser %}
             <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Create <span class="caret"></span>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Creer <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
               {% if user.is_superuser %}
-                <!--<li><a href="{% url 'profile_user' %}">Users</a></li>-->
 				<li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
-                <!--<li><a href="{% url 'moh_facility' %}">Facilities</a></li>-->
-				<li><a href="{% url 'moh_facility' %}">Facilities</a></li>
+				<li><a href="{% url 'moh_facility' %}">Etablissements Sanitaires</a></li>
               {% endif %}
                 <li><a href="{% url 'ssme_activities.campaign_create' %}">Campaigns</a></li>
                 <li><a href="{% url 'ssme_activities.product_list' %}">Products</a></li>
@@ -193,7 +192,7 @@
           {% endif %}
           {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
             <li>
-              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Reports </a>
+              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Rapports </a>
           </li>
           <li>
               {% if user|has_group:"CDS" %}

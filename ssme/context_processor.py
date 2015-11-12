@@ -1,5 +1,6 @@
 from ssme_activities.models import CDS, District, Province, ProfileUser, Campaign, CampaignBeneficiary
 from django.db.models import F
+import collections
 
 
 def get_name_mohfacility(level='',code=''):
@@ -32,3 +33,13 @@ def get_per_category_taux(request):
     for i in headers_benef:
         taux.update({str(i['beneficiaires']): CampaignBeneficiary.objects.filter(beneficiary__designation=i['beneficiaires'])[0].pourcentage_attendu})
     return taux
+
+def convert(data):
+    if isinstance(data, basestring):
+        return str(data)
+    elif isinstance(data, collections.Mapping):
+        return dict(map(convert, data.iteritems()))
+    elif isinstance(data, collections.Iterable):
+        return type(data)(map(convert, data))
+    else:
+        return data
