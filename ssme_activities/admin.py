@@ -209,10 +209,27 @@ class UserAdmin(NamedUserAdmin):
                 email_template_name='registration/account_creation_email.html',
             )
 
+class ReporterResource(resources.ModelResource):
+    class Meta:
+        model = Reporter
+        # fields = ('text', 'concerned_date', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
+
+class ReporterAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ReporterResource
+    search_fields = ('phone_number', 'supervisor_phone_number', 'cds__name', 'cds__district__name', 'cds__district__province__name')
+    list_display = ('phone_number', 'cds', 'supervisor_phone_number',  'district', 'province',   )
+
+    def district(self, obj):
+        return obj.cds.district.name
+
+    def province(self, obj):
+        return obj.cds.district.province.name
+
+
 admin.site.register(Province)
 admin.site.register(District)
 admin.site.register(CDS)
-admin.site.register(Reporter)
+admin.site.register(Reporter, ReporterAdmin)
 admin.site.register(Campaign)
 admin.site.register(Beneficiaire)
 admin.site.register(Product)
