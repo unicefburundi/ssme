@@ -9,21 +9,21 @@
     <div class="row">
         <div class="col-md-3">
             <dl class="dl-horizontal">
-                <dt>Nom du Province : </dt>
+                <dt>Nom de la Province : </dt>
                 <p> {{object.name}}</p>
                 <dt>Population totale : </dt>
                 <p id="pop_total"> {{pop_total.population_cible}}</p>
-                <dt>Code du Province : </dt>
+                <dt>Code de la Province : </dt>
                 <p> {{object.code}}</p>
             </dl>
         </div>
         <div class="col-md-8">
             <ul class="nav nav-tabs">
               <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-                <a href="#beneficiary"   data-toggle="tab">Beneficiary</a>
+                <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
               </li>
               <li {% block activereception %}{% endblock activereception %} >
-                <a href="#reception"   data-toggle="tab">Stocks Recus</a>
+                <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
               </li>
               <li {% block activefinal %}{% endblock activefinal %} >
                 <a href="#final"   data-toggle="tab">Stock Final</a>
