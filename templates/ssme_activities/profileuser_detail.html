@@ -11,40 +11,40 @@
 {% endif %}
 </div>
 <div class="row">
-    <h2>{{ object.user.name|  capfirst }} ' s Profile</h2>
+    <h2>Profil de {{ object.user.name|  capfirst }} </h2>
 <div class="container">
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-6">
             <dl  class="dl-horizontal">
-            <dt>Name :</dt>
+            <dt>Nom d'utilisateur:</dt>
                 <p>{{ object.user.name }}</p>
             {% if object.user.first_name%}
-            <dt>First name :</dt>
+            <dt>Prénom :</dt>
                 <p>{{ object.user.first_name }}</p>
             {% endif %}
             {% if object.user.email %}
-            <dt> Email  :</dt>
+            <dt> Émail  :</dt>
                 <p>{{ object.user.email  }}</p>
             {% endif %}
             {% if object.user.last_name%}
-            <dt>Last name :</dt>
+            <dt>Nom :</dt>
                 <p>{{ object.user.last_name }}</p>
             {% endif %}
             {% if object.telephone%}
-            <dt>Telephone :</dt>
+            <dt>Téléphone :</dt>
                 <p>{{ object.telephone }}</p>
             {% endif %}
             {% if object.level%}
-            <dt>Level :</dt>
+            <dt>Niveau :</dt>
                 <p>{{ object.level }}</p>
             {% endif %}
             {% if object.moh_facility%}
-            <dt>MoH facility code : </dt>
+            <dt>Code  : </dt>
                 <p>{{ object.moh_facility }}</p>
             {% endif %}
             {% if object.facility%}
-            <dt>{{ object.level }} name :  </dt>
+            <dt>{{ object.level }} nom :  </dt>
                 <p>  {{ object.facility }}</p>
             {% endif %}
         </dl>
@@ -54,6 +54,6 @@
 </div>
 </div>
 {% if object.user.name == user.name %}
-<p><a href="{% url 'profileuser_update' pk=user.id %}">Edit my profile</a></p>
+<p><a href="{% url 'profileuser_update' pk=user.id %}">Éditer mon profil</a></p>
 {% endif %}
 {% endblock %}

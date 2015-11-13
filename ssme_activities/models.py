@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8  -*-
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -16,9 +18,9 @@ class ProfileUser(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     # The additional attributes we wish to include.
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
-    telephone = models.CharField(validators=[phone_regex], blank=True, help_text=_('The telephone to contact you.'), max_length=16)
-    level= models.CharField(max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
-    moh_facility = models.CharField(max_length=8, null=True, blank=True, help_text=_('Code of the MoH facility'))
+    telephone = models.CharField('téléphone', validators=[phone_regex], blank=True, help_text=_('The telephone to contact you.'), max_length=16)
+    level= models.CharField('niveau', max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
+    moh_facility = models.CharField('code', max_length=8, null=True, blank=True, help_text=_('Code of the MoH facility'))
 
     def __unicode__(self):
         return self.user.name
@@ -32,7 +34,7 @@ class ProfileUser(models.Model):
 
 class Province(models.Model):
     '''In this model, we will store burundi provinces'''
-    name = models.CharField(unique=True, max_length=20)
+    name = models.CharField('nom',unique=True, max_length=20)
     code = models.IntegerField(unique=True)
 
     def __unicode__(self):
@@ -46,8 +48,8 @@ class Province(models.Model):
 
 class District(models.Model):
     '''In this model, we will store districts'''
-    province = models.ForeignKey(Province)
-    name = models.CharField(unique=True, max_length=40)
+    province = models.ForeignKey(Province, verbose_name='province')
+    name = models.CharField('nom', unique=True, max_length=40)
     code = models.IntegerField(unique=True)
 
     def __unicode__(self):
@@ -61,8 +63,8 @@ class District(models.Model):
 
 class CDS(models.Model):
     '''In this model, we will store facilities'''
-    district = models.ForeignKey(District)
-    name = models.CharField(max_length=40)
+    district = models.ForeignKey(District, verbose_name='district')
+    name = models.CharField('nom', max_length=40)
     code = models.CharField(unique=True, max_length=6)
 
     def __unicode__(self):
