@@ -44,19 +44,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand topnav" href="#">SSME App</a>
+                <a class="navbar-brand topnav" href="/">SSME</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#about">About</a>
+                        <a href="#about">A propos!</a>
                     </li>
                     <li>
-                        <a href="#services">What ?</a>
+                        <a href="#services">Quoi ?</a>
                     </li>
                     <li>
-                        <a href="#contact">How ?</a>
+                        <a href="#contact">Comment ?</a>
                     </li>
                     {% if user.is_authenticated %}
                             {% if user.is_active %}
@@ -64,12 +64,12 @@
                                 <a class="page-scroll" href="{% url 'dashboard' %}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+                                <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Se déconnecter</a>
                             </li>
                             {% endif %}
                             {% else %}
                             <li>
-                                <a class="page-scroll" href="{% url 'login' %}">Login</a>
+                                <a class="page-scroll" href="{% url 'login' %}">Se connecter</a>
                             </li>
                         {% endif %}
                 </ul>
@@ -89,16 +89,8 @@
                 <div class="col-lg-12">
                     <div class="intro-message">
                         <h1>SSME</h1>
-                        <h3>Semaine Sante Mere Enfant</h3>
+                        <h3>Semaine Santé Mère Enfant</h3>
                         <hr class="intro-divider">
-                        <ul class="list-inline intro-social-buttons">
-                        <li>
-                            <a href="https://www.facebook.com/UNICEFBurundi" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
-                            </li>
-                            <li>
-                                <a href="https://www.youtube.com/channel/UCNJ2vR4Uh9znDgrLhOuE4eg" class="btn btn-default btn-lg"><i class="fa fa-youtube fa-fw"></i> <span class="network-name">Youtube</span></a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -117,10 +109,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
-                    <hr class="section-heading-spacer">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">Mother and Child Health Week:<br>Special Thanks</h2>
-                    <p class="lead">An initiative designed and implemented by the <a target="_blank" href="https://www.minisante.bi/"> Burundian Ministry of Health</a> (MOH), with <a target="_blank" href="http://www.unicef.org/">UNICEF</a>’s technical support. In Burundi, the SSME has been delivering bed-nets, micro-nutrients, vitamin A, vaccinations and Albendazole against STHs to pre-school children and pregnant women since 2003.</p>
+                    <h2 class="section-heading">Semaine Santé Mère Enfant</h2>
+                    <p class="lead">Une initiative conçue et mise en œuvre par <a target="_blank" href="https://www.minisante.bi/">le ministère de la Santé du Burundi </a>, avec l'appui technique de l' <a target="_blank" href="http://www.unicef.org/">UNICEF</a>. Au Burundi  depuis 2003, la SSME a permis la distribution de moustiquaires, des micronutriments, du vitamine A, la vaccination et la réception Albendazole contre les géohelminthiases aux enfants en âge préscolaire et aux femmes enceintes.</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                     <img class="img-responsive" src="{% static 'img/moh.jpg' %}" alt="">
@@ -139,8 +130,8 @@
             <div class="row">
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">Vitamins and Medecines<br>distributed twice a year!</h2>
-                    <p class="lead"><strong>Albendazole/Mebendazole</strong>, against STHs, is distributed twice yearly, via the community health centres and schools, to all the children aged 1-14 years-old and women of child-bearing age, across the country;</p>
+                    <h2 class="section-heading">Vitamines et Médicaments <br> distribués deux fois par an!</h2>
+                    <p class="lead"><strong>Albendazole/Mebendazole</strong>, contre géohelminthiases, est distribué deux fois par an, par l'intermédiaire des centres de santé communautaires et les écoles, à tous les enfants âgés de 1-14 ans et les femmes en âge de procréer, à travers tout le pays;</p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
                     <img class="img-responsive" src="{% static 'img/dog.png' %}" alt="">
@@ -160,9 +151,9 @@
             <div class="row">
                 <div class="col-lg-5 col-sm-6">
                     <div class="clearfix"></div>
-                    <h2 class="section-heading">Each day, data are collected <br>using simple mobile  phones </h2>
-                    <p class="lead">Data are collected at the grass-root level, accessed up trought till to the MoH.  Decision are made to ressuply HoH facilities which experience stock-out.</p>
-                    <p class="lead">At the end of the day, each partenair can measure the performances of his team, and project the next step for the good of Burundian children (and mothers)!</p>
+                    <h2 class="section-heading">Chaque jour, les données sont collectées utilisant les téléphones mobiles</h2>
+                    <p class="lead">Les données sont recueillies à la base, et sont accessibles jusqu'au la Ministère de la Santé. Les décisions sont prises pour ravitailler les centres connaissant des ruptures de stock.</p>
+                    <p class="lead">À la fin de la journée, chaque partenaire peut mesurer les performances de son équipe, et projeter la prochaine étape pour le bien des enfants (et des mères) du Burundi!</p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
                     <img class="img-responsive" src="{% static 'img/ipad1.png' %}" alt="">
@@ -182,11 +173,11 @@
             <div class="row">
                 <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
                     <div class="clearfix"></div>
-                <p class="lead"><strong>Praziquantel</strong>, against schistosomiasis, is distributed once a year by the school-teachers to all the school-enrolled children aged 7-14 years-old in the 18 endemic districts. It is also distributed via the community health centres to all the children age 5-7 years-old and all the non-enrolled school-age children (7-14 years-old).</p>
-                    <p class="lead">SMSs are used trough
-                        <a target="_blank" href="http://www.rapidpro.io/">RapiPro</a> to report stock-out, and to ensure the efficacity of distribution to targeted vulnerable population.
+                <p class="lead"><strong>Le Praziquantel</strong>, (contre la schistosomiase), est distribué une fois par an par les maîtres d'école à tous les enfants inscrits en âge scolaire 7-14 ans dans les districts endémiques. Il est également distribué par l'intermédiaire des centres de santé communautaires à tous les enfants de  5-14 ans.</p>
+                <p class="lead">Les Texto (SMS) sont utilisés à travers
+                        <a target="_blank" href="http://www.rapidpro.io/">RapidPro </a> pour signaler une rupture de stock, et de veiller à l'efficacité de la distribution aux populations vulnérables cibles.
                     </p>
-                    <p class="lead"><strong>Vitamins</strong> are given to children in order to pariate the deficiency of vitamins and combat malnutrition.</p>
+                    <p class="lead"><strong>Les Vitamines </strong> sont donnés aux enfants dans le but de pilier à la carence de vitamines et  combattre la malnutrition.</p>
                     </div>
                          <div class="col-lg-5 col-sm-pull-6  col-sm-6">
                     <img class="img-responsive" src="{% static 'img/vitamin.png' %}" alt="">
@@ -202,20 +193,7 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <h2>Connect with us and contribute:</h2>
-                </div>
-                <div class="col-lg-6">
-                    <ul class="list-inline banner-social-buttons">
-                        <li>
-                            <a href="https://twitter.com/" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/UNICEFBurundi" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
-                        </li>
-                        <li>
-                            <a href="https://www.youtube.com/channel/UCNJ2vR4Uh9znDgrLhOuE4eg" class="btn btn-default btn-lg"><i class="fa fa-youtube fa-fw"></i> <span class="network-name">Youtube</span></a>
-                        </li>
-                    </ul>
+                    <h2>SSME</h2>
                 </div>
             </div>
 
@@ -232,19 +210,19 @@
                 <div class="col-lg-12">
                     <ul class="list-inline">
                         <li>
-                            <a href="#">Home</a>
+                            <a href="#">Accueil</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#about">About</a>
+                            <a href="#about">A propos</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#services">What ?</a>
+                            <a href="#services">Quoi ?</a>
                         </li>
                         <li class="footer-menu-divider">&sdot;</li>
                         <li>
-                            <a href="#contact">How ?</a>
+                            <a href="#contact">Comment ?</a>
                         </li>
                         {% if user.is_authenticated %}
                             {% if user.is_active %}
@@ -252,12 +230,12 @@
                                 <a class="page-scroll" href="{% url 'dashboard' %}">Dashboard</a>
                             </li>
                             <li>
-                                <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Logout</a>
+                                <a href="{% url 'logout' %}?next=/"><i class="glyphicon glyphicon-lock"></i> Se déconnecter</a>
                             </li>
                             {% endif %}
                             {% else %}
                             <li>
-                                <a class="page-scroll" href="{% url 'login' %}">Login</a>
+                                <a class="page-scroll" href="{% url 'login' %}">Se connecter</a>
                             </li>
                         {% endif %}
                     </ul>

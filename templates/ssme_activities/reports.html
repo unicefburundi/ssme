@@ -6,18 +6,16 @@
   <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
   </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-    <a href="#beneficiary"   data-toggle="tab">Beneficiaires</a>
+    <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
   </li>
   <li {% block activereception %}{% endblock activereception %} >
-    <!-- <a href="#reception"   data-toggle="tab">Received Stock</a> -->
-	<a href="#reception"   data-toggle="tab">Stocks Recus</a>
+	<a href="#reception"   data-toggle="tab">Stocks Reçus</a>
   </li>
   <li {% block activefinal %}{% endblock activefinal %} >
-    <a href="#final"   data-toggle="tab">Final Stock</a>
+    <a href="#final"   data-toggle="tab">Stock Final</a>
   </li>
   {% if user.is_staff %}
     <li {% block activedraft %}{% endblock activedraft %} >
-      <!-- <a href="#final"   data-toggle="tab">Final Stock</a> -->
       <a href="#draft"   data-toggle="tab">Quelque calculs</a>
     </li>
   {% endif %}

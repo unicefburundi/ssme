@@ -163,26 +163,26 @@
                 {% endif %}
                   <li role="separator" class="divider"></li>
                     <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
-                    <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Campagne Beneficiaire</a></li>
-                    <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Campagne Beneficiaire Produits</a></li>
-                    <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produits</a></li>
-                    <li><a href="{% url 'ssme_activities.campaigncds_list' %}">Campagne C.d.S</a></li>
+                    <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires</a></li>
+                    <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires et Produits</a></li>
+                    <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Produits</a></li>
+                    <li><a href="{% url 'ssme_activities.campaigncds_list' %}">C.d.S</a></li>
 
               </ul>
           </li>
       {% endif %}
           {% if user.is_superuser %}
             <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Creer <span class="caret"></span>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Créer <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
               {% if user.is_superuser %}
 				<li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
-				<li><a href="{% url 'moh_facility' %}">Etablissements Sanitaires</a></li>
+				<li><a href="{% url 'moh_facility' %}">Établissements Sanitaires</a></li>
               {% endif %}
-                <li><a href="{% url 'ssme_activities.campaign_create' %}">Campaigns</a></li>
-                <li><a href="{% url 'ssme_activities.product_list' %}">Products</a></li>
-                <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Beneficiaries</a></li>
+                <li><a href="{% url 'ssme_activities.campaign_create' %}">Campagnes</a></li>
+                <li><a href="{% url 'ssme_activities.product_list' %}">Produits</a></li>
+                <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Bénéficiaires</a></li>
               </ul>
           </li>
           {% endif %}

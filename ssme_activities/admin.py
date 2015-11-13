@@ -212,7 +212,7 @@ class UserAdmin(NamedUserAdmin):
 class ReporterResource(resources.ModelResource):
     class Meta:
         model = Reporter
-        # fields = ('text', 'concerned_date', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
+        fields = ('phone_number', 'supervisor_phone_number', 'cds__name', 'cds__district__name', 'cds__district__province__name')
 
 class ReporterAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReporterResource
