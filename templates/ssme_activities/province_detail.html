@@ -91,7 +91,7 @@
                     <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                     {% block final %}
                         <div class="col-md-11">
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
+                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] >
                             <thead>
                               <tr>
                                 <th data-footer-formatter="consumptionTextFormatter">District</th>

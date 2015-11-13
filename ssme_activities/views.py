@@ -218,7 +218,7 @@ class ProvinceDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         #reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for district in districts :
@@ -283,7 +283,7 @@ class DistrictDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         #reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for cds in cdss :
@@ -339,7 +339,7 @@ class CDSDetailView(DetailView):
         if queryset_benef:
             body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
         #reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
         body_reception = []
