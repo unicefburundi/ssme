@@ -12,3 +12,4 @@ static/
 *ipynb*
 fixtures/
 staticfiles/img/
+*.mo
