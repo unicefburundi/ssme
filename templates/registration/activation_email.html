@@ -9,17 +9,15 @@
 
 <body>
 <p>
-    {% blocktrans with site_name=site.name %}
-    You (or someone pretending to be you) have asked to register an account at
-    {{ site_name }}.  If this wasn't you, please ignore this email
-    and your address will be removed from our records.
-    {% endblocktrans %}
+    {% block acti1 with site_name=site.name %}
+    {% trans "You (or someone pretending to be you) have asked to register an account at" %}{{ site_name }}.  {% trans "If this wasn't you, please ignore this email and your address will be removed from our records." %}
+    {% endblock acti1 %}
 </p>
 <p>
-    {% blocktrans %}
-    To activate this account, please click the following link within the next
-    {{ expiration_days }} days:
-    {% endblocktrans %}
+
+    {% trans "To activate this account, please click the following link within the next" %}
+    {{ expiration_days }} {% trans "days:" %}
+
 </p>
 
 <p>
@@ -28,10 +26,10 @@
     </a>
 </p>
 <p>
-    {% blocktrans with site_name=site.name %}
-    Sincerely,
-    {{ site_name }} Management
-    {% endblocktrans %}
+    {% block act2 with site_name=site.name %}
+    {% trans "Sincerely," %}
+    {{ site_name }} {% trans "Management" %}
+    {% endblock act2 %}
 </p>
 </body>
 

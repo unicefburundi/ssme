@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 from ssme_activities.backend import handel_rapidpro_request
 from ssme_activities.views import *
 
+
 urlpatterns = patterns('',
     url(r'external_request', handel_rapidpro_request, name="handel_request"),
     url(r'^moh_facility/$', moh_facility, name='moh_facility'),

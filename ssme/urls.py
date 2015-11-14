@@ -3,10 +3,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.conf.urls.i18n import i18n_patterns
 
-urlpatterns = urlpatterns = patterns('',
+urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^ssme/', include('ssme_activities.urls')),
+    )
+
+urlpatterns  += i18n_patterns(
     url(r'^accounts/', include('authtools.urls')),
     url(r'^users/', include('smartmin.users.urls')),
     url(r'^get_by_level/(?P<level>\w+)/$', 'ssme.views.get_by_level', name='get_by_level'),

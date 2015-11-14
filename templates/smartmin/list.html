@@ -76,15 +76,15 @@
   <div class="col-md-3">
     <div class="pagination-text">
       {% if not paginator or paginator.num_pages <= 1 %}
-	{% blocktrans count counter=object_list|length %}
-	 {{ counter }} result
+	{% block list1 count counter=object_list|length %}
+	 {{ counter }} {% trans "result" %}
 	{% plural %}
-         {{ counter }} results
-        {% endblocktrans %}
+         {{ counter }} {% trans "results" %}
+        {% endblock list1 %}
       {% else %}
-	{% blocktrans with start=page_obj.start_index end=start_obj.end_index count=paginator.count %}
-	Results {{ start }}-{{ end }} of {{ count }}
-	{% endblocktrans %}
+	{% block list2 with start=page_obj.start_index end=start_obj.end_index count=paginator.count %}
+	{% trans "Results" %} {{ start }}-{{ end }} {% trans "of" %} {{ count }}
+	{% endblock list2 %}
       {% endif %}
     </div>
   </div>
@@ -96,7 +96,7 @@
         {% else %}
         <li class="prev disabled"><a href="#">&larr; {% trans "Previous" %}</a></li>
         {% endif %}
-	
+
         {% for page_num in paginator.page_range %}
 	  {% if page_obj.number < 5 %}
 	    {% if page_num < 10 %}
@@ -151,7 +151,7 @@
       {% if order_asc %}
        if (field == "{{order}}"){
          field = "-" + field;
-       } 
+       }
        {% endif %}
 
        document.location = "{{url_params|safe}}_order=" + field;
