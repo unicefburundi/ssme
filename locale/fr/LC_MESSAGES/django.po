@@ -1,0 +1,521 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-14 17:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Rugano Allan Stockman <kuristockyrugano at gmail >\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ssme_activities/forms.py:113
+msgid "Dose"
+msgstr "Dose"
+
+#: ssme_activities/forms.py:114
+msgid "Pill"
+msgstr "Pilule"
+
+#: ssme_activities/forms.py:115
+msgid "Injection"
+msgstr "Injection"
+
+#: ssme_activities/models.py:20
+msgid ""
+"Phone number must be entered in the format: '+999999999'. Up to 15 digits "
+"allowed."
+msgstr ""
+"Numéro de téléphone doit être saisi dans le format:. '999999999' Jusqu'à 15 chiffres"
+"permis."
+
+#: ssme_activities/models.py:21
+msgid "The telephone to contact you."
+msgstr "Le téléphone pour vous contacter."
+
+#: ssme_activities/models.py:22
+msgid "Either CDS, BDS, PBS, or Central level."
+msgstr "Soit CDS, BDS, PBS, ou niveau central."
+
+#: ssme_activities/models.py:23
+msgid "Code of the MoH facility"
+msgstr ""
+
+#: templates/formtools/form.html:6
+msgid "Please correct the following errors"
+msgstr "Code de l'installation MoH"
+
+#: templates/formtools/form.html:6 templates/formtools/preview.html:24
+msgid "Submit"
+msgstr "Envoyer"
+
+#: templates/formtools/form.html:13 templates/formtools/preview.html:34
+msgid "Preview"
+msgstr "Aperçu"
+
+#: templates/formtools/preview.html:6
+msgid "Preview your submission"
+msgstr "Aperçu avant envoi"
+
+#: templates/formtools/preview.html:17
+#, python-format
+msgid "Security hash: %(hash_value)s"
+msgstr "Sécurité hachage: %(hash_value)s"
+
+#: templates/formtools/preview.html:27
+msgid "Or edit it again"
+msgstr "Ou éditer à nouveau"
+
+#: templates/formtools/wizard/wizard_form.html:18
+msgid "first step"
+msgstr "premier pas"
+
+#: templates/formtools/wizard/wizard_form.html:19
+msgid "prev step"
+msgstr "étape precedente"
+
+#: templates/formtools/wizard/wizard_form.html:21
+msgid "submit"
+msgstr "envoyer"
+
+#: templates/registration/account_creation_email.html:2
+#: templates/registration/password_reset_email.html:2
+#, python-format
+msgid
+"You're receiving this email because you requested a password reset for your "
+"user account at %(site_name)s."
+msgstr "Vous recevez cet émail car vous avez demandé une réinitialisation de mot de passe pour votre"
+"compte utilisateur au site %(nom_site)."
+
+#: templates/registration/account_creation_email.html:4
+#: templates/registration/password_reset_email.html:4
+msgid "Please go to the following page and choose a new password:"
+msgstr "S'il vous plaît allez à la page suivante et choisissez un nouveau mot de passe:"
+
+#: templates/registration/account_creation_email.html:8
+#: templates/registration/password_reset_email.html:8
+msgid "Your username, in case you've forgotten:"
+msgstr "Votre nom d'utilisateur, dans le cas où vous avez oublié:"
+
+#: templates/registration/account_creation_email.html:10
+#: templates/registration/password_reset_email.html:10
+msgid "Thanks for using our site!"
+msgstr "Merci d'utiliser notre site!"
+
+#: templates/registration/account_creation_email.html:12
+#: templates/registration/password_reset_email.html:12
+#, python-format
+msgid "The %(site_name)s team"
+msgstr "L'équipe du site %(site_name)"
+
+#: templates/registration/account_creation_subject.txt:1
+msgid "Activation du compte sur"
+msgstr "Activation du compte sur"
+
+#: templates/registration/activate.html:5
+msgid "Account activation failed."
+msgstr "Activation du compte a échoué."
+
+#: templates/registration/activation_complete.html:4
+msgid "Account Activated"
+msgstr "compte Activé"
+
+#: templates/registration/activation_complete.html:8
+msgid "Your account is now activated."
+msgstr "Votre compte est maintenant activé."
+
+#: templates/registration/activation_complete.html:10
+msgid "You can log in."
+msgstr "Vous pouvez vous connecter."
+
+#: templates/registration/activation_email.html:7
+msgid "registration"
+msgstr "enregistrement"
+
+#: templates/registration/activation_email.html:12
+#, python-format
+msgid ""
+"\n"
+"    You (or someone pretending to be you) have asked to register an account "
+"at\n"
+"    %(site_name)s.  If this wasn't you, please ignore this email\n"
+"    and your address will be removed from our records.\n"
+"    "
+msgstr ""
+"\n"
+"    Vous (ou une personne prétendant être vous) avez demandé de créer un compte"
+"à \n"
+"    % (site_name). Si ce n'est pas vous, s'il vous plaît ignorer cet e-mail \n"
+"    Et votre adresse sera supprimé de notre système. \n"
+"    "
+
+#: templates/registration/activation_email.html:19
+#, python-format
+msgid ""
+"\n"
+"    To activate this account, please click the following link within the "
+"next\n"
+"    %(expiration_days)s days:\n"
+"    "
+msgstr ""
+"\n"
+"    Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans avant"
+"les prochains \n"
+"    % (expiration_days) jours: \n"
+"    "
+
+#: templates/registration/activation_email.html:31
+#, python-format
+msgid ""
+"\n"
+"    Sincerely,\n"
+"    %(site_name)s Management\n"
+"    "
+msgstr ""
+"\n"
+"   Sincèrement,\n"
+"   Gestionnaire du site %(site_name) "
+"   "
+
+#: templates/registration/activation_email.txt:3
+#, python-format
+msgid ""
+"\n"
+"Vous (ou une personne prétendant être vous) avez demandé de créer un compte "
+"au site %(site_name)s.  Si cela n'a pas été vous, s'il vous plaît ignorer "
+"cet e-mail et votre adresse sera supprimé de nos systemes.\n"
+msgstr ""
+"\n"
+"    Vous (ou une personne prétendant être vous) avez demandé de créer un compte"
+"à \n"
+"    % (site_name). Si ce n'est pas vous, s'il vous plaît ignorer cet e-mail \n"
+"    Et votre adresse sera supprimé de notre système. \n"
+"    "
+
+#: templates/registration/activation_email.txt:6
+#, python-format
+msgid ""
+"\n"
+"Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans le "
+"prochain %(expiration_days)s  jours.\n"
+msgstr ""
+"\n"
+"Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans le "
+"prochain %(expiration_days)s  jours.\n"
+
+#: templates/registration/activation_email.txt:12
+#, python-format
+msgid ""
+"\n"
+"Cordialement,%(site_name)s Management\n"
+msgstr ""
+"\n"
+"Cordialement,%(site_name)s Management\n"
+
+#: templates/registration/activation_email_subject.txt:1
+msgid "Account activation on"
+msgstr "Activation de compte sur"
+
+#: templates/registration/logout.html:4
+msgid "Logged out"
+msgstr "Déconnecté"
+
+#: templates/registration/logout.html:9
+msgid "Successfully logged out"
+msgstr "Bien déconnecté"
+
+#: templates/registration/password_change_done.html:4
+msgid "Password changed"
+msgstr "Mot de passe changé"
+
+#: templates/registration/password_change_done.html:7
+msgid "Password successfully changed!"
+msgstr "Mot de passe changé avec succès!"
+
+#: templates/registration/password_change_form.html:4
+#: templates/registration/password_change_form.html:10
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+#: templates/registration/password_reset_complete.html:4
+msgid "Password reset complete"
+msgstr "Réinitialisation du Mot de passe complète"
+
+#: templates/registration/password_reset_complete.html:8
+msgid "Your password has been reset!"
+msgstr "Votre mot de passe a été réinitialisé!"
+
+#: templates/registration/password_reset_complete.html:9
+msgid "You may now"
+msgstr "Vous pouvez maintenant"
+
+#: templates/registration/password_reset_complete.html:9
+msgid "log in"
+msgstr "s'identifier"
+
+#: templates/registration/password_reset_confirm.html:6
+msgid "Home"
+msgstr "Accueil"
+
+#: templates/registration/password_reset_confirm.html:7
+msgid "Password reset confirmation"
+msgstr "Mot de passe confirmation de réinitialisation"
+
+#: templates/registration/password_reset_confirm.html:17
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
+"S'il vous plaît entrez votre nouveau mot de passe deux fois afin que nous puissions vérifier que vous avez saisi "
+"correctement."
+
+#: templates/registration/password_reset_confirm.html:21
+msgid "New password:"
+msgstr "Nouveau mot de passe:"
+
+#: templates/registration/password_reset_confirm.html:23
+msgid "Confirm password:"
+msgstr "Confirmez le mot de passe:"
+
+#: templates/registration/password_reset_confirm.html:24
+msgid "Change my password"
+msgstr "Changer mon mot de passe"
+
+#: templates/registration/password_reset_confirm.html:29
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
+"Le lien de réinitialisation de mot était invalide, peut-être parce qu'il a déjà été"
+"utilisé. S'il vous plaît demander un nouveau mot de passe réinitialisé."
+
+#: templates/registration/password_reset_done.html:4
+msgid "Password reset"
+msgstr "Réinitialiser le mot de passe"
+
+#: templates/registration/password_reset_done.html:8
+msgid ""
+"\n"
+"    We have sent you an email with a link to reset your password.  Please "
+"check\n"
+"    your email and click the link to continue.\n"
+"    "
+msgstr ""
+"\n"
+"    Nous vous avons envoyé un e-mail avec un lien pour réinitialiser votre mot de passe. S'il vous plaît"
+"regardez \n"
+"    Votre e-mail et cliquez sur le lien pour continuer. \n"
+"    "
+
+#: templates/registration/password_reset_form.html:4
+#: templates/registration/password_reset_form.html:15
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+#: templates/registration/password_reset_form.html:8
+msgid ""
+"\n"
+"    Forgot your password?  Enter your email in the form below and we'll send "
+"you instructions for creating a new one.\n"
+"    "
+msgstr ""
+"\n"
+"    Vous avez oublié votre mot de passe? Entrez votre émail dans le formulaire ci-dessous et nous allons envoyer"
+"vous des instructions pour créer un nouveau. \n"
+"    "
+
+#: templates/registration/registration_closed.html:4
+msgid "Registration is closed"
+msgstr "L'inscription est fermée"
+
+#: templates/registration/registration_closed.html:7
+msgid "Sorry, but registration is closed at this moment. Come back later."
+msgstr "Désolé, mais l'inscription est fermé en ce moment. Revenez plus tard."
+
+#: templates/registration/registration_complete.html:4
+msgid "Activation email sent"
+msgstr "E-mail d'activation envoyé"
+
+#: templates/registration/registration_complete.html:7
+msgid "Please check your email to complete the registration process."
+msgstr "S'il vous plaît vérifier votre e-mail pour terminer le processus d'inscription."
+
+#: templates/registration/registration_form.html:4
+msgid "New User ? "
+msgstr "Nouvel utilisateur ?"
+
+#: templates/registration/registration_form.html:6
+msgid "Invalid data. Please try again."
+msgstr "Données invalides. Veuillez réessayer."
+
+#: templates/smartmin/delete_confirm.html:11
+msgid "Remove Item?"
+msgstr "Supprimer un objet?"
+
+#: templates/smartmin/delete_confirm.html:13
+#, python-format
+msgid ""
+"\n"
+"    Are you sure you want to remove <b>%(object)s</b>?\n"
+"    "
+msgstr ""
+"\n"
+"    Êtes-vous sûr que vous voulez supprimer <b>% (objet) s </b>? \n"
+"    "
+
+#: templates/smartmin/delete_confirm.html:17
+msgid ""
+"Once it is removed, it will be gone forever. There is no way to undo this "
+"operation."
+msgstr ""
+"Une fois qu'il est retiré, il sera parti pour toujours. Il n'y a pas moyen d'annuler cette"
+"opération."
+
+#: templates/smartmin/delete_confirm.html:24 templates/smartmin/form.html:50
+#: templates/smartmin/update.html:8
+msgid "Cancel"
+msgstr "Annuler"
+
+#: templates/smartmin/delete_confirm.html:26 templates/smartmin/update.html:10
+msgid "Remove"
+msgstr "Suprimer"
+
+#: templates/smartmin/list.html:14
+msgid "Search"
+msgstr "Chercher"
+
+#: templates/smartmin/list.html:25
+msgid "Add"
+msgstr "Ajouter"
+
+#: templates/smartmin/list.html:79
+#, python-format
+msgid ""
+"\n"
+"\t %(counter)s result\n"
+"\t"
+msgid_plural ""
+"\n"
+"         %(counter)s results\n"
+"        "
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/smartmin/list.html:85
+#, python-format
+msgid ""
+"\n"
+"\tResults %(start)s-%(end)s of %(count)s\n"
+"\t"
+msgstr ""
+"\n"
+"\tResults %(start)-%(end) de %(count) \n"
+"\t"
+
+#: templates/smartmin/list.html:95 templates/smartmin/list.html.py:97
+msgid "Previous"
+msgstr "Precedent"
+
+#: templates/smartmin/list.html:128 templates/smartmin/list.html.py:130
+msgid "Next"
+msgstr "Suivant"
+
+#: templates/smartmin/read.html:14
+msgid "Edit"
+msgstr "Editer"
+
+#: templates/smartmin/users/login.html:10
+msgid "Sign in"
+msgstr "S'inscrire'"
+
+#: templates/smartmin/users/login.html:33
+msgid "Login"
+msgstr "Se connecter"
+
+#: templates/smartmin/users/login.html:35
+msgid "Forgot Password?"
+msgstr "Mot de passe oublié?"
+
+#: templates/smartmin/users/user_expired.html:7
+msgid "Token Expired"
+msgstr "Token périmée"
+
+#: templates/smartmin/users/user_failed.html:9
+msgid "Login Failure"
+msgstr "Echec connexion"
+
+#: templates/smartmin/users/user_failed.html:11
+#, python-format
+msgid ""
+"\n"
+"      Sorry, you cannot log in at this time because we received "
+"%(failed_login_limit)s incorrect login attempts.\n"
+"      "
+msgstr ""
+"\n "
+"    Désolé, vous ne pouvez pas vous connecter en ce moment parce que nous avons reçu"
+"%(failed_login_limit) des tentatives de connexion incorrectes. \n"
+"    "
+
+#: templates/smartmin/users/user_failed.html:18
+#, python-format
+msgid ""
+"\n"
+"      Please wait %(lockout_timeout)s minutes before to try log in again.\n"
+"      "
+msgstr ""
+"\n"
+"    S'il vous plaît attendre %(lockout_timeout) minutes avant d'essayer de vous connecter à nouveau. \n"
+"    "
+
+#: templates/smartmin/users/user_failed.html:25
+msgid ""
+"Alternatively, you can fill out the form below to have your password reset "
+"via e-mail."
+msgstr ""
+"Sinon, vous pouvez remplir le formulaire ci-dessous pour réinitialiser votre mot de passe"
+"par e-mail."
+
+#: templates/smartmin/users/user_failed.html:27
+msgid "Please contact the website administrator to have your password reset."
+msgstr "S'il vous plaît contactez l'administrateur du site pour faire réinitialiser votre mot de passe."
+
+#: templates/smartmin/users/user_failed.html:39
+msgid "Email Address"
+msgstr "Adresse e-mail"
+
+#: templates/smartmin/users/user_failed.html:41
+msgid "Recover"
+msgstr "Récupérer"
+
+#: templates/smartmin/users/user_forget.html:6
+msgid ""
+"Please enter the email address you used to sign up and we will help you "
+"recover your password."
+msgstr ""
+"S'il vous plaît entrez l'adresse e-mail que vous avez utilisé pour vous inscrire et nous allons vous aider pour"
+"récupérer votre mot de passe."
+
+#: templates/smartmin/users/user_newpassword.html:7
+#, python-format
+msgid ""
+"\n"
+"  <strong>Your password has expired.</strong> Site policy states that you "
+"must pick a new password every %(expire_days)s days, and that passwords must "
+"not have been used within the previous %(window_days)s days.\n"
+"  "
+msgstr ""
+"\n"
+"<strong> Votre mot de passe a expiré. </strong> La stratégie du site est que vous"
+"devez choisir un nouveau mot de passe de tous les  %(expire_days) jours, et que les mots de passe doivent"
+"ne pas avoir été utilisé dans les précédents %(window_days) jours. \n"
+""

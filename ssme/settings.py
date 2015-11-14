@@ -91,13 +91,13 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'fr-FR'
+LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'Africa/Bujumbura'
 
 USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
 USE_TZ = True
 
@@ -182,6 +182,19 @@ GROUP_PERMISSIONS = {
 
 # this is required by guardian
 ANONYMOUS_USER_ID = -1
+
+# Path to locale folder
+LOCALE_PATHS = (
+      os.path.join(BASE_DIR, 'locale'),
+)
+
+
+# The languages you are supporting
+LANGUAGES = (
+    ('en', 'English'),   # You need to include your LANGUAGE_CODE language
+    ('fr', 'French'),
+)
+
 
 try:
     from localsettings import *
