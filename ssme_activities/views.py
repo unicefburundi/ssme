@@ -14,6 +14,7 @@ from django.db.models import F, Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
+from django.utils.translation import ugettext as _
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -389,9 +390,9 @@ class UserSignupView(CreateView):
                     subject_template_name='registration/account_creation_subject.txt',
                     email_template_name='registration/account_creation_email.html',
                 )
-                messages.success(self.request, 'Prifile created and mail sent to {0}.'.format(user.email))
+                messages.success(self.request, _('Profile created and mail sent to %(email)s.') % {'email':user.email} )
             except:
-                messages.success(self.request, 'Unable to send mail  to {0}.'.format(user.email))
+                messages.success(self.request, _('Unable to send mail  to %(email)s.') % {'email':user.email})
                 pass
         return redirect(self.get_success_url(profile.id))
 
@@ -430,7 +431,7 @@ class CampaignCRUDL(SmartCRUDL):
         form_class = CampaignForm1
 
         def form_valid(self, form):
-            messages.success(self.request, 'Campaign created {0} .'.format(form.cleaned_data['name']))
+            messages.success(self.request, _('Campaign created %(email)s.') % {'email': form.cleaned_data['name']})
             return super(SmartCreateView, self).form_valid(form)
 
         def post(self, request, *args, **kwargs):
@@ -560,7 +561,7 @@ def get_reports(request, **kwargs):
     if  'cds' in kwargs:
         mycode['mycode'] = kwargs.get('cds').code
     if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
-        messages.warning(request, 'You have no valid MoH facility attached to your profile. Please contact the Admin')
+        messages.warning(request, _('You have no valid MoH facility attached to your profile. Please contact the Admin'))
         url = reverse('profile_user_detail', kwargs={'pk': mycode['myprofile'].id})
         return HttpResponseRedirect(url)
 

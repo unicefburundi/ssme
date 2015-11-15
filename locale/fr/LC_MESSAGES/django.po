@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the SSME package.
 # Rugano Allan Stockman <kuristockyrugano at gmail >, 2015.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-14 19:38+0200\n"
+"POT-Creation-Date: 2015-11-15 20:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Rugano Allan Stockman <kuristockyrugano at gmail >\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,7 +47,30 @@ msgstr "Soit CDS, BDS, PBS, ou niveau central."
 
 #: ssme_activities/models.py:23
 msgid "Code of the MoH facility"
+msgstr "Code de l'etablissment"
+
+#: ssme_activities/views.py:393
+#, python-format
+msgid "Profile created and mail sent to %(email)s."
+msgstr "Profil créé et e-mail envoyé au %(email)s."
+
+#: ssme_activities/views.py:395
+#, python-format
+msgid "Unable to send mail  to %(email)s."
+msgstr "Impossible d'envoyer l'e-mail au %(email)s."
+
+#: ssme_activities/views.py:434
+#, python-format
+msgid "Campaign created %(email)s."
+msgstr "Campagne créée %(email)s."
+
+#: ssme_activities/views.py:564
+msgid ""
+"You have no valid MoH facility attached to your profile. Please contact the "
+"Admin"
 msgstr ""
+"Vous avez aucune installation sanitaire valide attaché à votre profil. S'il "
+"vous plaît contacter l'Admin"
 
 #: templates/formtools/form.html:6
 msgid "Please correct the following errors"
@@ -89,22 +111,21 @@ msgstr "envoyer"
 
 #: templates/registration/account_creation_email.html:2
 #: templates/registration/password_reset_email.html:2
-#, fuzzy
-#| msgid ""
-#| "You're receiving this email because you requested a password reset for "
-#| "your user account at %(site_name)s."
-msgid ""
-"You're receiving this email because you requested a password reset for your "
-"user account at"
+msgid "You're receiving this email because you requested a password reset"
 msgstr ""
 "Vous recevez cet émail car vous avez demandé une réinitialisation de mot de "
-"passe pour votre compte utilisateur au site %(nom_site)."
+"passe"
+
+#: templates/registration/account_creation_email.html:2
+#: templates/registration/password_reset_email.html:2
+msgid " for your user account at"
+msgstr " pour votre compte utilisateur au site "
 
 #: templates/registration/account_creation_email.html:4
 #: templates/registration/password_reset_email.html:4
 msgid "Please go to the following page and choose a new password:"
 msgstr ""
-"S'il vous plaît allez à la page suivante et choisissez un nouveau mot de "
+"S'il vous plaît allez à la page suivante et choisissez un nouveau mot de  "
 "passe:"
 
 #: templates/registration/account_creation_email.html:8
@@ -120,15 +141,15 @@ msgstr "Merci d'utiliser notre site!"
 #: templates/registration/account_creation_email.html:12
 #: templates/registration/password_reset_email.html:12
 msgid "The "
-msgstr ""
+msgstr "L'équipe du "
 
 #: templates/registration/account_creation_email.html:12
 #: templates/registration/password_reset_email.html:12
 msgid "team"
-msgstr ""
+msgstr " ."
 
 #: templates/registration/account_creation_subject.txt:1
-msgid "Activation du compte sur"
+msgid "Activation du compte sur "
 msgstr "Activation du compte sur"
 
 #: templates/registration/activate.html:5
@@ -156,55 +177,34 @@ msgstr "enregistrement"
 msgid ""
 "You (or someone pretending to be you) have asked to register an account at"
 msgstr ""
+"Vous (ou une personne prétendant être vous) avez demandé de créer un compte "
+"au"
 
 #: templates/registration/activation_email.html:13
 #: templates/registration/activation_email.txt:4
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "    You (or someone pretending to be you) have asked to register an "
-#| "account at\n"
-#| "    %(site_name)s.  If this wasn't you, please ignore this email\n"
-#| "    and your address will be removed from our records.\n"
-#| "    "
 msgid ""
 "If this wasn't you, please ignore this email and your address will be "
 "removed from our records."
 msgstr ""
-"\n"
-"    Vous (ou une personne prétendant être vous) avez demandé de créer un "
-"compteà \n"
-"    % (site_name). Si ce n'est pas vous, s'il vous plaît ignorer cet e-"
-"mail \n"
-"    Et votre adresse sera supprimé de notre système. \n"
-"    "
+"Si ce n'est pas vous, s'il vous plaît ignorer cet e-mail et votre adresse "
+"sera supprimé de notre système."
 
 #: templates/registration/activation_email.html:18
 #: templates/registration/activation_email.txt:9
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "    To activate this account, please click the following link within the "
-#| "next\n"
-#| "    %(expiration_days)s days:\n"
-#| "    "
 msgid ""
 "To activate this account, please click the following link within the next"
 msgstr ""
-"\n"
-"    Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans "
-"avantles prochains \n"
-"    % (expiration_days) jours: \n"
-"    "
+"Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans "
+"avant les prochains"
 
 #: templates/registration/activation_email.html:19
 #: templates/registration/activation_email.txt:10
 msgid "days:"
-msgstr ""
+msgstr "jours"
 
 #: templates/registration/activation_email.html:30
 msgid "Sincerely,"
-msgstr ""
+msgstr "Merci,"
 
 #: templates/registration/activation_email.html:31
 msgid "Management"
@@ -285,7 +285,7 @@ msgid ""
 "used.  Please request a new password reset."
 msgstr ""
 "Le lien de réinitialisation de mot était invalide, peut-être parce qu'il a "
-"déjà étéutilisé. S'il vous plaît demander un nouveau mot de passe "
+"déjà été utilisé. S'il vous plaît demander un nouveau mot de passe "
 "réinitialisé."
 
 #: templates/registration/password_reset_done.html:4
@@ -302,7 +302,7 @@ msgid ""
 msgstr ""
 "\n"
 "    Nous vous avons envoyé un e-mail avec un lien pour réinitialiser votre "
-"mot de passe. S'il vous plaîtregardez \n"
+"mot de passe. S'il vous plaît, regardez \n"
 "    Votre e-mail et cliquez sur le lien pour continuer. \n"
 "    "
 
@@ -320,8 +320,8 @@ msgid ""
 msgstr ""
 "\n"
 "    Vous avez oublié votre mot de passe? Entrez votre émail dans le "
-"formulaire ci-dessous et nous allons envoyervous des instructions pour créer "
-"un nouveau. \n"
+"formulaire ci-dessous et nous allons vous envoyer des instructions pour "
+"créer un nouveau. \n"
 "    "
 
 #: templates/registration/registration_closed.html:4
@@ -355,16 +355,8 @@ msgid "Remove Item?"
 msgstr "Supprimer un objet?"
 
 #: templates/smartmin/delete_confirm.html:14
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "    Are you sure you want to remove <b>%(object)s</b>?\n"
-#| "    "
 msgid "Are you sure you want to remove"
-msgstr ""
-"\n"
-"    Êtes-vous sûr que vous voulez supprimer <b>% (objet) s </b>? \n"
-"    "
+msgstr "Êtes-vous sûr que vous voulez supprimer"
 
 #: templates/smartmin/delete_confirm.html:17
 msgid ""
@@ -372,7 +364,7 @@ msgid ""
 "operation."
 msgstr ""
 "Une fois qu'il est retiré, il sera parti pour toujours. Il n'y a pas moyen "
-"d'annuler cetteopération."
+"d'annuler cette opération."
 
 #: templates/smartmin/delete_confirm.html:24 templates/smartmin/form.html:50
 #: templates/smartmin/update.html:8
@@ -393,19 +385,19 @@ msgstr "Ajouter"
 
 #: templates/smartmin/list.html:80
 msgid "result"
-msgstr ""
+msgstr "résultat"
 
 #: templates/smartmin/list.html:82
 msgid "results"
-msgstr ""
+msgstr "résultats"
 
 #: templates/smartmin/list.html:86
 msgid "Results"
-msgstr ""
+msgstr "Résultats"
 
 #: templates/smartmin/list.html:86
 msgid "of"
-msgstr ""
+msgstr "de"
 
 #: templates/smartmin/list.html:95 templates/smartmin/list.html.py:97
 msgid "Previous"
@@ -440,40 +432,22 @@ msgid "Login Failure"
 msgstr "Echec connexion"
 
 #: templates/smartmin/users/user_failed.html:12
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      Sorry, you cannot log in at this time because we received "
-#| "%(failed_login_limit)s incorrect login attempts.\n"
-#| "      "
 msgid "Sorry, you cannot log in at this time because we received"
 msgstr ""
-"\n"
-"     Désolé, vous ne pouvez pas vous connecter en ce moment parce que nous "
-"avons reçu%(failed_login_limit) des tentatives de connexion incorrectes. \n"
-"    "
+"Désolé, vous ne pouvez pas vous connecter en ce moment parce que nous avons "
+"reçu"
 
 #: templates/smartmin/users/user_failed.html:12
 msgid "incorrect login attempts."
-msgstr ""
+msgstr "des tentatives de connexion incorrectes."
 
 #: templates/smartmin/users/user_failed.html:19
 msgid "Please wait"
-msgstr ""
+msgstr "S'il vous plaît attendre"
 
 #: templates/smartmin/users/user_failed.html:19
-#, fuzzy
-#| msgid ""
-#| "\n"
-#| "      Please wait %(lockout_timeout)s minutes before to try log in "
-#| "again.\n"
-#| "      "
 msgid "minutes before to try log in again."
-msgstr ""
-"\n"
-"    S'il vous plaît attendre %(lockout_timeout) minutes avant d'essayer de "
-"vous connecter à nouveau. \n"
-"    "
+msgstr "minutes avant d'essayer de vous connecter à nouveau."
 
 #: templates/smartmin/users/user_failed.html:25
 msgid ""
@@ -481,7 +455,7 @@ msgid ""
 "via e-mail."
 msgstr ""
 "Sinon, vous pouvez remplir le formulaire ci-dessous pour réinitialiser votre "
-"mot de passepar e-mail."
+"mot de passe par e-mail."
 
 #: templates/smartmin/users/user_failed.html:27
 msgid "Please contact the website administrator to have your password reset."
@@ -506,84 +480,21 @@ msgstr ""
 "inscrire et nous allons vous aider pourrécupérer votre mot de passe."
 
 #: templates/smartmin/users/user_newpassword.html:8
-#, fuzzy
-#| msgid "Your password has been reset!"
 msgid "Your password has expired."
 msgstr "Votre mot de passe a été réinitialisé!"
 
 #: templates/smartmin/users/user_newpassword.html:8
 msgid "Site policy states that you must pick a new password every"
 msgstr ""
+"Selon la politique du site que vous devez choisir un nouveau mot de passe "
+"chaque"
 
 #: templates/smartmin/users/user_newpassword.html:8
 msgid "days, and that passwords must not have been used within the previous"
 msgstr ""
+"jours, et que les mots de passe ne doivent pas avoir été utilisés au sein de "
+"la précédente"
 
 #: templates/smartmin/users/user_newpassword.html:8
 msgid "days."
-msgstr ""
-
-#~ msgid ""
-#~ "\n"
-#~ "  <strong>Your password has expired.</strong> Site policy states that you "
-#~ "must pick a new password every %(expire_days)s days, and that passwords "
-#~ "must not have been used within the previous %(window_days)s days.\n"
-#~ "  "
-#~ msgstr ""
-#~ "\n"
-#~ "<strong> Votre mot de passe a expiré. </strong> La stratégie du site est "
-#~ "que vousdevez choisir un nouveau mot de passe de tous les  %(expire_days) "
-#~ "jours, et que les mots de passe doiventne pas avoir été utilisé dans les "
-#~ "précédents %(window_days) jours. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "\tResults %(start)s-%(end)s of %(count)s\n"
-#~ "\t"
-#~ msgstr ""
-#~ "\n"
-#~ "\tResults %(start)-%(end) de %(count) \n"
-#~ "\t"
-
-#~ msgid ""
-#~ "\n"
-#~ "Vous (ou une personne prétendant être vous) avez demandé de créer un "
-#~ "compte au site %(site_name)s.  Si cela n'a pas été vous, s'il vous plaît "
-#~ "ignorer cet e-mail et votre adresse sera supprimé de nos systemes.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "    Vous (ou une personne prétendant être vous) avez demandé de créer un "
-#~ "compteà \n"
-#~ "    % (site_name). Si ce n'est pas vous, s'il vous plaît ignorer cet e-"
-#~ "mail \n"
-#~ "    Et votre adresse sera supprimé de notre système. \n"
-#~ "    "
-
-#~ msgid ""
-#~ "\n"
-#~ "Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans "
-#~ "le prochain %(expiration_days)s  jours.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Pour activer ce compte, s'il vous plaît cliquer sur le lien suivant dans "
-#~ "le prochain %(expiration_days)s  jours.\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Cordialement,%(site_name)s Management\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Cordialement,%(site_name)s Management\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "    Sincerely,\n"
-#~ "    %(site_name)s Management\n"
-#~ "    "
-#~ msgstr ""
-#~ "\n"
-#~ "   Sincèrement,\n"
-#~ "   Gestionnaire du site %(site_name)    "
-
-#~ msgid "The %(site_name)s team"
-#~ msgstr "L'équipe du site %(site_name)"
+msgstr "jours"
