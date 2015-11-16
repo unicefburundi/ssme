@@ -646,7 +646,7 @@ def date_handler(obj):
 def get_benef_in_json(request):
     mycode = myfacility(request)
     benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
-    data = json.dumps([dict(item) for item in benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
+    data = json.dumps([dict(item) for item in benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(cds=F('report__cds__name')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district', 'cds')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
@@ -655,7 +655,7 @@ def get_benef_in_json(request):
 def get_recus_in_json(request):
     mycode = myfacility(request)
     recus = get_report_by_code(request, mycode['mycode'], ReportProductReception)
-    data = json.dumps([dict(item) for item in recus.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qnt_recu', 'province', 'district', 'cds')], default=date_handler)
+    data = json.dumps([dict(item) for item in recus.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qantite_recue=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qantite_recue', 'province', 'district', 'cds')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
@@ -677,18 +677,11 @@ def estimate(request, cds=''):
         benefs.append(benef)
     return convert(benefs)
 
-def total_received(request, mycode=''):
+def total_received(request, mycode):
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     recus = {}
-    queryset_recu = None
-    if not mycode:
-        queryset_recu = ReportProductReception.objects.all()
-    elif 1 <= len(mycode)<=2:
-        queryset_recu = ReportProductReception.objects.filter(report__cds__district__province__code=mycode)
-    elif 3 <= len(mycode)<=4:
-        queryset_recu = ReportProductReception.objects.filter(report__cds__district__code=mycode)
-    else:
-        queryset_recu = ReportProductReception.objects.filter(report__cds__code=mycode)
+    mycode = myfacility(request)
+    queryset_recu = get_report_by_code(request, mycode['mycode'], ReportProductReception)
     for h in headers_recept:
         recu = queryset_recu.filter(campaign_product__product__name=h['products']).aggregate(Sum('received_quantity'))
 
