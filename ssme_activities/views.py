@@ -617,7 +617,7 @@ def get_benef_in_json(request):
 # Recus
 
 def get_recus_in_json(request):
-    data = json.dumps([dict(item) for item in ReportProductReception.objects.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).values('products',  'reception_date','qnt_recu', 'province', 'district')], default=date_handler)
+    data = json.dumps([dict(item) for item in ReportProductReception.objects.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qnt_recu', 'province', 'district', 'cds')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
