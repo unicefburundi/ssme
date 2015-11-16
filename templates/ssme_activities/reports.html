@@ -180,19 +180,24 @@ function consumptionFormatter(data) {
         recus = eval( "(" + recus + ")" );
         var total = 0;
         field = this.field;
-        var last = Array( data[data.length - 1]);
-        $.each(last, function (i, row) {
-              total += +(row[field]);
-          });
-        pourcentage =  (total/recus[this.title] )*100;
-        consomme = recus[this.title] - total;
-        if (pourcentage >=75) {
-          return '<strong class="text-danger" >' + consomme + '</strong>';
+        console.log(data);
+        if (data.length <= 0) {
+          return '';
+        } else{
+          var last = Array( data[data.length - 1]);
+          $.each(last, function (i, row) {
+                total += +(row[field]);
+            });
+          pourcentage =  (total/recus[this.title] )*100;
+          consomme = recus[this.title] - total;
+          if (pourcentage >=75) {
+            return '<strong class="text-danger" >' + consomme + '</strong>';
 
-        }
-        else{
-           return '<strong class="text-primary" >' + consomme +'</strong>' ;
-        }
+          }
+          else{
+             return '<strong class="text-primary" >' + consomme +'</strong>' ;
+          }
+        };
       };
 
 </script>
