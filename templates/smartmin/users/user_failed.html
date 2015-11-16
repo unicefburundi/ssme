@@ -8,16 +8,16 @@
     <div class="alert alert-danger">
     <div class="page-header"><h2>{% trans "Login Failure" %}</h2></div>
     <p>
-      {% block failed1 %}
-      {% trans "Sorry, you cannot log in at this time because we received" %} {{failed_login_limit}} {% trans "incorrect login attempts." %}
-      {% endblock failed1 %}
+      {% blocktrans %}
+      Sorry, you cannot log in at this time because we received {{failed_login_limit}} incorrect login attempts.
+      {% endblocktrans %}
     </p>
 
     {% if lockout_timeout >= 0 %}
     <p>
-      {% block failed2 %}
-      {% trans "Please wait" %} {{lockout_timeout}} {% trans "minutes before to try log in again." %}
-      {% endblock failed2 %}
+      {% blocktrans %}
+      Please wait {{lockout_timeout}} minutes before to try log in again.
+      {% endblocktrans %}
     </p>
     {% endif %}
 
@@ -36,7 +36,7 @@
     <form class="form-inline" method="post" action="{% url 'users.user_forget' %}">
       {% csrf_token %}
       <fieldset>
-	<label>{% trans "Email Address" %}</label>
+	<label>{% trans "Email Address" %}</label> 
 	<input  class="col-md-4" type="text" name="email">
 	<input type="submit" value='{% trans "Recover" %}' class="btn btn-primary">
       </fieldset>

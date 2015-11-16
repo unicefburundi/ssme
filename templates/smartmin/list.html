@@ -76,15 +76,15 @@
   <div class="col-md-3">
     <div class="pagination-text">
       {% if not paginator or paginator.num_pages <= 1 %}
-	{% block list1 count counter=object_list|length %}
-	 {{ counter }} {% trans "result" %}
+	{% blocktrans count counter=object_list|length %}
+	 {{ counter }} result
 	{% plural %}
-         {{ counter }} {% trans "results" %}
-        {% endblock list1 %}
+         {{ counter }} results
+        {% endblocktrans %}
       {% else %}
-	{% block list2 with start=page_obj.start_index end=start_obj.end_index count=paginator.count %}
-	{% trans "Results" %} {{ start }}-{{ end }} {% trans "of" %} {{ count }}
-	{% endblock list2 %}
+	{% blocktrans with start=page_obj.start_index end=start_obj.end_index count=paginator.count %}
+	Results {{ start }}-{{ end }} of {{ count }}
+	{% endblocktrans %}
       {% endif %}
     </div>
   </div>
