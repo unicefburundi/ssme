@@ -189,6 +189,15 @@ class ProvinceListView(ListView):
     model = Province
     paginate_by = 100
 
+    def get_queryset(self):
+        """Returns Province that belong to the current user"""
+        mycode = myfacility(self.request)
+        if not mycode['mycode']:
+            return Province.objects.all()
+        else :
+            return Province.objects.filter(code=mycode['mycode'])
+
+
 class ProvinceDetailView(DetailView):
     model = Province
 
@@ -256,6 +265,18 @@ class DistrictListView(ListView):
     model = District
     paginate_by = 100
 
+    def get_queryset(self):
+        """Returns Province that belong to the current user"""
+        mycode = myfacility(self.request)
+        if not mycode['mycode']:
+            return District.objects.all()
+        else :
+            if len(mycode['mycode'])< 3:
+                return District.objects.filter(province__code=mycode['mycode'])
+            else :
+                return District.objects.filter(code=mycode['mycode'])
+
+
 class DistrictDetailView(DetailView):
     model = District
 
@@ -321,6 +342,19 @@ class CDSCreateView(CreateView):
 class CDSListView(ListView):
     model = CDS
     paginate_by = 1000
+
+    def get_queryset(self):
+        """Returns Province that belong to the current user"""
+        mycode = myfacility(self.request)
+        if not mycode['mycode']:
+            return CDS.objects.all()
+        else :
+            if len(mycode['mycode'])< 3:
+                return CDS.objects.filter(district__province__code=mycode['mycode'])
+            elif 3 <= len(mycode['mycode'])<=4 :
+                return CDS.objects.filter(district__code=mycode['mycode'])
+            else:
+                return CDS.objects.filter(code=mycode['mycode'])
 
 class CDSDetailView(DetailView):
     model = CDS

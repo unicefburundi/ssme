@@ -21,11 +21,7 @@ data-show-toggle="true" data-show-pagination-switch="true" data-pagination="true
         {% for cds in object_list %}
             <tr>
                 {% with cds.id as code  %}
-                    {% if  user|has_group:'CEN' %}
                         <td><a href="{% url 'cds_detail' pk=code %} " class="btn btn_link">{{ cds.name}}</a></td>
-                    {% else %}
-                    <td>{{ cds.name}}</td>
-                    {% endif %}
                     <td>{{ cds.code }}</td>
                     <td>{{ cds.district}}</td>
                     <td>{{ cds.district.province}}</td>
