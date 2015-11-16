@@ -610,14 +610,18 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 def get_benef_in_json(request):
-    data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
+    mycode = myfacility(request)
+    benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
+    data = json.dumps([dict(item) for item in benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
 # Recus
 
 def get_recus_in_json(request):
-    data = json.dumps([dict(item) for item in ReportProductReception.objects.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qnt_recu', 'province', 'district', 'cds')], default=date_handler)
+    mycode = myfacility(request)
+    recus = get_report_by_code(request, mycode['mycode'], ReportProductReception)
+    data = json.dumps([dict(item) for item in recus.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qnt_recu', 'province', 'district', 'cds')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
