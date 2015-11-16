@@ -35,11 +35,6 @@
                   <li {% block activefinal %}{% endblock activefinal %} >
                     <a href="#final"   data-toggle="tab">Stock Final</a>
                   </li>
-                  {% if user.is_staff %}
-                    <li {% block activeestimation %}{% endblock activeestimation %} >
-                      <a href="#estimation"   data-toggle="tab">Estimation Bénéficiaires</a>
-                    </li>
-                {% endif %}
             </ul>
             <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
@@ -126,33 +121,6 @@
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock final %}
-              </div>
-              <div class="tab-pane {% block activeestimation1 %}{% endblock activeestimation1 %}" id="estimation">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
-                {% block estimation %}
-                    <div class="col-md-12">
-                    <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
-                        <thead>
-                          <tr>
-                            <th data-footer-formatter="receivedTextFormatter">Bénéficiaires</th>
-                            {% for header in headers_recept %}
-                              <th data-footer-formatter="receivedFormatter">{{header.products}}</th>
-                            {% endfor %}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for i in estimation  %}
-                            <tr>
-                            <td>{{i.beneficiaires}}</td>
-                            {% for t in headers_recept  %}
-                                <td>{{i|get_item:t.products|default:0}} </td>
-                            {% endfor %}
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-                    </table>
-                    </div>
-                {% endblock estimation %}
               </div>
             </div>
         </div>
