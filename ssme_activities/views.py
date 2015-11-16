@@ -605,12 +605,19 @@ def get_reports(request, **kwargs):
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
 
-# Central
+# Benef
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
-def get_reports_json(request):
+def get_benef_in_json(request):
     data = json.dumps([dict(item) for item in ReportBeneficiary.objects.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(province=F('report__cds__district__province__name')).annotate(pop_servie=F('received_number')).annotate(district=F('report__cds__district__name')).values('beneficiaires',  'reception_date','pop_servie', 'province', 'district')], default=date_handler)
+
+    return HttpResponse(data, content_type='application/json')
+
+# Recus
+
+def get_recus_in_json(request):
+    data = json.dumps([dict(item) for item in ReportProductReception.objects.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qnt_recu=F('received_quantity')).annotate(district=F('report__cds__district__name')).values('products',  'reception_date','qnt_recu', 'province', 'district')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 

@@ -16,7 +16,10 @@
   </li>
   {% if user.is_staff %}
     <li {% block activedraft %}{% endblock activedraft %} >
-      <a href="#draft"   data-toggle="tab">Quelque calculs</a>
+      <a href="#draft"   data-toggle="tab">Calculs Bénéficiaires </a>
+    </li>
+    <li {% block activedraftdeux %}{% endblock activedraftdeux %} >
+      <a href="#draft2"   data-toggle="tab">Calculs stock reçu </a>
     </li>
   {% endif %}
 </ul>
@@ -124,6 +127,15 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                     <div class="col-md-2"></div>
                 {% endblock draft %}
               </div>
+              <div class="tab-pane {% block activedraft2 %}{% endblock activedraft2%}" id="draft2">
+                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
+                {% block draft2 %}
+                    <div class="col-md-10">
+                    <div id="output2"></div>
+                    </div>
+                    <div class="col-md-2"></div>
+                {% endblock draft2 %}
+              </div>
           {% endif %}
     </div>
 <script>
@@ -133,13 +145,26 @@ $(function(){
             $.pivotUtilities.renderers,
             $.pivotUtilities.c3_renderers,
             $.pivotUtilities.export_renderers);
-        request_url = '/ssme/central/';
-        $.getJSON(request_url, function(data) {
+        //for bénéficiaires
+        request_url1 = '/ssme/calcul_benef/';
+        $.getJSON(request_url1, function(data) {
                 var input = data;
                 $("#output").pivotUI(input,
                 {renderers: renderers,
                   rows: ["province", "district"],
                   cols: ["beneficiaires"],
+                  rendererName: "Table",
+                  aggregatorName: "Somme en entiers",
+            },  false, "fr");
+        });
+        // for stock reçu
+        request_url2 = '/ssme/calcul_recus/';
+        $.getJSON(request_url2, function(data) {
+                var input = data;
+                $("#output2").pivotUI(input,
+                {renderers: renderers,
+                  rows: ["province", "district"],
+                  cols: ["products"],
                   rendererName: "Table",
                   aggregatorName: "Somme en entiers",
             },  false, "fr");
