@@ -186,21 +186,35 @@
               </ul>
           </li>
           {% endif %}
-          {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
+          {% if user|has_group:"CEN" or user.is_superuser %}
             <li>
-              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Rapports </a>
+              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Synthèse </a>
           </li>
           <li>
-              {% if user|has_group:"CDS" %}
-                <a href="{% url 'cds_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
-              {% elif user|has_group:"BDS" %}
-                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
-              {% elif user|has_group:"BPS" %}
-                <a href="{% url 'province_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> {{mymoh_facility.name}}</a>
-              {% endif %}
-          </li>
           {% endif %}
-        {% endif %}
+          {% if user|has_group:"CDS" %}
+            <li>
+                <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Synthèse CDS</a>
+            </li>
+            <li>
+                <a href="{% url 'cds_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> Détails</a>
+            </li>
+              {% elif user|has_group:"BDS" %}
+              <li>
+                <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Synthèse District</a>
+              </li>
+              <li>
+                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> Détails</a>
+              </li>
+              {% elif user|has_group:"BPS" %}
+              <li>
+                <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Synthèse Province</a>
+              </li>
+              <li>
+                <a href="{% url 'province_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> Détails</a>
+                </li>
+              {% endif %}
+          {% endif %}
       </ul>
 
       <hr>
