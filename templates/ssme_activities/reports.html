@@ -95,7 +95,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                           <tr>
                             <th data-footer-formatter="consumptionTextFormatter">Date</th>
                             {% for header in headers_recept %}
-                              <th >{{header.products}}</th>
+                              <th data-footer-formatter="consumptionFormatter">{{header.products}}</th>
                             {% endfor %}
                           </tr>
                         </thead>
@@ -145,6 +145,30 @@ $(function(){
             },  false, "fr");
         });
  });
+
+function consumptionTextFormatter(data) {
+          return '<strong class="text-primary" >Consommé</strong>';
+      };
+
+function consumptionFormatter(data) {
+        var recus = "{{recus|safe}}";
+        recus = eval( "(" + recus + ")" );
+        var total = 0;
+        field = this.field;
+        var last = Array( data[data.length - 1]);
+        $.each(last, function (i, row) {
+              total += +(row[field]);
+          });
+        pourcentage =  (total/recus[this.title] )*100;
+        consomme = recus[this.title] - total;
+        if (pourcentage >=75) {
+          return '<strong class="text-danger" >' + consomme + '</strong>';
+
+        }
+        else{
+           return '<strong class="text-primary" >' + consomme +'</strong>' ;
+        }
+      };
 
 </script>
 </div>

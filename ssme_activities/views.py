@@ -244,6 +244,7 @@ class ProvinceDetailView(DetailView):
                 body_remain.append(res)
         context['body_remain'] = body_remain
         context['taux'] = get_per_category_taux(self.request)
+        context['recus'] = total_received(self.request, mycode)
         return context
 
 # District
@@ -309,6 +310,7 @@ class DistrictDetailView(DetailView):
                 body_remain.append(res)
         context['body_remain'] = body_remain
         context['taux'] = get_per_category_taux(self.request)
+        context['recus'] = total_received(self.request, mycode)
         return context
 
 # CDS
@@ -579,7 +581,7 @@ def get_reports(request, **kwargs):
         dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
         body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
     #reception
-    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
     queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
     dates_reception = []
     body_reception = []
@@ -599,8 +601,9 @@ def get_reports(request, **kwargs):
         dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
     taux = get_per_category_taux(request)
+    recus = total_received(request, mycode['mycode'])
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux})
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
 
 # Central
 def date_handler(obj):
@@ -630,10 +633,20 @@ def estimate(request, cds=''):
         benefs.append(benef)
     return convert(benefs)
 
-def total_received(request, cds='010101'):
+def total_received(request, mycode=''):
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     recus = {}
+    queryset_recu = None
+    if not mycode:
+        queryset_recu = ReportProductReception.objects.all()
+    elif 1 <= len(mycode)<=2:
+        queryset_recu = ReportProductReception.objects.filter(report__cds__district__province__code=mycode)
+    elif 3 <= len(mycode)<=4:
+        queryset_recu = ReportProductReception.objects.filter(report__cds__district__code=mycode)
+    else:
+        queryset_recu = ReportProductReception.objects.filter(report__cds__code=mycode)
     for h in headers_recept:
-        recu = ReportProductReception.objects.filter(report__cds__code=cds, campaign_product__product__name=h['products']).aggregate(Sum('received_quantity'))
+        recu = queryset_recu.filter(campaign_product__product__name=h['products']).aggregate(Sum('received_quantity'))
+
         recus.update({str(h['products']): recu['received_quantity__sum']})
     return convert(recus)
