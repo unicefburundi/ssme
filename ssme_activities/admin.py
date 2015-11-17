@@ -225,10 +225,48 @@ class ReporterAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.cds.district.province.name
 
+class ProvinceResource(resources.ModelResource):
+    class Meta:
+        model = Province
+        fields = ('name', 'code')
 
-admin.site.register(Province)
-admin.site.register(District)
-admin.site.register(CDS)
+class ProvinceAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ProvinceResource
+    search_fields = ('name', 'code')
+    list_display = ('name', 'code')
+
+class DistrictResource(resources.ModelResource):
+    class Meta:
+        model = District
+        fields = ('name', 'code', 'province__name')
+
+class DistrictAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = DistrictResource
+    search_fields = ('name', 'code', 'province__name')
+    list_display = ('name', 'code', 'province')
+
+    def province(self, obj):
+        return obj.province.name
+
+class CDSResource(resources.ModelResource):
+    class Meta:
+        model = CDS
+        fields = ('name', 'code', 'district__name','district__province__name')
+
+class CDSAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = CDSResource
+    search_fields = ('name', 'code', 'district__name','district__province__name')
+    list_display = ('name', 'code', 'district', 'province')
+
+    def province(self, obj):
+        return obj.district.province.name
+
+    def district(self, obj):
+        return obj.district.name
+
+admin.site.register(Province, ProvinceAdmin)
+admin.site.register(District, DistrictAdmin)
+admin.site.register(CDS, CDSAdmin)
 admin.site.register(Reporter, ReporterAdmin)
 admin.site.register(Campaign)
 admin.site.register(Beneficiaire)
