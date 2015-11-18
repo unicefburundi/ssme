@@ -459,6 +459,7 @@ def record_sds(args):
 		return
 
 	#Let's record the a beneficiary report
+	import ipdb; ipdb.set_trace()
 	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
 
 	priority = 1

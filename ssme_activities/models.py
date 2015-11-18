@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
-
+import datetime
 
 class ProfileUser(models.Model):
     MOH_LEVEL_CHOICES = (
@@ -200,13 +200,19 @@ class CampaignBeneficiaryProduct(models.Model):
 class Report(models.Model):
     '''In this model, we will store each report'''
     cds = models.ForeignKey(CDS)
-    reporting_date = models.DateField()
+    reporting_date = models.DateField(null=True, blank=True)
     concerned_date = models.DateField()
     text = models.CharField(max_length=200)
     category = models.CharField(max_length=50)
 
     def __unicode__(self):
         return self.text
+
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        if not self.id:
+            self.reporting_date = datetime.datetime.now().date()
+        return super(Report, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ('reporting_date',)
