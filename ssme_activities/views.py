@@ -677,11 +677,10 @@ def estimate(request, cds=''):
         benefs.append(benef)
     return convert(benefs)
 
-def total_received(request, mycode):
+def total_received(request, mycode=''):
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     recus = {}
-    mycode = myfacility(request)
-    queryset_recu = get_report_by_code(request, mycode['mycode'], ReportProductReception)
+    queryset_recu = get_report_by_code(request, mycode, ReportProductReception)
     for h in headers_recept:
         recu = queryset_recu.filter(campaign_product__product__name=h['products']).aggregate(Sum('received_quantity'))
 
