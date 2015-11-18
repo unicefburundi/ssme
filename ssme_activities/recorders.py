@@ -167,7 +167,8 @@ def check_product_values_validity(args):
 
 	while ((priority <= args['number_of_concerned_products']) and (priority > 0)):
 		value = args['text'].split(' ')[priority+1]
-
+		#if there is "colon" for french, treat it
+		value = value.replace(',','.')
 		#Let's identify the concerned CampaignProduct
 		campaign_product = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -637,7 +638,7 @@ def record_sf(args):
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
 		report_prod, created = ReportProductRemainStock.objects.get_or_create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'],  report__cds= args['cds'])
-		report_prod.remain_quantity, report_prod.report = value, the_created_report
+		report_prod.remain_quantity, report_prod.report = value.replace(',','.'),  the_created_report
 		report_prod.save()
 
 		priority = priority + 1
