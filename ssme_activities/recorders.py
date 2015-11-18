@@ -476,7 +476,7 @@ def record_sds(args):
 		the_concerned_prod_campaign = prod_camp[0]
 
 		# import ipdb; ipdb.set_trace()
-		report_prod, created = ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds=args['cds'])
+		report_prod, created = ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds=args['cds'], report__category='STOCK_DEBUT_SEMAINE')
 		report_prod.received_quantity, report_prod.report = value, the_created_report
 		report_prod.save()
 
@@ -559,7 +559,7 @@ def record_sr(args):
 		else:
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
-		report_prod, created= ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
+		report_prod, created= ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds = args['cds'], report__category='STOCK_RECU')
 		report_prod.received_quantity, report_prod.report = value, the_created_report
 		report_prod.save()
 		priority = priority + 1

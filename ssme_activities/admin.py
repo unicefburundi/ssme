@@ -59,7 +59,7 @@ class ReportResource(resources.ModelResource):
 class ReportAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportResource
     search_fields = ('text', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
-    list_filter = ('concerned_date', 'reporting_date')
+    list_filter = ('concerned_date', 'reporting_date', 'category')
     list_display = ('id', 'text', 'concerned_date', 'category', 'cds', 'district', 'province', )
 
     def district(self, obj):
