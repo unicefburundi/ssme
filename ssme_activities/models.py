@@ -5,7 +5,7 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
-
+import datetime
 
 class ProfileUser(models.Model):
     MOH_LEVEL_CHOICES = (
@@ -200,7 +200,7 @@ class CampaignBeneficiaryProduct(models.Model):
 class Report(models.Model):
     '''In this model, we will store each report'''
     cds = models.ForeignKey(CDS)
-    reporting_date = models.DateField()
+    reporting_date = models.DateField(null=True, blank=True)
     concerned_date = models.DateField()
     text = models.CharField(max_length=200)
     category = models.CharField(max_length=50)
@@ -208,14 +208,19 @@ class Report(models.Model):
     def __unicode__(self):
         return self.text
 
+    def save(self, *args, **kwargs):
+        ''' On save, update timestamps '''
+        self.reporting_date = datetime.datetime.now().date()
+        return super(Report, self).save(*args, **kwargs)
+
     class Meta:
         ordering = ('reporting_date',)
 
 class ReportBeneficiary(models.Model):
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     reception_date = models.DateField()
-    received_number = models.IntegerField()
-    report = models.ForeignKey(Report)
+    received_number = models.IntegerField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text
@@ -226,8 +231,8 @@ class ReportBeneficiary(models.Model):
 class ReportProductReception(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     reception_date = models.DateField()
-    received_quantity = models.FloatField()
-    report = models.ForeignKey(Report)
+    received_quantity = models.FloatField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text
@@ -238,8 +243,8 @@ class ReportProductReception(models.Model):
 class ReportProductRemainStock(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     concerned_date = models.DateField()
-    remain_quantity = models.FloatField()
-    report = models.ForeignKey(Report)
+    remain_quantity = models.FloatField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text

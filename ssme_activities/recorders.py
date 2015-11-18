@@ -459,8 +459,10 @@ def record_sds(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_DEBUT_SEMAINE')
-
+	# import ipdb; ipdb.set_trace()
+	the_created_report, created = Report.objects.get_or_create(cds = args['cds'],  concerned_date = args['sent_date'], category = 'STOCK_DEBUT_SEMAINE')
+	the_created_report.text = args['text']
+	the_created_report.save()
 	priority = 1
 
 	message_to_send = "Le message enregistre est ("
@@ -473,8 +475,10 @@ def record_sds(args):
 
 		the_concerned_prod_campaign = prod_camp[0]
 
-
-		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
+		# import ipdb; ipdb.set_trace()
+		report_prod, created = ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds=args['cds'])
+		report_prod.received_quantity, report_prod.report = value, the_created_report
+		report_prod.save()
 
 		if priority == 1:
 			message_to_send = message_to_send+""+the_concerned_prod_campaign.product.name+" : "+value
@@ -534,7 +538,9 @@ def record_sr(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_RECU')
+	the_created_report, created= Report.objects.get_or_create(cds = args['cds'], concerned_date = args['sent_date'], category = 'STOCK_RECU')
+	the_created_report.text = args['text']
+	the_created_report.save()
 
 	priority = 1
 
@@ -553,8 +559,9 @@ def record_sr(args):
 		else:
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
-		report_prod = ReportProductReception.objects.create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], received_quantity = value, report = the_created_report)
-
+		report_prod, created= ReportProductReception.objects.ge_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
+		report_prod.received_quantity, report_prod.report = value, the_created_report
+		report_prod.save()
 		priority = priority + 1
 
 	args['info_to_contact'] = message_to_send+")."
@@ -608,7 +615,9 @@ def record_sf(args):
 		return
 
 	#Let's record the remaining stock report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'STOCK_FINAL')
+	the_created_report, created = Report.objects.get_or_create(cds = args['cds'], concerned_date = args['sent_date'], category = 'STOCK_FINAL')
+	the_created_report.text = args['text']
+	the_created_report.save()
 
 	priority = 1
 
@@ -627,7 +636,9 @@ def record_sf(args):
 		else:
 			message_to_send = message_to_send+", "+the_concerned_prod_campaign.product.name+" : "+value
 
-		report_prod = ReportProductRemainStock.objects.create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'], remain_quantity = value, report = the_created_report)
+		report_prod, created = ReportProductRemainStock.objects.get_or_create(campaign_product = the_concerned_prod_campaign, concerned_date = args['sent_date'],  report__cds= args['cds'])
+		report_prod.remain_quantity, report_prod.report = value, the_created_report
+		report_prod.save()
 
 		priority = priority + 1
 
@@ -751,7 +762,9 @@ def record_beneficiaries(args):
 		return
 
 	#Let's record the a beneficiary report
-	the_created_report = Report.objects.create(cds = args['cds'], reporting_date = datetime.datetime.now().date(), concerned_date = args['sent_date'], text = args['text'], category = 'BENEFICIAIRE')
+	the_created_report, created = Report.objects.get_or_create(cds = args['cds'], concerned_date = args['sent_date'],  category = 'BENEFICIAIRE')
+	the_created_report.text = args['text']
+	the_created_report.save()
 
 	priority = 1
 
@@ -770,8 +783,9 @@ def record_beneficiaries(args):
 		else:
 			message_to_send = message_to_send+", "+the_concerned_ben_campaign.beneficiary.designation+" : "+value
 
-		report_ben = ReportBeneficiary.objects.create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], received_number = value, report = the_created_report)
-
+		report_ben, created = ReportBeneficiary.objects.get_or_create(campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
+		report_ben.received_number, report_ben.report = value, the_created_report
+		report_ben.save()
 		priority = priority + 1
 
 	args['info_to_contact'] = message_to_send+")."

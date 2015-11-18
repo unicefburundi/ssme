@@ -171,11 +171,11 @@ function receivedTextFormatter(data) {
         pourcentage =  (total/recus[this.title] )*100;
         consomme = recus[this.title] - total;
         if (pourcentage >=75) {
-          return '<strong class="text-danger" >' + consomme + ' [' + pourcentage.toFixed(2)+ '%]</strong>';
+          return '<strong class="text-danger" >' + consomme + '<p>[' + pourcentage.toFixed(2)+ '%]</p></strong>';
 
         }
-        else{
-           return '<strong class="text-primary" >' + consomme + ' [' + pourcentage.toFixed(2)+ '%]</strong>';
+        else if(pourcentage >0){
+           return  consomme + '<p>[' + pourcentage.toFixed(2)+ '%]</p>';
         }
       };
 </script>

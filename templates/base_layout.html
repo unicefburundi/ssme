@@ -39,10 +39,12 @@
       };
 
       function sumFormatter(data) {
+          var total = 0;
           field = this.field;
-          return data.reduce(function(sum, row) {
-              return sum + (+row[field]);
-          }, 0);
+          $.each(data, function (i, row) {
+                total += +(row[field]);
+            });
+          return total;
       };
 
       function benefFormatter(data) {
