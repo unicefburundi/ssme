@@ -76,7 +76,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                             <tr>
                             <td>{{i.reception_date|date:"d M, Y" }}</td>
                             {% for t in headers_recept  %}
-                              <td>{{i|getit:t.products}}</td>
+                              <td>{{i|getit:t.products|floatformat:"0"}}</td>
                             {% endfor %}
                           </tr>
                           {% endfor %}
@@ -105,7 +105,7 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                             <tr>
                             <td>{{i.concerned_date|date:"d M, Y"}}</td>
                             {% for t in headers_recept  %}
-                              <td>{{i|getit:t.products}}</td>
+                              <td>{{i|getit:t.products|floatformat:"0"}}</td>
                             {% endfor %}
                           </tr>
                           {% endfor %}
@@ -176,7 +176,6 @@ function consumptionFormatter(data) {
         recus = eval( "(" + recus + ")" );
         var total = 0;
         field = this.field;
-        console.log(data);
         if (data.length <= 0) {
           return '';
         } else{

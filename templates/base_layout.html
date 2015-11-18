@@ -44,7 +44,7 @@
           $.each(data, function (i, row) {
                 total += +(row[field]);
             });
-          return total;
+          return '<strong>'+ total + '</strong>';
       };
 
       function benefFormatter(data) {
@@ -60,7 +60,6 @@
         else{
           var taux = "{{taux|safe}}";
           taux = eval( "(" + taux + ")" );
-          // console.log(taux);
           var pop_attendue = (pop_total*taux[this.title]/100);
           $.each(data, function (i, row) {
               total += +(row[field]);

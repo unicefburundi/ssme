@@ -77,7 +77,7 @@
                                 <tr>
                                 <td><a href="{% url 'district_detail' pk=i.district.id %} " class="btn btn_link">{{i.district}}</a></td>
                                 {% for t in headers_recept  %}
-                                  <td>{{i|getit:t.products}}</td>
+                                  <td>{{i|getit:t.products|floatformat:"0"}}</td>
                                 {% endfor %}
                               </tr>
                               {% endfor %}
@@ -105,7 +105,7 @@
                                 <tr>
                                 <td><a href="{% url 'district_detail' pk=i.district.id %} " class="btn btn_link">{{i.district}}</a></td>
                                 {% for t in headers_recept  %}
-                                  <td>{{i|getit:t.products}}</td>
+                                  <td>{{i|getit:t.products|floatformat:"0"}}</td>
                                 {% endfor %}
                               </tr>
                               {% endfor %}
