@@ -210,8 +210,7 @@ class Report(models.Model):
 
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
-        if not self.id:
-            self.reporting_date = datetime.datetime.now().date()
+        self.reporting_date = datetime.datetime.now().date()
         return super(Report, self).save(*args, **kwargs)
 
     class Meta:
@@ -220,8 +219,8 @@ class Report(models.Model):
 class ReportBeneficiary(models.Model):
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     reception_date = models.DateField()
-    received_number = models.IntegerField()
-    report = models.ForeignKey(Report)
+    received_number = models.IntegerField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text
@@ -232,8 +231,8 @@ class ReportBeneficiary(models.Model):
 class ReportProductReception(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     reception_date = models.DateField()
-    received_quantity = models.FloatField()
-    report = models.ForeignKey(Report)
+    received_quantity = models.FloatField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text
@@ -244,8 +243,8 @@ class ReportProductReception(models.Model):
 class ReportProductRemainStock(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     concerned_date = models.DateField()
-    remain_quantity = models.FloatField()
-    report = models.ForeignKey(Report)
+    remain_quantity = models.FloatField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
     def __unicode__(self):
         return self.report.text

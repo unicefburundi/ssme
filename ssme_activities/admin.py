@@ -54,13 +54,13 @@ class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
 class ReportResource(resources.ModelResource):
     class Meta:
         model = Report
-        fields = ('text', 'concerned_date', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
+        fields = ('id', 'text', 'concerned_date', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
 
 class ReportAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportResource
     search_fields = ('text', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
     list_filter = ('concerned_date', 'reporting_date')
-    list_display = ('text', 'concerned_date', 'category', 'cds', 'district', 'province', )
+    list_display = ('id', 'text', 'concerned_date', 'category', 'cds', 'district', 'province', )
 
     def district(self, obj):
         return obj.cds.district.name
