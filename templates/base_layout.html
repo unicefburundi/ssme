@@ -31,7 +31,7 @@
       };
 
       function totalTextFormatter(data) {
-          return 'Total';
+          return '<strong class="text-primary" >Total</strong>';
       };
 
       function totalFormatter(data) {
@@ -55,7 +55,7 @@
           $.each(data, function (i, row) {
               total += +(row[field]);
           });
-          return  total ;
+          return '<strong>'+ total + '</strong>' ;
         }
         else{
           var taux = "{{taux|safe}}";

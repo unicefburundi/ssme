@@ -146,27 +146,41 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
             body_reception.append(res)
         return body_reception
 
+def get_remain_cds (queryset_remain, dates_remain, headers_recept, **kwargs):
+    body_remain, rest, ress = {}, {}, {}
+    # import ipdb; ipdb.set_trace()
+    cds = CDS.objects.get(pk=kwargs.get('cds'))
+    for t in headers_recept:
+        ress =  [queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products']).values('remain_quantity').latest('concerned_date')]
+        if not ress[0]['remain_quantity']:
+            rest.update({t['products']:0})
+        else:
+            rest.update({t['products']:ress[0]['remain_quantity']})
+    body_remain.update(rest)
+    body_remain.update({'cds':cds})
+    return body_remain
+
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
     body_remain = {}
     if not dates_remain:
-        res, ress = today, {}
         if 'cds' in kwargs :
-            queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds').id)
+            queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds'))
+            cds_r =  get_remain_cds(queryset_remain, dates_remain, headers_recept, cds=kwargs.get('cds'))
+            return cds_r
         elif 'district' in kwargs:
+            district_r = []
             queryset_remain = queryset_remain.filter( report__cds__district=kwargs.get('district').id)
+            for i in queryset_remain.values('report__cds').distinct():
+                district_r.append(get_remain(queryset_remain, dates_remain, headers_recept, cds=i['report__cds']))
+            return district_r
         elif 'province' in kwargs:
+            province_r = []
             queryset_remain = queryset_remain.filter( report__cds__district__province=kwargs.get('province').id)
+            for i in queryset_remain.values('report__cds__district').distinct():
+                province_r.append(get_remain(queryset_remain, dates_remain, headers_recept, district=i['report__cds__district']))
+                return province_r
         if not queryset_remain :
             return []
-        else:
-            for t in headers_recept:
-                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date__lte=today['reception_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
-                if not ress['total']:
-                    res.update({t['products']:0})
-                else:
-                    res.update({t['products']:ress['total']})
-            body_remain.update(res)
-        return body_remain
     else:
         body_remain = []
         for i in dates_remain:
@@ -321,14 +335,7 @@ class DistrictDetailView(DetailView):
 
         # Remain
         queryset_remain = get_report_by_code(self.request, mycode, ReportProductRemainStock)
-        body_remain = []
-        for cds in cdss :
-            res = get_remain(queryset_remain, dates_today, headers_recept, cds=cds)
-            if  res == []:
-                pass
-            else :
-                res.update({'cds':cds})
-                body_remain.append(res)
+        body_remain =  get_remain(queryset_remain, dates_today, headers_recept, district=context['object'])
         context['body_remain'] = body_remain
         context['taux'] = get_per_category_taux(self.request)
         context['recus'] = total_received(self.request, mycode)
