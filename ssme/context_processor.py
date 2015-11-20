@@ -43,3 +43,9 @@ def convert(data):
         return type(data)(map(convert, data))
     else:
         return data
+
+def add_elements_in_dict(list):
+    somme = collections.Counter(list[0])
+    for i in list[1:]:
+        somme += collections.Counter(i)
+    return dict(somme)
