@@ -147,17 +147,29 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
         return body_reception
 
 def get_remain_cds (queryset_remain, dates_remain, headers_recept, **kwargs):
-    body_remain, rest, ress = {}, {}, {}
-    cds = CDS.objects.get(pk=kwargs.get('cds'))
-    for t in headers_recept:
-        ress =  [queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products']).values('remain_quantity').latest('concerned_date')]
-        if not ress[0]['remain_quantity']:
-            rest.update({str(t['products']):0})
-        else:
-            rest.update({str(t['products']):ress[0]['remain_quantity']})
-    body_remain.update(rest)
-    body_remain.update({'cds':cds})
-    return body_remain
+    if not dates_remain:
+        body_remain, rest, ress = {}, {}, {}
+        cds = CDS.objects.get(pk=kwargs.get('cds'))
+        for t in headers_recept:
+            ress =  [queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products']).values('remain_quantity').latest('concerned_date')]
+            if not ress[0]['remain_quantity']:
+                rest.update({str(t['products']):0})
+            else:
+                rest.update({str(t['products']):ress[0]['remain_quantity']})
+        body_remain.update(rest)
+        body_remain.update({'cds':cds})
+        return body_remain
+    else:
+        body_remain, rest, ress = {}, {}, {}
+        for t in headers_recept:
+            ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
+            if not ress['total']:
+                rest.update({str(t['products']):0})
+            else:
+                rest.update({str(t['products']):ress['total']})
+        body_remain.update(rest)
+        return body_remain
+
 
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
     body_remain = {}
@@ -187,16 +199,13 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
         if not queryset_remain :
             return []
     else:
-        body_remain = []
-        for i in dates_remain:
-            res, ress = i, {}
-            for t in headers_recept:
-                ress =  queryset_remain.annotate(products=F('campaign_product__product__name')).filter(concerned_date=i['concerned_date'], products=t['products']).values('remain_quantity').aggregate(total=Sum('remain_quantity'))
-                if not ress['total'] :
-                    res.update({t['products']:0})
-                else:
-                    res.update({t['products']:ress['total']})
-            body_remain.append(res)
+        body_remain, raba = [], {}
+        for d in dates_remain:
+            queryset = queryset_remain.filter(concerned_date=d['concerned_date'])
+            # import ipdb; ipdb.set_trace()
+            raba = get_remain_cds(queryset, d, headers_recept)
+            raba.update(d)
+            body_remain.append(raba)
         return body_remain
 
 #Province
