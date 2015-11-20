@@ -35,7 +35,7 @@ def eliminate_unnecessary_spaces(args):
     the_new_message = re.sub('[+]+',' ',the_incoming_message)
 
     # Find any comma
-    the_new_message = urllib.unquote_plus(the_incoming_message)
+    the_new_message = urllib.unquote_plus(the_new_message)
 
     #Let's eliminate spaces at the begining and the end of the message
     the_new_message = the_new_message.strip()
