@@ -172,7 +172,6 @@ def get_remain_cds (queryset_remain, dates_remain, headers_recept, **kwargs):
 
 
 def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
-    body_remain = {}
     if not dates_remain:
         if 'cds' in kwargs :
             queryset_remain = queryset_remain.filter( report__cds=kwargs.get('cds'))
@@ -199,13 +198,19 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
         if not queryset_remain :
             return []
     else:
-        body_remain, raba = [], {}
+        body_remain = []
         for d in dates_remain:
-            queryset = queryset_remain.filter(concerned_date=d['concerned_date'])
+            queryset = queryset_remain.filter(concerned_date__lte=d['concerned_date'])
+            bb = []
+            for i in queryset.values('report__cds').distinct():
+                queryset_temp = queryset.filter(report__cds=i['report__cds'])
+                if queryset_temp:
+                    bb.append(get_remain_cds(queryset_temp, [], headers_recept, cds=i['report__cds']))
             # import ipdb; ipdb.set_trace()
-            raba = get_remain_cds(queryset, d, headers_recept)
-            raba.update(d)
-            body_remain.append(raba)
+            for i in bb: del i['cds']
+            bb  = add_elements_in_dict(bb)
+            bb.update(d)
+            body_remain.append(bb)
         return body_remain
 
 #Province
@@ -669,7 +674,14 @@ def get_benef_in_json(request):
 def get_recus_in_json(request):
     mycode = myfacility(request)
     recus = get_report_by_code(request, mycode['mycode'], ReportProductReception)
-    data = json.dumps([dict(item) for item in recus.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(qantite_recue=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','qantite_recue', 'province', 'district', 'cds')], default=date_handler)
+    data = json.dumps([dict(item) for item in recus.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(quantite_recue=F('received_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'reception_date','quantite_recue', 'province', 'district', 'cds')], default=date_handler)
+
+    return HttpResponse(data, content_type='application/json')
+
+def get_final_in_json(request):
+    mycode = myfacility(request)
+    finals = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
+    data = json.dumps([dict(item) for item in finals.annotate(products=F('campaign_product__product__name')).annotate(province=F('report__cds__district__province__name')).annotate(quantite_restante=F('remain_quantity')).annotate(district=F('report__cds__district__name')).annotate(cds=F('report__cds__name')).values('products',  'concerned_date','quantite_restante', 'province', 'district', 'cds')], default=date_handler)
 
     return HttpResponse(data, content_type='application/json')
 
