@@ -138,6 +138,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.template.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'ssme.context_processor.myfacility',
+    'ssme.context_processor.google_analytics',
     )
 
 #-----------------------------------------------------------------------------------
@@ -197,6 +198,8 @@ LANGUAGES = (
     ('fr', 'French'),
 )
 
+GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-12345678-9'
+GOOGLE_ANALYTICS_DOMAIN = 'mydomain.com'
 
 try:
     from localsettings import *
