@@ -95,7 +95,7 @@ class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
 class ReportProductReceptionResource(resources.ModelResource):
     class Meta:
         model = ReportProductReception
-        fields = ('received_quantity', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+        fields = ('campaign_product__product__name','received_quantity', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
 
 class ReportProductReceptionAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportProductReceptionResource
@@ -118,7 +118,7 @@ class ReportProductReceptionAdmin(ExportMixin, admin.ModelAdmin):
 class ReportProductRemainStockResource(resources.ModelResource):
     class Meta:
         model = ReportProductRemainStock
-        fields = ('remain_quantity', 'concerned_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+        fields = ('campaign_product__product__name','remain_quantity', 'concerned_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
 
 class ReportProductRemainStockAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportProductRemainStockResource
