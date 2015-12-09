@@ -18,8 +18,10 @@ from django.utils.translation import ugettext as _
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
+
 def dashboard(request):
     return render(request, 'base_layout.html')
+
 
 def moh_facility(request):
     cds_form = CDSForm
@@ -27,41 +29,45 @@ def moh_facility(request):
     province_form = ProvinceForm
     return render(request, 'ssme_activities/moh_facility.html', {'cds_form':cds_form, 'district_form':district_form, 'province_form':province_form})
 
+
 def profile_user(request):
     profile_form = UserCreationMultiForm
-    return render(request, 'ssme_activities/profile_user.html', {'profile_form':profile_form})
+    return render(request, 'ssme_activities/profile_user.html', {'profile_form': profile_form})
+
 
 def campaigns(request):
     return render(request, 'ssme_activities/campaigns.html')
 
+
 def beneficiaries(request):
     return render(request, 'ssme_activities/beneficiaries.html')
 
+
 def get_pop_total(request, code=''):
     pop_total = CampaignCDS.objects.all()
-    if  not code :
+    if not code:
         return pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
     if not pop_total:
-        pop_total= {}
+        pop_total = {}
         pop_total['population_cible'] = 0
-    elif len(code)<=2 :
+    elif len(code) <=2:
         return pop_total.filter(cds__district__province__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
-    if len(code)>2 and len(code)<=4 :
+    if len(code) > 2 and len(code) <= 4:
         return pop_total.filter(cds__district__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
-    if len(code)>4 :
+    if len(code) > 4:
         return pop_total.filter(cds__code=int(code)).values('population_cible').aggregate(population_cible=Sum('population_cible'))
 
 def get_report_by_code(request, code, model):
     queryset = model.objects.all()
-    if not queryset :
+    if not queryset:
         return queryset
-    if not code :
+    if not code:
         return queryset
-    if len(code)<=2 :
+    if len(code) <= 2:
         return queryset.filter(report__cds__district__province__code=int(code))
-    if len(code)>2 and len(code)<=4 :
+    if len(code) > 2 and len(code) <= 4:
         return queryset.filter(report__cds__district__code=int(code))
-    if len(code)>4 :
+    if len(code) > 4:
         return queryset.filter(report__cds__code=code)
 
 
@@ -69,13 +75,13 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
     body_benef = {}
     if not dates_benef:
         res, ress = today, {}
-        if 'cds' in kwargs :
-            queryset_benef = queryset_benef.filter( report__cds=kwargs.get('cds').id)
-            if not queryset_benef :
+        if 'cds' in kwargs:
+            queryset_benef = queryset_benef.filter(report__cds=kwargs.get('cds').id)
+            if not queryset_benef:
                 return []
             else:
                 for t in headers_benef:
-                    ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                    ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                     if not ress:
                         res.update({t['beneficiaires']:0})
                     else:
@@ -84,19 +90,19 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                     body_benef.update(res)
                 return body_benef
         elif 'district' in kwargs:
-            queryset_benef = queryset_benef.filter( report__cds__district=kwargs.get('district').id)
+            queryset_benef = queryset_benef.filter(report__cds__district=kwargs.get('district').id)
         elif 'province' in kwargs:
-            queryset_benef = queryset_benef.filter( report__cds__district__province=kwargs.get('province').id)
-        if not queryset_benef :
+            queryset_benef = queryset_benef.filter(report__cds__district__province=kwargs.get('province').id)
+        if not queryset_benef:
             return []
         else:
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                 if not ress:
-                    res.update({t['beneficiaires']:0})
+                    res.update({t['beneficiaires']: 0})
                 else:
                     ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
-                    res.update({t['beneficiaires']:ress['received_number']})
+                    res.update({t['beneficiaires']: ress['received_number']})
                 body_benef.update(res)
             return body_benef
     else:
@@ -104,7 +110,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress =  queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
                     res.update({t['beneficiaires']:0})
                 else:
