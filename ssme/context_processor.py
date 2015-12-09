@@ -22,11 +22,11 @@ def myfacility(request):
         return {}
     if not created:
         mymoh_facility = get_name_mohfacility(myprofile.level, myprofile.moh_facility)
-    campaign = Campaign.objects.filter(going_on=True)
+    campaign = Campaign.objects.latest('end_date')
     if not campaign:
         campaign = ['no campaign']
 
-    return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign[0] }
+    return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign }
 
 def get_per_category_taux(request):
     headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
