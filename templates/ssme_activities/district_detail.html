@@ -9,16 +9,20 @@
 {% if object %}
     <div class="row">
         <div class="col-md-3">
-            <dl class="dl-horizontal">
-                <dt>Nom du District : </dt>
-                <p> {{object.name}}</p>
-                <dt>Code du District : </dt>
-                <p> {{object.code}}</p>
-                <dt>Population totale : </dt>
-                <p id="pop_total"> {{pop_total.population_cible}}</p>
-                <dt>Province : </dt>
-                <p> {{object.province}}</p>
-            </dl>
+          <ul class="list-group">
+            <li class="list-group-item">
+              <span class="badge">{{object.name}}</span>
+              Name of the District :
+            </li>
+            <li class="list-group-item">
+              <span class="badge">{{object.code}}</span>
+              Code of the District :
+            </li>
+            <li class="list-group-item">
+              <span class="badge">{{object.province}}</span>
+              Province :
+            </li>
+       </ul> 
         </div>
         <div class="col-md-8">
             <ul class="nav nav-tabs">

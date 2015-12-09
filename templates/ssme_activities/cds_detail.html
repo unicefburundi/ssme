@@ -8,18 +8,24 @@
 {% if object %}
     <div class="row">
         <div class="col-md-3">
-            <dl class="dl-horizontal">
-                <dt>Nom du CDS : </dt>
-                <p> {{object.name}}</p>
-                <dt>Code du CDS : </dt>
-                <p> {{object.code}}</p>
-                <dt>Population totale : </dt>
-                <p id="pop_total"> {{pop_total.population_cible}}</p>
-                <dt>District : </dt>
-                <p> {{object.district}}</p>
-                <dt>Province : </dt>
-                <p> {{object.district.province.name}}</p>
-            </dl>
+           <ul class="list-group">
+              <li class="list-group-item">
+                <span class="badge">{{object.name}}</span>
+              Name of the CDS :
+              </li>
+              <li class="list-group-item">
+                <span class="badge">{{object.code}}</span>
+              Code of the CDS :
+              </li>
+              <li class="list-group-item">
+                <span class="badge">{{object.district}}</span>
+                 District :
+              </li>
+              <li class="list-group-item">
+                <span class="badge">{{object.district.province}}</span>
+                Province :
+              </li>
+            </ul>
         </div>
         <div class="col-md-8">
             <ul class="nav nav-tabs">
