@@ -140,7 +140,8 @@ class CampaignBeneficiary(models.Model):
 	'''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
 	campaign = models.ForeignKey(Campaign)
 	beneficiary = models.ForeignKey(Beneficiaire)
-	#order_in_sms = models.IntegerField()
+	#The below field will be removed
+	order_in_sms = models.IntegerField()
 	pourcentage_attendu = models.FloatField(default=0.0, null=True)
 
 	class Meta:
@@ -219,7 +220,8 @@ class Report(models.Model):
         ordering = ('reporting_date',)
 
 class ReportBeneficiary(models.Model):
-	#campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+	#The below fied will be removed
+	campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
 	beneficiaries_per_product = models.ForeignKey(CampaignBeneficiaryProduct)
 	reception_date = models.DateField()
 	received_number = models.IntegerField(null=True)

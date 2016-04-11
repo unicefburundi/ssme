@@ -22,6 +22,7 @@ def myfacility(request):
         return {}
     if not created:
         mymoh_facility = get_name_mohfacility(myprofile.level, myprofile.moh_facility)
+    #import ipdb; ipdb.set_trace()
     campaign = Campaign.objects.latest('end_date')
     if not campaign:
         campaign = ['no campaign']
