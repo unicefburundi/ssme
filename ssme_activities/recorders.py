@@ -677,6 +677,17 @@ def identify_number_of_concerned_beneficiaries(args):
 
 	number_of_expected_beneficiarie_values = 0
 
+	'''for campaign_beneficiary in campaign_beneficiaries:
+		ok = True
+		while(ok == True):
+			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary = campaign_beneficiary)
+			if len(camp_ben_products) < 1:
+				ok = False
+				args['valide'] = False
+				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
+			else:'''
+				
+
 	for campaign_beneficiary in campaign_beneficiaries:
 		if args['valide']:
 			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary = campaign_beneficiary)
@@ -684,7 +695,8 @@ def identify_number_of_concerned_beneficiaries(args):
 				#The admin didn't define products which will be received by these beneficiaries in the opened campaign
 				args['valide'] = False
 				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
-			number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
+			else:
+				number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
 
 	args['number_of_beneficiries_per_product'] = number_of_expected_beneficiarie_values
 
@@ -696,7 +708,8 @@ def identify_number_of_concerned_beneficiaries(args):
 
 def check_number_of_incoming_variables(args):
 	''' This function checks if the phone user sends the expected number of of values '''
-	the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	#the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	the_expected_number_of_values = args['number_of_beneficiries_per_product'] + 2
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
@@ -768,9 +781,9 @@ def record_beneficiaries(args):
 	the_created_report.text = args['text']
 	the_created_report.save()
 
+	#The below two lines and while code will be removed
 	priority = 1
-
-	message_to_send = "Le message enregistre est ("
+	'''message_to_send = "Le message enregistre est ("
 
 	while (priority <= args['number_of_concerned_beneficiaries']):
 		#We record each beneficiary number
@@ -790,8 +803,36 @@ def record_beneficiaries(args):
 		report_ben.save()
 		priority = priority + 1
 
-	args['info_to_contact'] = message_to_send+")."
+	args['info_to_contact'] = message_to_send+")."'''
 
+
+
+	args['info_to_contact'] = "NULL"
+
+	message_to_send = "Le message enregistre est ("
+	
+	#while (priority <= args['number_of_concerned_beneficiaries']):
+	while (priority <= args['number_of_beneficiries_per_product']):
+		#We record each beneficiary number
+		value = args['text'].split(' ')[priority+1]
+		camp_ben_prod = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__campaign = args['opened_campaign'], order_in_sms = priority)
+
+		the_concerned_camp_ben_prod = camp_ben_prod[0]
+		
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_camp_ben_prod.campaign_beneficiary.beneficiary.designation+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_camp_ben_prod.campaign_beneficiary.beneficiary.designation+" : "+value
+
+		#The below line will be removed
+		the_concerned_ben_campaign = the_concerned_camp_ben_prod.campaign_beneficiary
+		
+		report_ben, created = ReportBeneficiary.objects.get_or_create(beneficiaries_per_product = the_concerned_camp_ben_prod, campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
+		report_ben.received_number, report_ben.report = value, the_created_report
+		report_ben.save()
+		priority = priority + 1
+
+	args['info_to_contact'] = message_to_send+")."
 #--------------------------------------------------------------------
 
 
