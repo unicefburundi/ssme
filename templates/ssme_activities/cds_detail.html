@@ -65,7 +65,7 @@
                             <tr>
                             <td>{{i.reception_date}}</td>
                             {% for t in headers_benef  %}
-                              <td>{{i|getit:t.beneficiaires}}</td>
+                              <td>{{i|getit:t.beneficiaires|floatformat:0}}</td>
                             {% endfor %}
                           </tr>
                           {% endfor %}

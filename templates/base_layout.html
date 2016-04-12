@@ -48,21 +48,23 @@
       };
 
       function benefFormatter(data) {
-        var pop_total = $("#pop_total").html();
-        var total = 0;
-        field = this.field;
-        if(pop_total===0){
-          $.each(data, function (i, row) {
+      var pop_total = parseFloat($("#pop_total").html().replace(',','').replace(' ','').replace('&nbsp;',''));
+      var total = 0;
+      field = this.field;
+      if(pop_total===0){
+      $.each(data, function (i, row) {
               total += +(row[field]);
           });
           return '<strong>'+ total + '</strong>' ;
         }
         else{
           var taux = "{{taux|safe}}";
-          taux = eval( "(" + taux + ")" );
-          var pop_attendue = (pop_total*taux[this.title]/100);
-          $.each(data, function (i, row) {
-              total += +(row[field]);
+      taux = eval( "(" + taux + ")" );
+      var pop_attendue = (pop_total*taux[this.title]/100);
+      console.log(pop_total);
+      $.each(data, function (i, row) {
+          total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
+      
           });
           if (pop_attendue != 0){
             return '<strong>' + total + '</strong>'+ '    [' + ((total*100)/pop_attendue).toFixed(2)+ '%]';
