@@ -9,7 +9,7 @@ $(document).ready(function(){
                     console.log(data); // log the returned json to the console
                     $.each(data[0], function(key, value){
                         $('select[name=districts]').append('<option value="' + key + '">' + value +'</option>');
-                    })
+                    });
                 }
             });
             return false; //<---- move it here
