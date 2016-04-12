@@ -67,17 +67,23 @@ class ReportAdmin(ExportMixin, admin.ModelAdmin):
 
     def province(self, obj):
         return obj.cds.district.province.name
+#Test Begin
+'''class ReportBeneficiaryResource(resources.ModelResource):
+    class Meta:
+        model = ReportBeneficiary
+        fields = ('campaign_beneficiary__beneficiary__designation', 'received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')'''
 
 class ReportBeneficiaryResource(resources.ModelResource):
     class Meta:
         model = ReportBeneficiary
-        fields = ('campaign_beneficiary__beneficiary__designation', 'received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+        fields = ('beneficiaries_per_product__campaign_beneficiary__beneficiary__designation', 'beneficiaries_per_product__campaign_product__product__name','received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
 
+'''
 class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportBeneficiaryResource
     search_fields = ( 'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
     list_filter = ('reception_date', 'report__reporting_date')
-    list_display = ('beneficiary', 'received_number', 'reception_date',  'cds', 'district', 'province', )
+    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', )
 
     def beneficiary(self, obj):
         return obj.campaign_beneficiary.beneficiary.designation
@@ -89,8 +95,31 @@ class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
         return obj.report.cds.district.name
 
     def province(self, obj):
+        return obj.report.cds.district.province.name'''
+
+class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ReportBeneficiaryResource
+    search_fields = ( 'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+    list_filter = ('reception_date', 'report__reporting_date')
+    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', )
+
+    def beneficiary(self, obj):
+        return obj.beneficiaries_per_product.campaign_beneficiary.beneficiary.designation
+	
+    def product(self, obj):
+        return obj.beneficiaries_per_product.campaign_product.product.name
+
+    def cds(self, obj):
+        return obj.report.cds.name
+
+    def district(self, obj):
+        return obj.report.cds.district.name
+
+    def province(self, obj):
         return obj.report.cds.district.province.name
 
+
+#Test End
 
 class ReportProductReceptionResource(resources.ModelResource):
     class Meta:
