@@ -14,30 +14,30 @@ def check_number_of_values(args):
 	if(args['message_type']=='SELF_REGISTRATION'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='RUPTURE_STOCK'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='POPULATION_CIBLE'):
 		if len(args['text'].split(' ')) < 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 2:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
@@ -137,10 +137,10 @@ def check_number_of_incoming_prod_variables(args):
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
@@ -209,10 +209,10 @@ def check_cds(args):
 	concerned_cds = CDS.objects.filter(code = the_cds_code)
 	if (len(concerned_cds) > 0):
 		args['valide'] = True
-		args['info_to_contact'] = "Le code cds envoye est reconnu."
+		args['info_to_contact'] = "Erreur. Le code cds envoye est reconnu."
 	else:
 		args['valide'] = False
-		args['info_to_contact'] = "Le code cds envoye n est pas enregistre dans le systeme."
+		args['info_to_contact'] = "Erreur. Le code cds envoye n est pas enregistre dans le systeme."
 
 def check_supervisor_phone_number(args):
 	''' This function checks if the phone number of the supervisor is well written '''
@@ -224,7 +224,7 @@ def check_supervisor_phone_number(args):
 	if re.search(expression, the_supervisor_phone_number_no_space) is None:
 		#The phone number is not well written
 		args['valide'] = False
-		args['info_to_contact'] = "Le numero de telephone du superviseur n est pas bien ecrit."
+		args['info_to_contact'] = "Erreur. Le numero de telephone du superviseur n est pas bien ecrit."
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Le numero de telephone du superviseur est bien ecrit."
@@ -252,7 +252,7 @@ def save_temporary_the_reporter(args):
 		same_existing_temp = same_existing_temp[0]
 		same_existing_temp.delete()
 		args['valide'] = False
-		args['info_to_contact'] = "Vous devriez envoyer le numero de telephone de votre superviseur seulement."
+		args['info_to_contact'] = "Erreur. Vous devriez envoyer le numero de telephone de votre superviseur seulement."
 	else:
 		the_phone_number = args['phone']
 
@@ -282,7 +282,7 @@ def check_has_already_session(args):
 		same_existing_temp = same_existing_temp[0]
 		same_existing_temp.delete()
 		args['valide'] = False
-		args['info_to_contact'] = "Vous devriez envoyer le numero de telephone de votre superviseur seulement."
+		args['info_to_contact'] = "Erreur. Vous devriez envoyer le numero de telephone de votre superviseur seulement."
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Ok."
@@ -713,10 +713,10 @@ def check_number_of_incoming_variables(args):
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
