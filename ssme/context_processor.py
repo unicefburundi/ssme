@@ -15,7 +15,7 @@ def get_name_mohfacility(level='',code=''):
         return 'Central'
 
 def myfacility(request):
-	myprofile = None
+	myprofile ,mymoh_facility= None, None
 	try:
 		myprofile, created = ProfileUser.objects.get_or_create(user=request.user)
 	except TypeError:
