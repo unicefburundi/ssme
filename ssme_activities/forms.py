@@ -86,15 +86,6 @@ class CampaignForm1(forms.ModelForm):
         model = Campaign
         fields = '__all__'
 
-    # def __init__(self, *args, **kwargs):
-    #     super(CampaignForm1, self).__init__(*args, **kwargs)
-    #     self.fields['start_date'].widget.attrs.update({
-    #         'class': 'datePicker'
-    #         })
-    #     self.fields['end_date'].widget.attrs.update({
-    #         'class': 'datePicker'
-    #         })
-
 
 class CampaignForm2(forms.ModelForm):
     class Meta:
