@@ -14,30 +14,30 @@ def check_number_of_values(args):
 	if(args['message_type']=='SELF_REGISTRATION'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='RUPTURE_STOCK'):
 		if len(args['text'].split(' ')) < 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 3:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 3:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 	if(args['message_type']=='POPULATION_CIBLE'):
 		if len(args['text'].split(' ')) < 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) > 2:
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+			args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 		if len(args['text'].split(' ')) == 2:
 			args['valide'] = True
 			args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
@@ -137,10 +137,10 @@ def check_number_of_incoming_prod_variables(args):
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
@@ -209,21 +209,22 @@ def check_cds(args):
 	concerned_cds = CDS.objects.filter(code = the_cds_code)
 	if (len(concerned_cds) > 0):
 		args['valide'] = True
-		args['info_to_contact'] = "Le code cds envoye est reconnu."
+		args['info_to_contact'] = "Erreur. Le code cds envoye est reconnu."
 	else:
 		args['valide'] = False
-		args['info_to_contact'] = "Le code cds envoye n est pas enregistre dans le systeme."
+		args['info_to_contact'] = "Erreur. Le code cds envoye n est pas enregistre dans le systeme."
 
 def check_supervisor_phone_number(args):
 	''' This function checks if the phone number of the supervisor is well written '''
 	the_supervisor_phone_number = args['text'].split(' ')[2]
 	the_supervisor_phone_number_no_space = the_supervisor_phone_number.replace(" ", "")
-	expression = r'^(\+?(257)?)((62)|(79)|(71)|(76))([0-9]{6})$'
+	#expression = r'^(\+?(257)?)((62)|(79)|(71)|(76))([0-9]{6})$'
+	expression = r'^(\+?(257)?)((61)|(62)|(68)|(69)|(71)|(72)|(75)|(76)|(79))([0-9]{6})$'
 	print(the_supervisor_phone_number_no_space)
 	if re.search(expression, the_supervisor_phone_number_no_space) is None:
 		#The phone number is not well written
 		args['valide'] = False
-		args['info_to_contact'] = "Le numero de telephone du superviseur n est pas bien ecrit."
+		args['info_to_contact'] = "Erreur. Le numero de telephone du superviseur n est pas bien ecrit."
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Le numero de telephone du superviseur est bien ecrit."
@@ -251,7 +252,7 @@ def save_temporary_the_reporter(args):
 		same_existing_temp = same_existing_temp[0]
 		same_existing_temp.delete()
 		args['valide'] = False
-		args['info_to_contact'] = "Vous devriez envoyer le numero de telephone de votre superviseur seulement."
+		args['info_to_contact'] = "Erreur. Vous devriez envoyer le numero de telephone de votre superviseur seulement."
 	else:
 		the_phone_number = args['phone']
 
@@ -281,7 +282,7 @@ def check_has_already_session(args):
 		same_existing_temp = same_existing_temp[0]
 		same_existing_temp.delete()
 		args['valide'] = False
-		args['info_to_contact'] = "Vous devriez envoyer le numero de telephone de votre superviseur seulement."
+		args['info_to_contact'] = "Erreur. Vous devriez envoyer le numero de telephone de votre superviseur seulement."
 	else:
 		args['valide'] = True
 		args['info_to_contact'] = "Ok."
@@ -404,7 +405,7 @@ def complete_registration(args):
 		else:
 			the_one_existing_temp.delete()
 			args['valide'] = False
-			args['info_to_contact'] = "Vous avez envoye le numero de telephone du superviseur de differentes manieres. Veuillez reenvoyer le message commencant par rg. Merci"
+			args['info_to_contact'] = "Erreur. Vous avez envoye le numero de telephone du superviseur de differentes manieres. Veuillez reenvoyer le message commencant par rg. Merci"
 
 
 
@@ -676,6 +677,17 @@ def identify_number_of_concerned_beneficiaries(args):
 
 	number_of_expected_beneficiarie_values = 0
 
+	'''for campaign_beneficiary in campaign_beneficiaries:
+		ok = True
+		while(ok == True):
+			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary = campaign_beneficiary)
+			if len(camp_ben_products) < 1:
+				ok = False
+				args['valide'] = False
+				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
+			else:'''
+				
+
 	for campaign_beneficiary in campaign_beneficiaries:
 		if args['valide']:
 			camp_ben_products = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary = campaign_beneficiary)
@@ -683,7 +695,8 @@ def identify_number_of_concerned_beneficiaries(args):
 				#The admin didn't define products which will be received by these beneficiaries in the opened campaign
 				args['valide'] = False
 				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
-			number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
+			else:
+				number_of_expected_beneficiarie_values = number_of_expected_beneficiarie_values + len(camp_ben_products)
 
 	args['number_of_beneficiries_per_product'] = number_of_expected_beneficiarie_values
 
@@ -695,14 +708,15 @@ def identify_number_of_concerned_beneficiaries(args):
 
 def check_number_of_incoming_variables(args):
 	''' This function checks if the phone user sends the expected number of of values '''
-	the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	#the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
+	the_expected_number_of_values = args['number_of_beneficiries_per_product'] + 2
 	args['expected_vulues_number'] = the_expected_number_of_values
 	if len(args['text'].split(' ')) < the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) > the_expected_number_of_values:
 		args['valide'] = False
-		args['info_to_contact'] = "Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
+		args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
 	if len(args['text'].split(' ')) == the_expected_number_of_values:
 		args['valide'] = True
 		args['info_to_contact'] = "Tous vas bien jusqu ici."
@@ -767,9 +781,9 @@ def record_beneficiaries(args):
 	the_created_report.text = args['text']
 	the_created_report.save()
 
+	#The below two lines and while code will be removed
 	priority = 1
-
-	message_to_send = "Le message enregistre est ("
+	'''message_to_send = "Le message enregistre est ("
 
 	while (priority <= args['number_of_concerned_beneficiaries']):
 		#We record each beneficiary number
@@ -789,8 +803,36 @@ def record_beneficiaries(args):
 		report_ben.save()
 		priority = priority + 1
 
-	args['info_to_contact'] = message_to_send+")."
+	args['info_to_contact'] = message_to_send+")."'''
 
+
+
+	args['info_to_contact'] = "NULL"
+
+	message_to_send = "Le message enregistre est ("
+	
+	#while (priority <= args['number_of_concerned_beneficiaries']):
+	while (priority <= args['number_of_beneficiries_per_product']):
+		#We record each beneficiary number
+		value = args['text'].split(' ')[priority+1]
+		camp_ben_prod = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__campaign = args['opened_campaign'], order_in_sms = priority)
+
+		the_concerned_camp_ben_prod = camp_ben_prod[0]
+		
+		if priority == 1:
+			message_to_send = message_to_send+""+the_concerned_camp_ben_prod.campaign_beneficiary.beneficiary.designation+" : "+value
+		else:
+			message_to_send = message_to_send+", "+the_concerned_camp_ben_prod.campaign_beneficiary.beneficiary.designation+" : "+value
+
+		#The below line will be removed
+		the_concerned_ben_campaign = the_concerned_camp_ben_prod.campaign_beneficiary
+		
+		report_ben, created = ReportBeneficiary.objects.get_or_create(beneficiaries_per_product = the_concerned_camp_ben_prod, campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
+		report_ben.received_number, report_ben.report = value, the_created_report
+		report_ben.save()
+		priority = priority + 1
+
+	args['info_to_contact'] = message_to_send+")."
 #--------------------------------------------------------------------
 
 
