@@ -156,12 +156,14 @@ def get_remain_cds (queryset_remain, dates_remain, headers_recept, **kwargs):
     if not dates_remain:
         body_remain, rest, ress = {}, {}, {}
         cds = CDS.objects.get(pk=kwargs.get('cds'))
+
         for t in headers_recept:
-            ress =  [queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products']).values('remain_quantity').latest('concerned_date')]
-            if not ress[0]['remain_quantity']:
+            ress = queryset_remain.annotate(products=F('campaign_product__product__name')).filter(products=t['products'])
+            if not ress:
                 rest.update({str(t['products']):0})
             else:
-                rest.update({str(t['products']):ress[0]['remain_quantity']})
+                ress = ress.values('remain_quantity').latest('concerned_date')
+                rest.update({str(t['products']):ress['remain_quantity']})
         body_remain.update(rest)
         body_remain.update({'cds':cds})
         return body_remain
@@ -212,7 +214,6 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
                 queryset_temp = queryset.filter(report__cds=i['report__cds'])
                 if queryset_temp:
                     bb.append(get_remain_cds(queryset_temp, [], headers_recept, cds=i['report__cds']))
-            # import ipdb; ipdb.set_trace()
             for i in bb: del i['cds']
             bb  = add_elements_in_dict(bb)
             bb.update(d)
@@ -251,7 +252,6 @@ class ProvinceDetailView(DetailView):
         else:
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
-        #benef
         #benef
         headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
