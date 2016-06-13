@@ -33,3 +33,11 @@ class ReportProductRemainStockTable(tables.Table):
         model = ReportProductRemainStock
         attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
         exclude = ('id', 'report')
+
+class ReportBeneficiaryTable2(tables.Table):
+    beneficiaries_per_product = tables.Column(accessor='beneficiaries_per_product.campaign_product')
+
+    class Meta:
+        model = ReportBeneficiary
+        attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
+        exclude = ('id', 'report')

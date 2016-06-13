@@ -44,6 +44,8 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'betterforms',
     'django_tables2',
+    'djangojs',
+    'eztables',
     'django_extensions',
     'ssme_activities',
     'import_export',

@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 import datetime
 from django.utils.translation import ugettext as _
+from django_tables2 import RequestConfig
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -618,7 +619,9 @@ class CampaignWizard(SessionWizardView):
 
 @login_required
 def get_reports2(request):
-    return render(request, "ssme_activities/report2s.html")
+    table = ReportBeneficiaryTable2(ReportBeneficiary.objects.all())
+    RequestConfig(request).configure(table)
+    return render(request, "ssme_activities/report2s.html",  {'table': table})
 
 @login_required
 def get_reports(request, **kwargs):
@@ -665,6 +668,7 @@ def get_reports(request, **kwargs):
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
     taux = get_per_category_taux(request)
     recus = total_received(request, mycode['mycode'])
+    import ipdb; ipdb.set_trace()
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
 
