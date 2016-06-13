@@ -617,6 +617,10 @@ class CampaignWizard(SessionWizardView):
 
 
 @login_required
+def get_reports2(request):
+    return render(request, "ssme_activities/report2s.html")
+
+@login_required
 def get_reports(request, **kwargs):
     mycode = myfacility(request)
     if  'cds' in kwargs:

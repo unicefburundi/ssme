@@ -34,27 +34,19 @@
                 <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                 {% block beneficiary %}
                     <div class="col-md-11">
-                      <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
-                        <thead>
-                          <tr>
-                            <th data-footer-formatter="totalTextFormatter">Date</th>
-                            {% for header in headers_benef %}
-                                <th data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
-                            {% endfor %}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {% for i in body_benef  %}
-                            <tr>
-                            <td>{{i.reception_date|date:"d M, Y"}}</td>
-                            {% for t in headers_benef  %}
-                              <td>{{i|getit:t.beneficiaires}}</td>
-                            {% endfor %}
-                          </tr>
-                          {% endfor %}
-                        </tbody>
-
+                      <table id="table-benef"
+                                  data-toggle="table"
+                                  data-search="true"
+                                  data-show-export="true"
+                                  data-export-types=['csv','excel']
+                                  data-toolbar="#toolbar"
+                                  data-show-toggle="true"
+                                  data-pagination="true"
+                                  data-page-list="[10, 25, 50, 100, ALL]"
+                                  data-show-toggle="true"
+                                  data-show-footer="true"
+                                  data-reorderable-columns="true"
+                                  >
                       </table>
                     </div>
                     <div class="col-md-1"></div>

@@ -30,6 +30,7 @@ urlpatterns = patterns('',
 
     # Reports
     url(r'^reports/$', get_reports, name="reports"),
+    url(r'^reports2/$', get_reports2, name="reports2"),
     url(r'^calcul_benef/$', get_benef_in_json, name="calcul_benef"),
     url(r'^calcul_recus/$', get_recus_in_json, name="calcul_recus"),
     url(r'^calcul_final/$', get_final_in_json, name="calcul_final"),
