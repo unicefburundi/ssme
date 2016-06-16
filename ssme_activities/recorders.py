@@ -1,4 +1,4 @@
-from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS
+from ssme_activities.models import CDS, Temporary, Reporter, Report, Campaign, CampaignBeneficiary, CampaignBeneficiaryProduct, ReportBeneficiary, CampaignProduct, ReportProductReception, ReportProductRemainStock, ReportStockOut, CampaignCDS, AllSupervisorsOnDistrictLevel, DistrictSupervisor
 from django.db.models import Q
 import re
 import datetime
@@ -910,8 +910,41 @@ def alert_for_stock_out(args):
 		print(response.content)
 
 
-	#Secondly, let's send this alert to the computer users who have this CDS in charge.
+	#Secondly, let's send this alert to all supervisors at the district level who have this CDS in their charge
 
+	the_concerned_district = args['cds'].district
+	if not the_concerned_district:
+		print("Ce CDS n est pas attache a un district")
+		return
+	
+	concerned_district_supersors = DistrictSupervisor.objects.filter(district = the_concerned_district)
+	
+	if(len(concerned_district_supersors) < 1):
+		#There is not any supervisor linked with this district
+		print("There is not any supervisor linked with this district")
+		return
+
+	contacts = []
+
+	for district_supervisor in concerned_district_supersors:
+		supervisor = district_supervisor.supervisor
+		supervisor_phone_number = supervisor.phone_number
+		
+		supervisor_phone_number = supervisor_phone_number.strip()
+		supervisor_phone_number = supervisor_phone_number.replace(" ", "")
+		
+		if(len(supervisor_phone_number) == 8):
+			supervisor_phone_number = "+257"+supervisor_phone_number
+		if(len(supervisor_phone_number) == 11):
+			supervisor_phone_number = "+"+supervisor_phone_number
+		
+		supervisor_phone_number = "tel:"+supervisor_phone_number
+		contacts.append(supervisor_phone_number)
+
+	data = {"urns": contacts,"text": args['message_to_send_for_alert']}
+
+	response = requests.post(url, headers={'Content-type': 'application/json', 'Authorization': 'Token %s' % token}, data = json.dumps(data))
+		print(response.content)
 
 
 
