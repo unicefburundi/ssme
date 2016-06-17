@@ -1,10 +1,24 @@
 {% extends "base_layout.html" %}
-{% load extras_utils2  %}
-{% load render_table from django_tables2 %}
-
 {% block content %}
-<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-<div class="col-md-12">
-    {% render_table table %}
-</div>
+
+{% load eztables %}
+<head>
+
+    {% datatables_js %}
+</head>
+
+<table id="my-table">
+</table>
+
+<script>
+    $(function(){
+    $('#browser-table').dataTable({
+        "bPaginate": true,
+        "sPaginationType": "bootstrap",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": Django.url('dt-browsers-default')
+    });
+});
+</script>
 {% endblock content %}
