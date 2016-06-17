@@ -944,7 +944,7 @@ def alert_for_stock_out(args):
 	data = {"urns": contacts,"text": args['message_to_send_for_alert']}
 
 	response = requests.post(url, headers={'Content-type': 'application/json', 'Authorization': 'Token %s' % token}, data = json.dumps(data))
-		print(response.content)
+	print(response.content)
 
 
 
