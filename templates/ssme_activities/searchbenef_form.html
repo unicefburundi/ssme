@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{% block content %}
+
+<form class="form-inline" method="post">{% csrf_token %}
+    <fieldset>
+        <legend>{{ title }}</legend>
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label">{{ field.label }}</label>
+                    <input type="text" placeholder="{{ field }}">
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <label >{{field.label_tag}}</label>
+                        <p>{{field.errors}}</p>
+                        <p>{{field}}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </fieldset>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary" >{% trans "Submit" %}</button>
+    </div>
+</form>
+{% endblock %}
