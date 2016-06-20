@@ -111,11 +111,9 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
-                if not ress['total']:
-                    res.update({t['beneficiaires']:0})
-                else:
-                    res.update({t['beneficiaires']:ress['total']})
+                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(product=F('beneficiaries_per_product__campaign_product__product__name')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number', 'product')
+
+                res.update({t['beneficiaires']:ress})
             body_benef.append(res)
         return body_benef
 
@@ -619,9 +617,13 @@ class CampaignWizard(SessionWizardView):
 
 @login_required
 def get_reports2(request):
-    table = ReportBeneficiaryTable2(ReportBeneficiary.objects.all())
-    RequestConfig(request).configure(table)
-    return render(request, "ssme_activities/report2s.html",  {'table': table})
+    beneficiaries = ReportBeneficiary.objects.values('campaign_beneficiary__beneficiary__designation', ).distinct()
+    for ben in beneficiaries:
+        print ben
+    dates = ReportBeneficiary.objects.values('reception_date').distinct()
+    for dt in dates:
+        print dt
+    return render(request, "ssme_activities/report2s.html")
 
 @login_required
 def get_reports(request, **kwargs):
@@ -638,6 +640,8 @@ def get_reports(request, **kwargs):
 
     # beneficiaires
     headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    for i in headers_benef:
+        i['colspan'] = len(CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=i['beneficiaires']))
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = []
     body_benef = []
@@ -668,7 +672,6 @@ def get_reports(request, **kwargs):
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
     taux = get_per_category_taux(request)
     recus = total_received(request, mycode['mycode'])
-    import ipdb; ipdb.set_trace()
 
     return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
 

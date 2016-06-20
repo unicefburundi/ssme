@@ -38,10 +38,17 @@
 data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
                         <thead>
                           <tr>
-                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            <th data-footer-formatter="totalTextFormatter" rowspan="2">Date</th>
                             {% for header in headers_benef %}
-                                <th data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
+                                <th colspan={{header.colspan}} data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
                             {% endfor %}
+                          </tr>
+                          <tr>
+                                {% for i in body_benef %}
+                                {% ifchanged  %}
+                                <th >{{i}}</th>
+                                {% endifchanged %}
+                              {% endfor %}
                           </tr>
                         </thead>
                         <tbody>

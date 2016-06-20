@@ -461,7 +461,6 @@ def record_sds(args):
 		return
 
 	#Let's record the a beneficiary report
-	# import ipdb; ipdb.set_trace()
 	the_created_report, created = Report.objects.get_or_create(cds = args['cds'],  concerned_date = args['sent_date'], category = 'STOCK_DEBUT_SEMAINE')
 	the_created_report.text = args['text']
 	the_created_report.save()
@@ -477,7 +476,6 @@ def record_sds(args):
 
 		the_concerned_prod_campaign = prod_camp[0]
 
-		# import ipdb; ipdb.set_trace()
 		report_prod, created = ReportProductReception.objects.get_or_create(campaign_product = the_concerned_prod_campaign, reception_date = args['sent_date'], report__cds=args['cds'], report__category='STOCK_DEBUT_SEMAINE')
 		report_prod.received_quantity, report_prod.report = value.replace(',','.'), the_created_report
 		report_prod.save()
@@ -686,7 +684,7 @@ def identify_number_of_concerned_beneficiaries(args):
 				args['valide'] = False
 				args['info_to_contact'] = "Erreur admin. Il y a des beneficiaires dont les produits a recevoir ne sont pas defini."
 			else:'''
-				
+
 
 	for campaign_beneficiary in campaign_beneficiaries:
 		if args['valide']:
@@ -810,7 +808,7 @@ def record_beneficiaries(args):
 	args['info_to_contact'] = "NULL"
 
 	message_to_send = "Le message enregistre est ("
-	
+
 	#while (priority <= args['number_of_concerned_beneficiaries']):
 	while (priority <= args['number_of_beneficiries_per_product']):
 		#We record each beneficiary number
@@ -818,7 +816,7 @@ def record_beneficiaries(args):
 		camp_ben_prod = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__campaign = args['opened_campaign'], order_in_sms = priority)
 
 		the_concerned_camp_ben_prod = camp_ben_prod[0]
-		
+
 		if priority == 1:
 			message_to_send = message_to_send+""+the_concerned_camp_ben_prod.campaign_beneficiary.beneficiary.designation+" : "+value
 		else:
@@ -826,7 +824,7 @@ def record_beneficiaries(args):
 
 		#The below line will be removed
 		the_concerned_ben_campaign = the_concerned_camp_ben_prod.campaign_beneficiary
-		
+
 		report_ben, created = ReportBeneficiary.objects.get_or_create(beneficiaries_per_product = the_concerned_camp_ben_prod, campaign_beneficiary = the_concerned_ben_campaign, reception_date = args['sent_date'], report__cds = args['cds'])
 		report_ben.received_number, report_ben.report = value, the_created_report
 		report_ben.save()
