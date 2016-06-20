@@ -60,13 +60,14 @@
         else{
           var taux = "{{taux|safe}}";
       taux = eval( "(" + taux + ")" );
+      console.log(this.title);
       var pop_attendue = (pop_total*taux[this.title]/100);
       console.log(pop_total);
       $.each(data, function (i, row) {
           total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
-      
+
           });
-          if (pop_attendue != 0){
+          if (pop_attendue !== 0 && pop_attendue.isNaN) {
             return '<strong>' + total + '</strong>'+ '    [' + ((total*100)/pop_attendue).toFixed(2)+ '%]';
           }
           return '<strong>' + total + '</strong>';

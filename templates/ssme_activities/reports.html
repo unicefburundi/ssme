@@ -35,10 +35,11 @@
         {% block beneficiary %}
         <div class="col-md-12">
           <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-          data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
+          data-show-toggle="true" data-pagination="true" data-page-list="[ 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
           <thead>
             <tr>
-              <th data-footer-formatter="totalTextFormatter" rowspan="2">Date</th>
+              <th data-footer-formatter="totalTextFormatter"  rowspan="2">Jour</th>
+              <th rowspan="2">Date  </th>
               {% for header in headers_benef %}
               <th colspan={{header.colspan}} data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
               {% endfor %}
@@ -46,7 +47,7 @@
             <tr>
               {% for header in headers_benef %}
               {% for i in header.products %}
-              <th data-footer-formatter="sumFormatter">{{i.product}}</th>
+              <th data-footer-formatter="benefFormatter">{{i.product}}</th>
               {% endfor %}
               {% endfor %}
             </tr>
@@ -55,6 +56,7 @@
             {% for i in body_benef  %}
             {% ifchanged  %}
             <tr>
+              <td>{{forloop.counter}}</td>
               <td>{{i.reception_date|date:"d M, Y"}}</td>
               {% for t in headers_benef  %}
               {% for d in i|getit:t.beneficiaires  %}
