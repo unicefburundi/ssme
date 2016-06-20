@@ -142,7 +142,7 @@ class CampaignBeneficiary(models.Model):
 	beneficiary = models.ForeignKey(Beneficiaire)
 	#The below field will be removed
 	order_in_sms = models.IntegerField()
-	pourcentage_attendu = models.FloatField(default=0.0, null=True)
+	pourcentage_attendu = models.FloatField(default=100.0, null=True)
 
 	class Meta:
 		ordering = ('beneficiary',)
