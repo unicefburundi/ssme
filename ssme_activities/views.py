@@ -1,21 +1,19 @@
-from django.shortcuts import render
-from ssme_activities.models import *
-from ssme_activities.forms import *
+import datetime
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.models import Group
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
-from smartmin.views import *
+from django.db.models import F, Sum
+from django.utils.translation import ugettext as _
 from formtools.wizard.views import SessionWizardView
 from ssme.context_processor import *
+from ssme_activities.models import *
+from ssme_activities.forms import *
 from ssme_activities.tables import *
-from django.contrib.auth.forms import PasswordResetForm
-from django.db.models import F, Sum
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-import datetime
-from django.utils.translation import ugettext as _
-from django_tables2 import RequestConfig
+from smartmin.views import *
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -627,6 +625,7 @@ def get_reports2(request):
 
 @login_required
 def get_reports(request, **kwargs):
+    searchform = SearchBenef(request)
     mycode = myfacility(request)
     if  'cds' in kwargs:
         mycode['mycode'] = kwargs.get('cds').code
@@ -674,7 +673,7 @@ def get_reports(request, **kwargs):
     taux = get_per_category_taux(request)
     recus = total_received(request, mycode['mycode'])
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
+    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus, 'form' : searchform})
 
 # Benef
 def date_handler(obj):

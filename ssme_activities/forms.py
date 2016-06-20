@@ -1,10 +1,11 @@
 from django import forms
 from authtools.forms import UserCreationForm
-from ssme_activities.models import *
 from betterforms.multiform import MultiModelForm
 from collections import OrderedDict
 from django.forms.models import inlineformset_factory
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
+from ssme_activities.models import *
+from ssme.context_processor import myfacility
 
 
 class UserCreationForm(UserCreationForm):
@@ -110,3 +111,17 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
+
+class   SearchBenef(forms.Form):
+    province = forms.ModelChoiceField(queryset=Province.objects.all())
+    district = forms.ModelChoiceField(queryset=District.objects.all())
+    CDS = forms.ModelChoiceField(queryset=CDS.objects.all())
+
+    def __init__(self, request, *args, **kwargs):
+        super(SearchBenef, self).__init__(*args, **kwargs)
+        import ipdb; ipdb.set_trace()
+        moh_facility = myfacility(request)
+        if not moh_facility['mylevel'] in ['CEN', 'Central']:
+            if moh_facility['mylevel'] in ['CDS']:
+                self.fields['CDS'].queryset = CDS.objects.filter(code=moh_facility['mycode'])
+                self.fields['district'].queryset = District.objects.filter(code=moh_facility['mycode'])
