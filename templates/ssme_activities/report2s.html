@@ -1,24 +1,6 @@
-{% extends "base_layout.html" %}
+{% load extras_utils2  %}
+
 {% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 
-{% load eztables %}
-<head>
-
-    {% datatables_js %}
-</head>
-
-<table id="my-table">
-</table>
-
-<script>
-    $(function(){
-    $('#browser-table').dataTable({
-        "bPaginate": true,
-        "sPaginationType": "bootstrap",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": Django.url('dt-browsers-default')
-    });
-});
-</script>
 {% endblock content %}

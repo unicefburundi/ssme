@@ -34,12 +34,3 @@ class ReportProductRemainStockTable(tables.Table):
         model = ReportProductRemainStock
         attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
         exclude = ('id', 'report')
-
-class ReportBeneficiaryTable2(DatatablesView):
-    model = ReportBeneficiary
-    fields = (
-        'report__reporting_date',
-        'campaign_beneficiary',
-        'beneficiaries_per_product',
-        'received_number',
-        )
