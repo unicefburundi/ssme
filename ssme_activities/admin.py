@@ -101,11 +101,11 @@ class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportBeneficiaryResource
     search_fields = ( 'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
     list_filter = ('reception_date', 'report__reporting_date')
-    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', )
+    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', 'reporting_date')
 
     def beneficiary(self, obj):
         return obj.beneficiaries_per_product.campaign_beneficiary.beneficiary.designation
-	
+
     def product(self, obj):
         return obj.beneficiaries_per_product.campaign_product.product.name
 
@@ -117,6 +117,9 @@ class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
 
     def province(self, obj):
         return obj.report.cds.district.province.name
+
+    def reporting_date(self, obj):
+        return obj.report.reporting_date
 
 
 #Test End
