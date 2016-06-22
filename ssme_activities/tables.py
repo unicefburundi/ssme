@@ -1,8 +1,5 @@
 import django_tables2 as tables
 from ssme_activities.models import *
-from django_tables2.utils import A # alias for Accessor
-from django.utils.safestring import SafeString
-from eztables.views import DatatablesView
 
 
 class ReportBeneficiaryTable(tables.Table):

@@ -119,7 +119,6 @@ class   SearchBenef(forms.Form):
 
     def __init__(self, request, *args, **kwargs):
         super(SearchBenef, self).__init__(*args, **kwargs)
-        import ipdb; ipdb.set_trace()
         moh_facility = myfacility(request)
         if not moh_facility['mylevel'] in ['CEN', 'Central']:
             if moh_facility['mylevel'] in ['CDS']:
