@@ -105,13 +105,23 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                 body_benef.update(res)
             return body_benef
     else:
+        # import ipdb; ipdb.set_trace()
         body_benef = []
+        res = {}
         for i in dates_benef:
-            res, ress = i, {}
-            for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).annotate(product=F('beneficiaries_per_product__campaign_product__product__name')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number', 'product')
-
-                res.update({t['beneficiaires']:ress})
+            res = i
+            headers_benefs = [header for header in headers_benef.values('beneficiaires')]
+            for t in headers_benefs:
+                res.update({t['beneficiaires'] : []})
+                products = t['products']
+                for p in products:
+                    print p,t['beneficiaires']
+                    ress = queryset_benef.filter(reception_date=i['reception_date'],campaign_beneficiary__beneficiary__designation=t['beneficiaires'],beneficiaries_per_product__campaign_product__product__name=p['product']).aggregate(received_number=Sum('received_number'))
+                    p.update(ress)
+                    print p
+                    res[t['beneficiaires']].append(p)
+                    print res
+                p = {}
             body_benef.append(res)
         return body_benef
 
