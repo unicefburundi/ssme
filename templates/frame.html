@@ -11,125 +11,125 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
 
-  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-  <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}img/favicon.ico">
+      <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+      <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}img/favicon.ico">
 
-  <!-- CSS: implied media="all" -->
-  {# load compress #}
-  {# compress css #}
-  {% block styles %}
-  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
-  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css">
-  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/smartmin_styles.css">
-  <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/styles.css">
-  {% endblock %}
+      <!-- CSS: implied media="all" -->
+      {# load compress #}
+      {# compress css #}
+      {% block styles %}
+      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
+      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css">
+      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/smartmin_styles.css">
+      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/styles.css">
+      {% endblock %}
 
-  {% block extra-style %}{% endblock %}
+      {% block extra-style %}{% endblock %}
 
-  {# endcompress #}
-</head>
+      {# endcompress #}
+  </head>
 
-<body>
+  <body>
 
-  {% block navbar %}
-  <header class="navbar navbar-static-top" role="banner">
-    <div class="container">
+      {% block navbar %}
+      <header class="navbar navbar-static-top" role="banner">
+        <div class="container">
 
-      <div class="navbar-header">
-	<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#smartmin-navbar-collapse">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-	</button>
+          <div class="navbar-header">
+           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#smartmin-navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </button>
 
-	{% block brand %}
-	<a class="navbar-brand" href="/">SSME App</a>
-	{% endblock brand %}
+          {% block brand %}
+          <a class="navbar-brand" href="/">SSME App</a>
+          {% endblock brand %}
       </div>
 
       {% block navigation %}
       <nav class="collapse navbar-collapse" id="smartmin-navbar-collapse" role="navigation">
-	<ul class="nav navbar-nav">
-	  {% if perms.nsms.text_list %}
-            <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> List<span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="{% url 'province_list' %}">Provinces</a></li>
-                <li><a href="{% url 'district_list' %}">Districts</a></li>
-                <li><a href="{% url 'cds_list' %}">CDS</a></li>
+       <ul class="nav navbar-nav">
+         {% if perms.nsms.text_list %}
+         <li role="presentation" class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> List<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'province_list' %}">Provinces</a></li>
+            <li><a href="{% url 'district_list' %}">Districts</a></li>
+            <li><a href="{% url 'cds_list' %}">CDS</a></li>
 
-                {% if user.is_superuser %}
-                    <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
-                    <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
-                    <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
-                    <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
-                {% endif %}
-              </ul>
-          </li>
-          <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Créer <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-              {% if user.is_superuser %}
-                <li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
-                <li><a href="{% url 'moh_facility' %}">Établissements Sanitaires</a></li>
-              {% endif %}
-                <li><a href="{% url 'ssme_activities.campaign_create' %}">Campagnes</a></li>
-                <li><a href="{% url 'ssme_activities.product_list' %}">Produits</a></li>
-                <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Bénéficiaires</a></li>
-              </ul>
-          </li>
-          <li role="presentation" class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Campagnes <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-              {% if user.is_superuser %}
-                <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
-                <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
-                <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
-                <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
-                {% endif %}
-              </ul>
-          </li>
-        {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
-            <li>
-              <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Rapports </a>
-          </li>
+            {% if user.is_superuser %}
+            <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
+            <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
+            <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
+            <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
+            {% endif %}
+        </ul>
+    </li>
+    <li role="presentation" class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Créer <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+          {% if user.is_superuser %}
+          <li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
+          <li><a href="{% url 'moh_facility' %}">Établissements Sanitaires</a></li>
           {% endif %}
+          <li><a href="{% url 'ssme_activities.campaign_create' %}">Campagnes</a></li>
+          <li><a href="{% url 'ssme_activities.product_list' %}">Produits</a></li>
+          <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Bénéficiaires</a></li>
+      </ul>
+  </li>
+  <li role="presentation" class="dropdown">
+      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Campagnes <span class="caret"></span>
+      </a>
+      <ul class="dropdown-menu">
+          {% if user.is_superuser %}
+          <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
+          <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
+          <li role="separator" class="divider"></li>
+          <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
+          <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
+          <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
           {% endif %}
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
+      </ul>
+  </li>
+  {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
+  <li>
+      <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Rapports </a>
+  </li>
+  {% endif %}
+  {% endif %}
+</ul>
+<ul class="nav navbar-nav navbar-right">
 
-	  {% block login %}
-          {% if request.user and request.user.is_authenticated %}
-          <li>
-            <a href="{% url 'users.user_profile' request.user.id %}" style="float: left;"><i class="glyphicon glyphicon-user"></i>  {{ request.user.name|capfirst }}</a>
-            <a href="#" style="float: left;">Niveau : {{mylevel}}</a>
-            <a href="{% url 'users.user_logout' %}?go=/" style="float: right;">Se déconnecter</a>
-          </li>
-          {% else %}
-          <li><a href="{% url 'users.user_login' %}">Se connecter</a></li>
-          {% endif %}
-          {% endblock login %}
-	</ul>
-      </nav>
-      {% endblock navigation %}
+ {% block login %}
+ {% if request.user and request.user.is_authenticated %}
+ <li>
+    <a href="{% url 'users.user_profile' request.user.id %}" style="float: left;"><i class="glyphicon glyphicon-user"></i>  {{ request.user.name|capfirst }}</a>
+    <a href="#" style="float: left;">Niveau : {{mylevel}}</a>
+    <a href="{% url 'users.user_logout' %}?go=/" style="float: right;">Se déconnecter</a>
+</li>
+{% else %}
+<li><a href="{% url 'users.user_login' %}">Se connecter</a></li>
+{% endif %}
+{% endblock login %}
+</ul>
+</nav>
+{% endblock navigation %}
 
-    </div>
+</div>
 
-  </header>
-  {% endblock navbar %}
+</header>
+{% endblock navbar %}
 
-  <div class="container">
+<div class="container">
 
     {% load smartmin %}
 
@@ -141,60 +141,51 @@
       <div class="alert alert-{{ message.tags }}">
         <a class="close" data-dismiss="alert">×</a>
         {{ message }}
-      </div>
-      {% endfor %}
-      {% endif %}
-      {% endblock messages %}
-
-      {% block pre-content %}
-      {% endblock %}
-
-      {% block content %}
-      {% endblock %}
-
-      {% block post-content %}
-      {% endblock %}
     </div>
+    {% endfor %}
+    {% endif %}
+    {% endblock messages %}
+
+    {% block pre-content %}
     {% endblock %}
 
-    <footer>
-      {% block footer %}
-      <a href="http://ssme.unicefburundi.org/"><div class="pull-right" id="footer"></div></a>
-      {% endblock %}
-    </footer>
+    {% block content %}
+    {% endblock %}
 
-  </div> <!-- /container -->
+    {% block post-content %}
+    {% endblock %}
+</div>
+{% endblock %}
 
-  <!-- JavaScript at the bottom for fast page loading, conditional based on whether we are serving locally -->
-  <script>
+<footer>
+  {% block footer %}
+  <a href="http://ssme.unicefburundi.org/"><div class="pull-right" id="footer"></div></a>
+  {% endblock %}
+</footer>
+
+</div> <!-- /container -->
+
+<!-- JavaScript at the bottom for fast page loading, conditional based on whether we are serving locally -->
+<script>
     if (window.location.hostname == "localhost"){
-    document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.1.11.1.min.js"%3E%3C/script%3E'));
+        document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.1.11.1.min.js"%3E%3C/script%3E'));
     } else {
-    document.write(unescape('%3Cscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"%3E%3C/script%3E'));
+        document.write(unescape('%3Cscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"%3E%3C/script%3E'));
     }
-  </script>
+</script>
 
-  {# compress js #}
-  <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.pjax.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/scripts.js"></script>
-  <script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
+{# compress js #}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.pjax.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/scripts.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
 
-  {# media associated with any form we are displaying #}
-  {% if form %}
-  {{ form.media }}
-  {% endif %}
+{# media associated with any form we are displaying #}
+{% if form %}
+{{ form.media }}
+{% endif %}
 
-  {% block extra-script %}{% endblock %}
-  {% block script %}{% endblock %}
-  {# endcompress #}
-
-  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
-  <!--script type="text/javascript">
-      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-      </script-->
+{% block extra-script %}{% endblock %}
+{% block script %}{% endblock %}
 
 </body>
 </html>

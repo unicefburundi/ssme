@@ -4,18 +4,19 @@ import collections
 from django.conf import settings
 
 
-def get_name_mohfacility(level='',code=''):
-    if level=='CDS':
+def get_name_mohfacility(level='', code=''):
+    if level == 'CDS':
         return CDS.objects.get(code=code)
-    if level=='BDS':
+    if level == 'BDS':
         return District.objects.get(code=code)
-    if level=='BPS':
+    if level == 'BPS':
         return Province.objects.get(code=code)
-    if level=='CEN':
+    if level == 'CEN':
         return 'Central'
 
+
 def myfacility(request):
-    myprofile ,mymoh_facility= None, None
+    myprofile, mymoh_facility = None, None
     try:
         myprofile, created = ProfileUser.objects.get_or_create(user=request.user)
     except TypeError:
@@ -26,8 +27,8 @@ def myfacility(request):
         campaign = ['no campaign']
     else:
         campaign = Campaign.objects.latest('end_date')
+    return {'myprofile': myprofile, 'mycode': myprofile.moh_facility, 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign}
 
-    return {'myprofile':myprofile, 'mycode':myprofile.moh_facility , 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign }
 
 def get_per_category_taux(request):
     headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
@@ -35,6 +36,7 @@ def get_per_category_taux(request):
     for i in headers_benef:
         taux.update({str(i['beneficiaires']): CampaignBeneficiary.objects.filter(beneficiary__designation=i['beneficiaires'])[0].pourcentage_attendu})
     return taux
+
 
 def convert(data):
     if isinstance(data, basestring):
@@ -46,11 +48,13 @@ def convert(data):
     else:
         return data
 
+
 def add_elements_in_dict(list):
     somme = collections.Counter(list[0])
     for i in list[1:]:
         somme += collections.Counter(i)
     return dict(somme)
+
 
 def google_analytics(request):
     """

@@ -29,15 +29,18 @@ class UserCreationForm(UserCreationForm):
             raise forms.ValidationError("Fill out both fields")
         return password2
 
+
 class ProvinceForm(forms.ModelForm):
     class Meta:
         model = Province
         fields = '__all__'
 
+
 class DistrictForm(forms.ModelForm):
     class Meta:
         model = District
         fields = '__all__'
+
 
 class CDSForm(forms.ModelForm):
     class Meta:
@@ -45,11 +48,11 @@ class CDSForm(forms.ModelForm):
         fields = '__all__'
 
 #User
-
 class UserProfileForm2(forms.ModelForm):
     class Meta:
         model = ProfileUser
         exclude = ('user',)
+
 
 class UserCreationMultiForm(MultiModelForm):
     form_classes = OrderedDict((
@@ -61,23 +64,12 @@ class UserCreationMultiForm(MultiModelForm):
 
 MAX_ELEMENTS = 10
 
-ProductsFormSet = inlineformset_factory(Campaign,
-    CampaignProduct,
-    can_delete=True,
-    fields='__all__',
-    extra=MAX_ELEMENTS)
+ProductsFormSet = inlineformset_factory(Campaign, CampaignProduct, can_delete=True, fields='__all__', extra=MAX_ELEMENTS)
 
-BeneficiaryFormSet = inlineformset_factory(Campaign,
-    CampaignBeneficiary,
-    can_delete=True,
-    fields='__all__',
-    extra=MAX_ELEMENTS)
+BeneficiaryFormSet = inlineformset_factory(Campaign, CampaignBeneficiary, can_delete=True, fields='__all__', extra=MAX_ELEMENTS)
 
-CDSCampaignFormSet = inlineformset_factory(Campaign,
-    CampaignBeneficiaryCDS,
-    can_delete=True,
-    fields='__all__',
-    extra=MAX_ELEMENTS)
+CDSCampaignFormSet = inlineformset_factory(Campaign, CampaignBeneficiaryCDS, can_delete=True, fields='__all__', extra=MAX_ELEMENTS)
+
 
 class CampaignForm1(forms.ModelForm):
     start_date = forms.DateField(input_formats=['%d/%m/%Y'])
@@ -94,11 +86,11 @@ class CampaignForm2(forms.ModelForm):
         fields = '__all__'
 
 
-
 class CampaignForm3(forms.ModelForm):
     class Meta:
         model = CampaignBeneficiary
         fields = '__all__'
+
 
 class ProductForm(forms.ModelForm):
     DOSAGE_CHOICES = (

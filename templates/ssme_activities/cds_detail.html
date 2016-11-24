@@ -176,7 +176,7 @@ function receivedTextFormatter(data) {
         field = this.field;
         var last = Array( data[data.length - 1]);
         $.each(last, function (i, row) {
-              total += +(row[field]);
+              total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
           });
         pourcentage =  (total/recus[this.title] )*100;
         consomme = recus[this.title] - total;
