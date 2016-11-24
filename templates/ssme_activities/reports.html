@@ -14,15 +14,6 @@
   <li {% block activefinal %}{% endblock activefinal %} >
     <a href="#final"   data-toggle="tab">Stock Final</a>
   </li>
-    <li {% block activedraft %}{% endblock activedraft %} >
-      <a href="#draft"   data-toggle="tab">Calculs Bénéficiaires </a>
-    </li>
-    <li {% block activedraftdeux %}{% endblock activedraftdeux %} >
-      <a href="#draft2"   data-toggle="tab">Calculs stock reçu </a>
-    </li>
-    <li {% block activedrafttrois %}{% endblock activedrafttrois %} >
-      <a href="#draft3"   data-toggle="tab">Calculs stock final </a>
-    </li>
 </ul>
 {% endblock page_title  %}
 
@@ -118,82 +109,11 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                     <div class="col-md-1"></div>
                 {% endblock final %}
               </div>
-              <div class="tab-pane {% block activedraft1 %}{% endblock activedraft1 %}" id="draft">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
-                {% block draft %}
-                    <div class="col-md-10">
-                    <div id="output"></div>
-                    </div>
-                    <div class="col-md-2"></div>
-                {% endblock draft %}
-              </div>
-              <div class="tab-pane {% block activedraft2 %}{% endblock activedraft2%}" id="draft2">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
-                {% block draft2 %}
-                    <div class="col-md-10">
-                    <div id="output2"></div>
-                    </div>
-                    <div class="col-md-2"></div>
-                {% endblock draft2 %}
-              </div>
-              <div class="tab-pane {% block activedraft3 %}{% endblock activedraft3%}" id="draft3">
-                <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
-                {% block draft3 %}
-                    <div class="col-md-10">
-                    <div id="output3"></div>
-                    </div>
-                    <div class="col-md-2"></div>
-                {% endblock draft3 %}
-              </div>
-    </div>
+            </div>
 <script>
-$(function(){
-        var derivers = $.pivotUtilities.derivers;
-        var renderers = $.extend(
-            $.pivotUtilities.renderers,
-            $.pivotUtilities.c3_renderers,
-            $.pivotUtilities.export_renderers);
-        //for bénéficiaires
-        request_url1 = '/ssme/calcul_benef/';
-        $.getJSON(request_url1, function(data) {
-                var input = data;
-                $("#output").pivotUI(input,
-                {renderers: renderers,
-                  rows: ["province", "district"],
-                  cols: ["beneficiaires"],
-                  rendererName: "Table",
-                  aggregatorName: "Somme en entiers",
-            },  false, "fr");
-        });
-        // for stock reçu
-        request_url2 = '/ssme/calcul_recus/';
-        $.getJSON(request_url2, function(data) {
-                var input = data;
-                $("#output2").pivotUI(input,
-                {renderers: renderers,
-                  rows: ["province", "district"],
-                  cols: ["products"],
-                  rendererName: "Table",
-                  aggregatorName: "Somme en entiers",
-            },  false, "fr");
-        });
-        // for stock reçu
-        request_url3 = '/ssme/calcul_final/';
-        $.getJSON(request_url3, function(data) {
-                var input = data;
-                $("#output3").pivotUI(input,
-                {renderers: renderers,
-                  rows: ["province", "district"],
-                  cols: ["products"],
-                  rendererName: "Table",
-                  aggregatorName: "Somme en entiers",
-            },  false, "fr");
-        });
- });
-
 function consumptionTextFormatter(data) {
           return '<strong class="text-primary" >Consommé</strong>';
-      };
+      }
 
 function consumptionFormatter(data) {
         var recus = "{{recus|safe}}";
@@ -205,7 +125,7 @@ function consumptionFormatter(data) {
         } else{
           var last = Array( data[data.length - 1]);
           $.each(last, function (i, row) {
-                total += +(row[field]);
+                total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
             });
           pourcentage =  (total/recus[this.title] )*100;
           consomme = recus[this.title] - total;
@@ -216,8 +136,8 @@ function consumptionFormatter(data) {
           else{
              return '<strong class="text-primary" >' + consomme +'</strong>' ;
           }
-        };
-      };
+        }
+      }
 
 </script>
 </div>

@@ -6,13 +6,14 @@
   <li {% block activeprovince %}{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">Province</a></li>
   <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">District</a></li>
   <li {% block activecds %}{% endblock activecds %} ><a href="#cds"   data-toggle="tab">Cds</a></li>
+  </ul>
 {% endblock actions  %}
 
 {% block content %}
 
 <div class="col-md-10">
     <div class="tab-content">
-              {% block user1 %}
+    {% block user1 %}
         <div class="tab-pane {% block activeuser1 %}active{% endblock activeuser1 %}" id="user">
             <h4><i class="glyphicon glyphicon-user"></i></h4>
                 <form action="#"  method="POST" class="form-inline">

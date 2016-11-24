@@ -215,15 +215,17 @@ def get_remain(queryset_remain, dates_remain, headers_recept, **kwargs):
                 if queryset_temp:
                     bb.append(get_remain_cds(queryset_temp, [], headers_recept, cds=i['report__cds']))
             for i in bb: del i['cds']
-            bb  = add_elements_in_dict(bb)
+            bb = add_elements_in_dict(bb)
             bb.update(d)
             body_remain.append(bb)
         return body_remain
+
 
 #Province
 class ProvinceCreateView(CreateView):
     model = Province
     form_class = ProvinceForm
+
 
 class ProvinceListView(ListView):
     model = Province
@@ -257,12 +259,12 @@ class ProvinceDetailView(DetailView):
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
-        for district in districts :
+        for district in districts:
             res = get_benef(queryset_benef, dates_today, headers_benef, district=district)
-            if  res == []:
+            if res == []:
                 pass
-            else :
-                res.update({'district':district})
+            else:
+                res.update({'district': district})
                 body_benef.append(res)
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
@@ -270,12 +272,12 @@ class ProvinceDetailView(DetailView):
         headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
-        for district in districts :
+        for district in districts:
             res = get_reception(queryset_reception, dates_today, headers_recept, district=district)
-            if  res == []:
+            if res == []:
                 pass
-            else :
-                res.update({'district':district})
+            else:
+                res.update({'district': district})
                 body_reception.append(res)
         context['body_reception'] = body_reception
         context['headers_recept'] = headers_recept
@@ -288,10 +290,12 @@ class ProvinceDetailView(DetailView):
         context['recus'] = total_received(self.request, mycode)
         return context
 
+
 # District
 class DistrictCreateView(CreateView):
     model = District
     form_class = DistrictForm
+
 
 class DistrictListView(ListView):
     model = District
@@ -430,7 +434,7 @@ class UserSignupView(CreateView):
     template_name = 'registration/create_profile.html'
 
     def get_success_url(self, user):
-        return reverse( 'profile_user_detail', kwargs = {'pk': user})
+        return reverse('profile_user_detail', kwargs={'pk': user})
 
     def form_valid(self, form):
         # Save the user first, because the profile needs a user before it
@@ -457,26 +461,32 @@ class UserSignupView(CreateView):
                 pass
         return redirect(self.get_success_url(profile.id))
 
+
 class ProfileUserListView(ListView):
     model = ProfileUser
     paginate_by = 25
 
+
 class ProfileUserDetailView(DetailView):
     model = ProfileUser
     slug_field = "user"
+
 
 class ProfileUserUpdateView(UpdateView):
     model = ProfileUser
     fields = ('telephone',)
     exclude = ('user',)
 
+
 # Reporter
 class ReporterListView(ListView):
     model = Reporter
     paginate_by = 25
 
+
 class ReporterDetailView(DetailView):
     model = Reporter
+
 
 # Campaign
 class CampaignCRUDL(SmartCRUDL):
@@ -510,7 +520,6 @@ class CampaignCRUDL(SmartCRUDL):
                 return self.form_invalid(form)
 
 
-
 # Beneficiaire
 class BeneficiaireCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -519,6 +528,8 @@ class BeneficiaireCRUDL(SmartCRUDL):
     class List(SmartListView):
         search_fields = ('designation__icontains', )
         default_order = 'designation'
+
+
 # Product
 class ProductCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -531,6 +542,7 @@ class ProductCRUDL(SmartCRUDL):
     class Create(SmartCreateView):
         form_class = ProductForm
 
+
 # CampaignBeneficiary
 class CampaignBeneficiaryCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -539,6 +551,7 @@ class CampaignBeneficiaryCRUDL(SmartCRUDL):
     class List(SmartListView):
         search_fields = ('beneficiary__designation__icontains', )
         default_order = 'beneficiary'
+
 
 # CampaignBeneficiaryProduct
 class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
@@ -549,6 +562,7 @@ class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
         search_fields = ('campaign_beneficiary__beneficiary__designation__icontains', 'campaign_product__product__name__icontains')
         default_order = 'campaign_beneficiary'
 
+
 # CampaignProduct
 class CampaignProductCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -557,6 +571,7 @@ class CampaignProductCRUDL(SmartCRUDL):
     class List(SmartListView):
         search_fields = ('product__name__icontains', )
         default_order = 'product'
+
 
 # CampaignCDS
 class CampaignCDSCRUDL(SmartCRUDL):
@@ -568,6 +583,7 @@ class CampaignCDSCRUDL(SmartCRUDL):
         search_fields = ('cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
         default_order = 'cds'
 
+
 # CampaignProduct
 class ReportCRUDL(SmartCRUDL):
     actions = ('read', 'list')
@@ -577,6 +593,7 @@ class ReportCRUDL(SmartCRUDL):
         fields = ('text', 'reporting_date', 'concerned_date',  'category', 'cds', 'cds.district', 'cds.district.province')
         search_fields = ('text__icontains', 'cds__name__icontains', 'cds__district__name__icontains', 'cds__district__province__name__icontains')
         default_order = 'cds'
+
 
 # ProfileUser
 class ProfileUserCRUDL(SmartCRUDL):
@@ -588,8 +605,7 @@ class ProfileUserCRUDL(SmartCRUDL):
         search_fields = ('user__name__icontains', 'telephone__icontains', 'user__email__icontains')
         default_order = 'user'
 
-#Campaign
-
+# Campaign
 FORMS = [("campaign", CampaignForm1),
          ("product", ProductsFormSet),
          ("beneficiary", BeneficiaryFormSet),
@@ -619,7 +635,7 @@ class CampaignWizard(SessionWizardView):
 @login_required
 def get_reports(request, **kwargs):
     mycode = myfacility(request)
-    if  'cds' in kwargs:
+    if 'cds' in kwargs:
         mycode['mycode'] = kwargs.get('cds').code
     if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
         messages.warning(request, _('You have no valid MoH facility attached to your profile. Please contact the Admin'))
