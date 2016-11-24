@@ -62,7 +62,6 @@
       taux = eval( "(" + taux + ")" );
       console.log(this.title);
       var pop_attendue = (pop_total*taux[this.title]/100);
-      console.log(pop_total);
       $.each(data, function (i, row) {
           total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
 
