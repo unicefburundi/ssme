@@ -617,7 +617,7 @@ class CampaignWizard(SessionWizardView):
 
 
 @login_required
-def get_reports(request, **kwargs):
+def initial_data(request, *args, **kwargs):
     mycode = myfacility(request)
     if  'cds' in kwargs:
         mycode['mycode'] = kwargs.get('cds').code
@@ -631,6 +631,25 @@ def get_reports(request, **kwargs):
 
     # beneficiaires
     headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    # headers for stocks
+    headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+    #taux 
+    taux = get_per_category_taux(request)
+
+    return {"pop_total": pop_total, "headers_benef": headers_benef,
+            "mycode": mycode, "headers_recept":headers_recept,
+            "taux": taux}
+
+
+@login_required
+def get_reports(request, **kwargs):
+    # import ipdb; ipdb.set_trace()
+    headers = initial_data(request, **kwargs)
+    mycode = headers['mycode']
+    headers_benef = headers['headers_benef']
+    pop_total = headers['pop_total']
+    taux = headers['taux']
+    # beneficiaires
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = []
     body_benef = []
@@ -639,8 +658,8 @@ def get_reports(request, **kwargs):
     else:
         dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
         body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
-    #reception
-    headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+    # reception
+    headers_recept = headers['headers_recept']
     queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
     dates_reception = []
     body_reception = []
@@ -659,14 +678,90 @@ def get_reports(request, **kwargs):
     else:
         dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
         body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
-    taux = get_per_category_taux(request)
     recus = total_received(request, mycode['mycode'])
 
-    return  render(request, "ssme_activities/reports.html", {'body_benef':body_benef, 'headers_benef': headers_benef, 'headers_recept':headers_recept, 'body_reception': body_reception, 'body_remain': body_remain, 'pop_total' : pop_total, 'taux':taux, 'recus': recus})
+    return render(request, "ssme_activities/reports.html", {
+        'body_benef': body_benef, 'headers_benef': headers_benef,
+        'headers_recept': headers_recept, 'body_reception': body_reception,
+        'body_remain': body_remain, 'pop_total': pop_total, 'taux': taux,
+        'recus': recus})
+
+
+def get_reports_by_benef(request, **kwargs):
+    headers = initial_data(request, **kwargs)
+    mycode = headers['mycode']
+    headers_benef = headers['headers_benef']
+    pop_total = headers['pop_total']
+    taux = headers['taux']
+
+    # beneficiaires
+    queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
+    dates_benef = []
+    body_benef = []
+    if not queryset_benef:
+        pass
+    else:
+        dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
+        body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
+
+    return render(request, "ssme_activities/reports_by_benef.html", {
+        'body_benef': body_benef, 'headers_benef': headers_benef,
+        'pop_total': pop_total, 'taux': taux})
+
+
+def get_reports_by_received(request, **kwargs):
+    headers = initial_data(request, **kwargs)
+    mycode = headers['mycode']
+    headers_benef = headers['headers_benef']
+    pop_total = headers['pop_total']
+    taux = headers['taux']
+    headers_recept = headers['headers_recept']
+
+    # receptions
+    queryset_reception = get_report_by_code(request, mycode['mycode'], ReportProductReception)
+    dates_reception = []
+    body_reception = []
+    if not queryset_reception:
+        pass
+    else:
+        dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
+        body_reception = get_reception(queryset_reception, dates_reception, headers_recept)
+    recus = total_received(request, mycode['mycode'])
+
+    return render(request, "ssme_activities/reports_by_received.html", {
+        'headers_recept': headers_recept, 'headers_benef': headers_benef,
+        'body_reception': body_reception, 'recus': recus,
+        'pop_total': pop_total, 'taux': taux})
+
+
+def get_reports_by_remaining(request, **kwargs):
+    headers = initial_data(request, **kwargs)
+    mycode = headers['mycode']
+    headers_benef = headers['headers_benef']
+    pop_total = headers['pop_total']
+    taux = headers['taux']
+    headers_recept = headers['headers_recept']
+
+    # Remain
+    queryset_remain = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)
+    dates_remain = []
+    body_remain = []
+    if not queryset_remain:
+        pass
+    else:
+        dates_remain = queryset_remain.values('concerned_date').distinct().order_by('concerned_date')
+        body_remain = get_remain(queryset_remain, dates_remain, headers_recept)
+    recus = total_received(request, mycode['mycode'])
+
+    return render(request, "ssme_activities/reports_by_remaining.html", {
+        'headers_recept': headers_recept, 'headers_benef': headers_benef,
+        'body_remain': body_remain, 'recus': recus,
+        'pop_total': pop_total, 'taux': taux})
 
 # Benef
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
+
 
 def get_benef_in_json(request):
     mycode = myfacility(request)
