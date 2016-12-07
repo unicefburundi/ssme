@@ -1,67 +1,52 @@
-  {% extends "base_layout.html" %}
-  {% load extras_utils2  %}
-  {% block page_title %}
-  <ul class="nav nav-tabs">
-    <div class="page-header">
-      <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
-    </div>
-    <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-      <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
-    </li>
-    <li {% block activereception %}{% endblock activereception %} >
-     <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
-   </li>
-   <li {% block activefinal %}{% endblock activefinal %} >
+{% extends "base_layout.html" %}
+{% load extras_utils2  %}
+{% block page_title %}
+<ul class="nav nav-tabs">
+<div class="page-header">
+  <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
+  </div>
+  <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
+    <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
+  </li>
+  <li {% block activereception %}{% endblock activereception %} >
+  <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
+  </li>
+  <li {% block activefinal %}{% endblock activefinal %} >
     <a href="#final"   data-toggle="tab">Stock Final</a>
   </li>
 </ul>
 {% endblock page_title  %}
 
-  {% block content %}
-  <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-  <div class="col-md-10">
+{% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<div class="col-md-10">
     <div class="tab-content">
-      <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
-        <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
-        {% block searchform %}
-            {% include "ssme_activities/searchbenef_form.html" %}
-        {% endblock searchform %}
-        {% block beneficiary %}
-        <div class="col-md-12">
-          <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-          data-show-toggle="true" data-pagination="true" data-page-list="[ 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
-          <thead>
-            <tr>
-              <th data-footer-formatter="totalTextFormatter"  rowspan="2">Jour</th>
-              <th rowspan="2">Date  </th>
-              {% for header in headers_benef %}
-              <th colspan={{header.colspan}} data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
-              {% endfor %}
-            </tr>
-            <tr>
-              {% for header in headers_benef %}
-              {% for i in header.products %}
-              <th data-footer-formatter="benefFormatter">{{i.product}}</th>
-              {% endfor %}
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for i in body_benef  %}
-            {% ifchanged  %}
-            <tr>
-              <td>{{forloop.counter}}</td>
-              <td>{{i.reception_date|date:"d M, Y"}}</td>
-              {% for t in headers_benef  %}
-              {% for d in i|getit:t.beneficiaires  %}
-              <td>{{d.received_number}}</td>
-              {% endfor %}
-              {% endfor %}
-            </tr>
-            {% endifchanged %}
-            {% endfor %}
-          </tbody>
-        </table>
+              <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
+                <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
+                {% block beneficiary %}
+                    <div class="col-md-11">
+                      <table id="table-benef" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
+data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true" data-reorderable-columns="true">
+                        <thead>
+                          <tr>
+                            <th data-footer-formatter="totalTextFormatter">Date</th>
+                            {% for header in headers_benef %}
+                                <th data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
+                            {% endfor %}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in body_benef  %}
+                            <tr>
+                            <td>{{i.reception_date|date:"d M, Y"}}</td>
+                            {% for t in headers_benef  %}
+                              <td>{{i|getit:t.beneficiaires}}</td>
+                            {% endfor %}
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+
+                      </table>
                     </div>
                     <div class="col-md-1"></div>
                 {% endblock beneficiary %}
@@ -124,11 +109,12 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                     <div class="col-md-1"></div>
                 {% endblock final %}
               </div>
-            </div>
+    </div>
 <script>
+
 function consumptionTextFormatter(data) {
           return '<strong class="text-primary" >Consommé</strong>';
-      }
+      };
 
 function consumptionFormatter(data) {
         var recus = "{{recus|safe}}";
@@ -151,9 +137,9 @@ function consumptionFormatter(data) {
           else{
              return '<strong class="text-primary" >' + consomme +'</strong>' ;
           }
-        }
-      }
+        };
+      };
 
-  </script>
-  </div>
-  {% endblock content %}
+</script>
+</div>
+{% endblock content %}
