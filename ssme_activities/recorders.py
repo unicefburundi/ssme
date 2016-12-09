@@ -996,13 +996,20 @@ def record_stock_out(args):
 		prod_camp = prod_camp[0]
 		stock_out_report_object = ReportStockOut.objects.create(campaign_product = prod_camp, remaining_stock = value.replace(',','.'), report = the_created_report)
 
-		#args['info_to_contact'] = "Votre rapport est bien recu."
+		
+		args['the_concerned_district_name'] = ""
+		the_concerned_district = args['cds'].district
+		if not the_concerned_district:
+			print("Le CDS "+args['cds'].name+" n est pas attache a un district")
+		else:
+			args['the_concerned_district_name'] = the_concerned_district.name
+			
 
 		args['cds_name'] = args['cds'].name
 		args['product_name'] = stock_out_report_object.campaign_product.product.name
 		args['remaining_stock'] = value
 		args['measuring_unit'] = stock_out_report_object.campaign_product.product.unite_de_mesure
-		args['message_to_send_for_alert'] = "Une rupture de stock de "+args['product_name']+" est signalee a "+args['cds_name']+". La quantite restante est "+args['remaining_stock']+" "+args['measuring_unit']+" ."
+		args['message_to_send_for_alert'] = "Une rupture de stock de "+args['product_name']+" est signalee a "+args['cds_name']+", "+args['the_concerned_district_name']+". La quantite restante est "+args['remaining_stock']+" "+args['measuring_unit']+" ."
 
 		print("cds_name")
 		print(args['cds_name'])

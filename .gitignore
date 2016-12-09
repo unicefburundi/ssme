@@ -13,3 +13,4 @@ static/
 fixtures/
 staticfiles/img/
 *.mo
+*.sql

@@ -59,7 +59,7 @@
                                 <tr>
                                 <td><a href="{% url 'cds_detail' pk=i.cds.id %} " class="btn btn_link">{{i.cds}}</a></td>
                                 {% for t in headers_benef  %}
-                                    <td>{{i|getit:t.beneficiaires}}</td>
+                                    <td>{{i|getit:t.beneficiaires|floatformat:0}}</td>
                                 {% endfor %}
                               </tr>
                               {% endfor %}
@@ -146,7 +146,7 @@ function consumptionFormatter(data) {
         field = this.field;
         var last = Array( data[data.length - 1]);
         $.each(last, function (i, row) {
-              total += +(row[field]);
+              total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
           });
         pourcentage =  (total/recus[this.title] )*100;
         consomme = recus[this.title] - total;
