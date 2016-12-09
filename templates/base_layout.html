@@ -201,7 +201,7 @@
                 <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Synthèse District</a>
               </li>
               <li>
-                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> Détails</a>
+                <a href="{% url 'district_detail' pk=mymoh_facility.id %}"  ><i class="glyphicon glyphicon-list-alt"></i> Détails {{mymoh_facility.id}}</a>
               </li>
               {% elif user|has_group:"BPS" %}
               <li>

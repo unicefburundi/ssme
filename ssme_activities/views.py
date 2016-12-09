@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -235,6 +236,10 @@ class ProvinceListView(ListView):
     model = Province
     paginate_by = 100
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProvinceListView, self).dispatch(*args, **kwargs)
+        
     def get_queryset(self):
         """Returns Province that belong to the current user"""
         mycode = myfacility(self.request)
@@ -246,6 +251,7 @@ class ProvinceListView(ListView):
 
 class ProvinceDetailView(DetailView):
     model = Province
+    lookup_field = 'code'
 
     def get_context_data(self, **kwargs):
         context = super(ProvinceDetailView, self).get_context_data(**kwargs)
@@ -319,6 +325,7 @@ class DistrictListView(ListView):
 
 class DistrictDetailView(DetailView):
     model = District
+    lookup_field = 'code'
 
     def get_context_data(self, **kwargs):
         context = super(DistrictDetailView, self).get_context_data(**kwargs)
@@ -621,6 +628,7 @@ FORMS = [("campaign", CampaignForm1),
 
 
 class CampaignWizard(SessionWizardView):
+
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
         products, orders = set(), set()
@@ -670,9 +678,7 @@ def get_reports(request, **kwargs):
     pop_total = initial_data["pop_total"]
     headers_benef = initial_data["headers_benef"]
     headers_recept = initial_data["headers_recept"]
-    # for i in headers_benef:
-    #     i['colspan'] = len(CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=i['beneficiaires']))
-    #     i['products'] = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=i['beneficiaires']).annotate(product=F('campaign_product__product__name')).values('product')
+    taux = initial_data["taux"]
     queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
     dates_benef = []
     body_benef = []
@@ -784,6 +790,7 @@ def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
 
 
+@login_required
 def get_benef_in_json(request):
     mycode = myfacility(request)
     benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
@@ -793,6 +800,7 @@ def get_benef_in_json(request):
 
 
 # Recus
+@login_required
 def get_recus_in_json(request):
     mycode = myfacility(request)
     recus = get_report_by_code(request, mycode['mycode'], ReportProductReception)
@@ -801,6 +809,7 @@ def get_recus_in_json(request):
     return HttpResponse(data, content_type='application/json')
 
 
+@login_required
 def get_final_in_json(request):
     mycode = myfacility(request)
     finals = get_report_by_code(request, mycode['mycode'], ReportProductRemainStock)

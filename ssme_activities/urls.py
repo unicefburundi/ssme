@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 from ssme_activities.backend import handel_rapidpro_request
 from ssme_activities.views import *
+from django.contrib.auth.decorators import login_required as _
 
 
 urlpatterns = patterns('',
@@ -10,27 +11,27 @@ urlpatterns = patterns('',
     url(r'^campaigns/$', campaigns, name='campaigns'),
     url(r'^beneficiaries/$', beneficiaries, name='beneficiaries'),
 
-    url(r'^cds/$', CDSListView.as_view(), name='cds_list'),
-    url(r'^cds/add/$', CDSCreateView.as_view(), name='cds_add'),
-    url(r'^cds/(?P<pk>\d+)/$', CDSDetailView.as_view(), name='cds_detail'),
+    url(r'^cds/$', _(CDSListView.as_view()), name='cds_list'),
+    url(r'^cds/add/$', _(CDSCreateView.as_view()), name='cds_add'),
+    url(r'^cds/(?P<pk>\d+)/$', _(CDSDetailView.as_view()), name='cds_detail'),
     # Districts
-    url(r'^district/$', DistrictListView.as_view(), name='district_list'),
-    url(r'^district/add/$', DistrictCreateView.as_view(), name='district_add'),
-    url(r'^district/(?P<pk>\d+)/$', DistrictDetailView.as_view(),
+    url(r'^district/$', _(DistrictListView.as_view()), name='district_list'),
+    url(r'^district/add/$', _(DistrictCreateView.as_view()), name='district_add'),
+    url(r'^district/(?P<pk>\d+)/$', _(DistrictDetailView.as_view()),
         name='district_detail'),
     # Provinces
-    url(r'^province/$', ProvinceListView.as_view(), name='province_list'),
-    url(r'^province/add/$', ProvinceCreateView.as_view(), name='province_add'),
-    url(r'^province/(?P<pk>\d+)/$', ProvinceDetailView.as_view(),
+    url(r'^province/$', _(ProvinceListView.as_view()), name='province_list'),
+    url(r'^province/add/$', _(ProvinceCreateView.as_view()), name='province_add'),
+    url(r'^province/(?P<pk>\d+)/$', _(ProvinceDetailView.as_view()),
         name='province_detail'),
 
     # ProfileUser
-    url(r'^register/$', UserSignupView.as_view(), name="create_profile"),
-    url(r'^profile/(?P<pk>\d+)/$', ProfileUserDetailView.as_view(),
+    url(r'^register/$', _(UserSignupView.as_view()), name="create_profile"),
+    url(r'^profile/(?P<pk>\d+)/$', _(ProfileUserDetailView.as_view()),
         name="profile_user_detail"),
-    url(r'^profile_edit/(?P<pk>\d+)/$', ProfileUserUpdateView.as_view(),
+    url(r'^profile_edit/(?P<pk>\d+)/$', _(ProfileUserUpdateView.as_view()),
         name="profileuser_update"),
-    url(r'^create_campaign/$', CampaignWizard.as_view(FORMS),
+    url(r'^create_campaign/$', _(CampaignWizard.as_view(FORMS)),
         name="ssme_activities.campaign_create"),
 
     # Reports
