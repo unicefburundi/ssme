@@ -14,31 +14,38 @@ class CampaignBeneficiaryProductResource(resources.ModelResource):
         model = CampaignBeneficiaryProduct
         fields = ('campaign_beneficiary__beneficiary__designation', 'campaign_product__product__name', 'dosage', 'pourcentage_attendu')
 
+
 class CampaignBeneficiaryProductAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignBeneficiaryProductResource
     list_display = ('campaign_beneficiary', 'campaign_product', 'dosage', 'pourcentage_attendu')
+
 
 class CampaignBeneficiaryResource(resources.ModelResource):
     class Meta:
         model = CampaignBeneficiary
         fields = ('beneficiary__designation',  'pourcentage_attendu', 'order_in_sms')
 
+
 class CampaignBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignBeneficiaryResource
     list_display = ('campaign','beneficiary','order_in_sms', 'pourcentage_attendu')
+
 
 class CampaignProductResource(resources.ModelResource):
     class Meta:
         model = CampaignProduct
 
+
 class CampaignProductAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignProductResource
     list_display = ('campaign','product','order_in_sms')
+
 
 class CampaignCDSResource(resources.ModelResource):
     class Meta:
         model = CampaignCDS
         fields = ('cds__name', 'population_cible', 'cds__district__name', 'cds__district__province__name')
+
 
 class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignCDSResource
@@ -51,15 +58,18 @@ class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.cds.district.province.name
 
+
 class ReportResource(resources.ModelResource):
     class Meta:
         model = Report
         fields = ('id', 'text', 'concerned_date', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
 
+
 class ReportAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportResource
     search_fields = ('text', 'category', 'cds__name', 'cds__district__name', 'cds__district__province__name')
     list_filter = ('concerned_date', 'reporting_date', 'category')
+    date_hierarchy = 'reporting_date'
     list_display = ('id', 'text', 'concerned_date', 'category', 'cds', 'district', 'province', )
 
     def district(self, obj):
@@ -67,41 +77,20 @@ class ReportAdmin(ExportMixin, admin.ModelAdmin):
 
     def province(self, obj):
         return obj.cds.district.province.name
-#Test Begin
-'''class ReportBeneficiaryResource(resources.ModelResource):
-    class Meta:
-        model = ReportBeneficiary
-        fields = ('campaign_beneficiary__beneficiary__designation', 'received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')'''
+
 
 class ReportBeneficiaryResource(resources.ModelResource):
     class Meta:
         model = ReportBeneficiary
-        fields = ('beneficiaries_per_product__campaign_beneficiary__beneficiary__designation', 'beneficiaries_per_product__campaign_product__product__name','received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+        fields = ('beneficiaries_per_product__campaign_beneficiary__beneficiary__designation', 'beneficiaries_per_product__campaign_product__product__name', 'received_number', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
 
-'''
-class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
-    resource_class = ReportBeneficiaryResource
-    search_fields = ( 'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
-    list_filter = ('reception_date', 'report__reporting_date')
-    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', )
-
-    def beneficiary(self, obj):
-        return obj.campaign_beneficiary.beneficiary.designation
-
-    def cds(self, obj):
-        return obj.report.cds.name
-
-    def district(self, obj):
-        return obj.report.cds.district.name
-
-    def province(self, obj):
-        return obj.report.cds.district.province.name'''
 
 class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportBeneficiaryResource
-    search_fields = ( 'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+    search_fields = ('report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+    date_hierarchy = 'reception_date'
     list_filter = ('reception_date', 'report__reporting_date')
-    list_display = ('beneficiary', 'product', 'received_number', 'reception_date',  'cds', 'district', 'province', 'reporting_date')
+    list_display = ('beneficiary', 'product', 'received_number', 'reception_date', 'cds', 'district', 'province', 'reporting_date')
 
     def beneficiary(self, obj):
         return obj.beneficiaries_per_product.campaign_beneficiary.beneficiary.designation
@@ -122,12 +111,12 @@ class ReportBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
         return obj.report.reporting_date
 
 
-#Test End
-
+# Test End
 class ReportProductReceptionResource(resources.ModelResource):
     class Meta:
         model = ReportProductReception
         fields = ('campaign_product__product__name','received_quantity', 'reception_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+
 
 class ReportProductReceptionAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportProductReceptionResource
@@ -147,14 +136,17 @@ class ReportProductReceptionAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.report.cds.district.province.name
 
+
 class ReportProductRemainStockResource(resources.ModelResource):
     class Meta:
         model = ReportProductRemainStock
-        fields = ('campaign_product__product__name','remain_quantity', 'concerned_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+        fields = ('campaign_product__product__name', 'remain_quantity', 'concerned_date',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+
 
 class ReportProductRemainStockAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportProductRemainStockResource
     search_fields = ('campaign_product__product__name',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
+    date_hierarchy = 'concerned_date'
     list_filter = ('concerned_date', 'report__reporting_date')
     list_display = ('product', 'remain_quantity', 'concerned_date',  'cds', 'district', 'province', )
 
@@ -173,16 +165,18 @@ class ReportProductRemainStockAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.report.cds.district.province.name
 
+
 class ReportStockOutResource(resources.ModelResource):
     class Meta:
         model = ReportStockOut
         fields = ('remaining_stock', 'campaign_product__product__name',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
 
+
 class ReportStockOutAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReportStockOutResource
     search_fields = ('campaign_product__product__name',  'report__cds__name', 'report__cds__district__name', 'report__cds__district__province__name')
     list_filter = ('report__cds__district__name', )
-    list_display = ('cds','product', 'remaining_stock',  'district', 'province', )
+    list_display = ('cds', 'product', 'remaining_stock',  'district', 'province', )
 
     def product(self, obj):
         return obj.campaign_product.product.name
@@ -197,6 +191,7 @@ class ReportStockOutAdmin(ExportMixin, admin.ModelAdmin):
         return obj.report.cds.district.province.name
 
 User = get_user_model()
+
 
 class UserAdmin(NamedUserAdmin):
     """
@@ -241,15 +236,17 @@ class UserAdmin(NamedUserAdmin):
                 email_template_name='registration/account_creation_email.html',
             )
 
+
 class ReporterResource(resources.ModelResource):
     class Meta:
         model = Reporter
         fields = ('phone_number', 'supervisor_phone_number', 'cds__name', 'cds__district__name', 'cds__district__province__name')
 
+
 class ReporterAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ReporterResource
     search_fields = ('phone_number', 'supervisor_phone_number', 'cds__name', 'cds__district__name', 'cds__district__province__name')
-    list_display = ('phone_number', 'cds', 'supervisor_phone_number',  'district', 'province',   )
+    list_display = ('phone_number', 'cds', 'supervisor_phone_number',  'district', 'province')
 
     def district(self, obj):
         return obj.cds.district.name
@@ -257,20 +254,24 @@ class ReporterAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.cds.district.province.name
 
+
 class ProvinceResource(resources.ModelResource):
     class Meta:
         model = Province
         fields = ('name', 'code')
+
 
 class ProvinceAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = ProvinceResource
     search_fields = ('name', 'code')
     list_display = ('name', 'code')
 
+
 class DistrictResource(resources.ModelResource):
     class Meta:
         model = District
         fields = ('name', 'code', 'province__name')
+
 
 class DistrictAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = DistrictResource
@@ -280,10 +281,12 @@ class DistrictAdmin(ExportMixin, admin.ModelAdmin):
     def province(self, obj):
         return obj.province.name
 
+
 class CDSResource(resources.ModelResource):
     class Meta:
         model = CDS
         fields = ('name', 'code', 'district__name','district__province__name')
+
 
 class CDSAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CDSResource
