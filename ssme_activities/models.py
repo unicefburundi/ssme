@@ -278,6 +278,7 @@ class CampaignCDS(models.Model):
     def __unicode__(self):
         return "{0} expects {1}".format(self.cds, self.population_cible)
 
+
 class ReportStockOut(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
     report = models.ForeignKey(Report)
@@ -286,17 +287,19 @@ class ReportStockOut(models.Model):
     def __unicode__(self):
         return "{0} report stock-out of {1} with a remaining stock {2}".format(self.report.cds, self.campaign_product.product.name, self.remaining_stock)
 
-class AllSupervisorsOnDistrictLevel(models.Model):
-	first_name = models.CharField(max_length=50)
-	last_name = models.CharField(max_length=50)
-	phone_number = models.CharField(max_length=15)
 
-	def __unicode__(self):
-		return "{0} {1}".format(self.first_name, self.last_name)
+class AllSupervisorsOnDistrictLevel(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=15)
+
+    def __unicode__(self):
+        return "{0} {1}".format(self.first_name, self.last_name)
+
 
 class DistrictSupervisor(models.Model):
-	district = models.ForeignKey(District)
-	supervisor = models.ForeignKey(AllSupervisorsOnDistrictLevel)
+    district = models.ForeignKey(District)
+    supervisor = models.ForeignKey(AllSupervisorsOnDistrictLevel)
 
-	def __unicode__(self):
-		return "{0} {1} Supervise {2}".format(self.supervisor.first_name, self.supervisor.last_name, self.district.name)
+    def __unicode__(self):
+        return "{0} {1} Supervise {2}".format(self.supervisor.first_name, self.supervisor.last_name, self.district.name)
