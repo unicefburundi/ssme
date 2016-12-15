@@ -299,6 +299,32 @@ class CDSAdmin(ExportMixin, admin.ModelAdmin):
     def district(self, obj):
         return obj.district.name
 
+
+class AllSupervisorsOnDistrictLevelResource(resources.ModelResource):
+    class Meta:
+        model = AllSupervisorsOnDistrictLevel
+        fields = ('first_name', 'last_name', 'phone_number', )
+
+
+class AllSupervisorsOnDistrictLevelAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = AllSupervisorsOnDistrictLevelResource
+    list_display = ('first_name', 'last_name', 'phone_number',)
+    search_fields = ('first_name', 'last_name', 'phone_number',)
+
+
+class DistrictSupervisorResource(resources.ModelResource):
+    class Meta:
+        model = DistrictSupervisor
+        fields = ('district__name', 'supervisor__phone_number', 'district__province__name', )
+
+
+class DistrictSupervisorAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = DistrictSupervisorResource
+    list_display = ('district', 'supervisor',)
+    list_filter = ('district__province__name', )
+    search_fields = ('district__name', 'supervisor__phone_number', 'district__province__name', 'supervisor__last_name', 'supervisor__first_name', )
+
+
 admin.site.register(Province, ProvinceAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(CDS, CDSAdmin)
@@ -318,5 +344,5 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReportStockOut, ReportStockOutAdmin)
 admin.site.register(CampaignCDS, CampaignCDSAdmin)
-admin.site.register(AllSupervisorsOnDistrictLevel)
-admin.site.register(DistrictSupervisor)
+admin.site.register(AllSupervisorsOnDistrictLevel, AllSupervisorsOnDistrictLevelAdmin)
+admin.site.register(DistrictSupervisor, DistrictSupervisorAdmin)
