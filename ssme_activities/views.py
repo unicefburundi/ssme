@@ -15,6 +15,10 @@ from ssme_activities.models import *
 from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
+import json
+from django.core import serializers
+from django.db.models import Sum
+from django.core.serializers.json import DjangoJSONEncoder
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -846,3 +850,23 @@ def total_received(request, mycode=''):
 
         recus.update({str(h['products']): recu['received_quantity__sum']})
     return convert(recus)
+
+
+@login_required
+def participation(request):
+    response_data = {}
+    the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+    if(the_last_campaign):
+        beneficiaries_4_last_campaign = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
+        related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
+        response_data = json.dumps(list(related_campaign_beneficiaries), cls=DjangoJSONEncoder)
+        rows = json.loads(response_data)
+        for r in rows:
+            beneficiary = Beneficiaire.objects.get(id = r['beneficiary_id'])
+            r["beneficiary_name"] = beneficiary.designation
+            r["campaign_start_date"] = the_last_campaign.start_date
+            r["campaign_end_date"] = the_last_campaign.end_date
+        response_data = json.dumps(rows, default=date_handler)
+        print("------------------")
+        print(response_data)
+        return HttpResponse(response_data, content_type="application/json")
