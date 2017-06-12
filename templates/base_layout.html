@@ -101,8 +101,7 @@
     function participation(campaign){
       var posturl = "participation";
       var data = campaign;
-      alert("a");
-      //$.get('participation', function(response, status){
+      $('#divparticipation').empty();
         $.ajax({
               /*beforeSend: function(xhr, settings) {
                 if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
@@ -110,13 +109,12 @@
                 }
               },*/
                 url: posturl,
-                type: "get", //send it through get method
+                type: "get",
                 data: { 
                   camp_id : data
                 },
 
                 success: function (response) {
-                  alert("b");
                   if(response.length != 0){
                   $('#divparticipation').html("");
                   $('#divparticipation').append('<p><b>Participation:</b></p>' +

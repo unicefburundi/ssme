@@ -19,6 +19,7 @@ import json
 from django.core import serializers
 from django.db.models import Sum
 from django.core.serializers.json import DjangoJSONEncoder
+from flask import request
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -856,9 +857,12 @@ def total_received(request, mycode=''):
 
 @login_required
 def participation(request):
-    print("==1==")
     response_data = {}
-    the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+    if not request.GET:
+        the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+    else:
+        the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
+
     if(the_last_campaign):
         beneficiaries_4_last_campaign = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
         related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
