@@ -24,7 +24,9 @@ today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 
 def dashboard(request):
-    return render(request, 'base_layout.html')
+    d = {}
+    d['campaigns'] = Campaign.objects.all() 
+    return render(request, 'base_layout.html', d)
 
 
 def moh_facility(request):
@@ -854,6 +856,7 @@ def total_received(request, mycode=''):
 
 @login_required
 def participation(request):
+    print("==1==")
     response_data = {}
     the_last_campaign = Campaign.objects.all().order_by('-id')[0]
     if(the_last_campaign):

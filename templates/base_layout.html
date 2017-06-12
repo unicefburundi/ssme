@@ -13,6 +13,12 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
 
@@ -32,6 +38,12 @@
 
       $(document).ready(function() {
           $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
+
+          if ("{{ campaigns }}") {
+            {% for c in campaigns %}
+              $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.start_date}}</option>');
+            {% endfor %}
+          }
 
           participation();
 
@@ -86,38 +98,64 @@
         }
     }
       
-    function participation(){
-      $.get('participation', function(response, status){
-        if(response.length != 0){
-          $('#divparticipation').html("");
-          $('#divparticipation').append('<p><b>Participation:</b></p>' +
+    function participation(campaign){
+      var posturl = "participation";
+      var data = campaign;
+      alert("a");
+      //$.get('participation', function(response, status){
+        $.ajax({
+              /*beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+              },*/
+                url: posturl,
+                type: "get", //send it through get method
+                data: { 
+                  camp_id : data
+                },
+
+                success: function (response) {
+                  alert("b");
+                  if(response.length != 0){
+                  $('#divparticipation').html("");
+                  $('#divparticipation').append('<p><b>Participation:</b></p>' +
 
                 '<div style="clear:both; height:10px;"></div>' +
 
                 '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
                 
-          $('#tblparticipation').append('<thead>' +
+                  $('#tblparticipation').append('<thead>' +
                 '<th>Beneficiairies</th><th>Target</th><th>Received</th><th>Received</th>' +
                 '</thead>' +
                   
                 '<tbody>' +
                   
                 '</tbody>');
-          for (i = 0; i < response.length; i++){
-            var beneficiary_category = response[i]["beneficiary_name"];
-            var received_people = response[i]["received_people"];
-            var expected_people = response[i]["received_people"];
-            var received_parcentage = (received_people * 100)/expected_people
+                  for (i = 0; i < response.length; i++){
+                    var beneficiary_category = response[i]["beneficiary_name"];
+                    var received_people = response[i]["received_people"];
+                    var expected_people = response[i]["received_people"];
+                    var received_parcentage = (received_people * 100)/expected_people
 
-            $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
+                    $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
             
-            $('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
-            $('#tblparticipation tr:last').append('<td>' + expected_people +  '</td>');
-            $('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
-            $('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
-          }
-        }
-      });
+                    $('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
+                    $('#tblparticipation tr:last').append('<td>' + expected_people +  '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
+                    }
+                  }
+                },
+
+                failure: function (json) {
+                    alert("failure");
+                },
+
+                error: function (jqXHR, exception) {
+                    alert("error");
+                } 
+        });
     }
       function avgFormatter(data) {
           return sumFormatter.call(this, data) / data.length;
@@ -307,9 +345,9 @@
           {% block content %}
           <!--  MAIN CONTENT GOES HERE -->
             <div class="form-inline" style="padding-left :5px; padding-right :5px;">
-              <label for="cmbprovince">Campagne:</label>
-              <select id="campaigns" class="form-control" style="width:140px" onchange="fetchdistricts(this.value)" required="required">
-                <option value="" selected="selected">[ Select Province ]</option>
+              <label for="campaigns">Campagne:</label>
+              <select id="campaigns" class="form-control" style="width:140px" onchange="participation(this.value)" required="required">
+                <option value="" selected="selected">[ Select Campaign ]</option>
               </select>  
             </div>
 
