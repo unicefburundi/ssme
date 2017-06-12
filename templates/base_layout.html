@@ -101,6 +101,9 @@
     function participation(campaign){
       var posturl = "participation";
       var data = campaign;
+      if ((data == undefined) || (data == "")){
+        data = -1;
+      }
       $('#divparticipation').empty();
         $.ajax({
               /*beforeSend: function(xhr, settings) {

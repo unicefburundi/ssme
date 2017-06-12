@@ -858,7 +858,9 @@ def total_received(request, mycode=''):
 @login_required
 def participation(request):
     response_data = {}
-    if not request.GET:
+
+    #if not request.GET["camp_id"] or request.GET["camp_id"] == -1:
+    if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
         the_last_campaign = Campaign.objects.all().order_by('-id')[0]
     else:
         the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
