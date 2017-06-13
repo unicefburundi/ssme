@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^ssme/', include('ssme_activities.urls')),
     )
 
-urlpatterns  += i18n_patterns(
+urlpatterns += i18n_patterns(
     url(r'^accounts/', include('authtools.urls')),
     url(r'^users/', include('smartmin.users.urls')),
     url(r'^get_by_level/(?P<level>\w+)/$', 'ssme.views.get_by_level', name='get_by_level'),
@@ -20,9 +20,5 @@ urlpatterns  += i18n_patterns(
 	url(r'^dashboard/fetchbeneficiaries/$', 'ssme_activities.views.fetchbeneficiaries', name='fetchbeneficiaries'),
     url(r'^$', 'ssme.views.landing', name='landing'),
     url(r'^dashboard/getprovinces/$', ssme_activities.views.getprovinces, name='getprovinces'),
+    url(r'^$', 'ssme.views.landing', name='landing'),
 ) +  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-#In development, static files should be served from app static directories
-if settings.DEBUG == True:
-    urlpatterns += staticfiles_urlpatterns()
-

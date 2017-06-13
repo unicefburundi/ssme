@@ -9,8 +9,9 @@ class ReportBeneficiaryTable(tables.Table):
 
     class Meta:
         model = ReportBeneficiary
-        attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
+        attrs = {"class": "table ", "data-toggle": "table", "data-search": "true", "data-show-columns": "true", "data-show-export": "true", 'data-export-types': "['csv','excel']"}
         exclude = ('id', 'report')
+
 
 class ReportProductReceptionTable(tables.Table):
     cds = tables.Column(accessor='report.cds')
@@ -19,8 +20,9 @@ class ReportProductReceptionTable(tables.Table):
 
     class Meta:
         model = ReportProductReception
-        attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
+        attrs = {"class": "table ", "data-toggle": "table", "data-search": "true", "data-show-columns": "true", "data-show-export": "true", 'data-export-types': "['csv','excel']"}
         exclude = ('id', 'report')
+
 
 class ReportProductRemainStockTable(tables.Table):
     cds = tables.Column(accessor='report.cds')
@@ -29,5 +31,5 @@ class ReportProductRemainStockTable(tables.Table):
 
     class Meta:
         model = ReportProductRemainStock
-        attrs = {"class": "table ", "data-toggle":"table", "data-search":"true" ,"data-show-columns":"true" ,  "data-show-export":"true", 'data-export-types': "['csv','excel']"}
+        attrs = {"class": "table ", "data-toggle": "table", "data-search": "true", "data-show-columns": "true", "data-show-export": "true", 'data-export-types': "['csv','excel']"}
         exclude = ('id', 'report')
