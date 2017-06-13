@@ -42,20 +42,31 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'controlcenter',
     'betterforms',
     'django_tables2',
     'django_extensions',
     'ssme_activities',
     'import_export',
+    'rest_framework',
+    'django_filters',
     'formtools',
     'guardian',
     'smartmin',
+    'explorer',
+    'debug_toolbar',
     # import tasks
     'smartmin.csv_imports',
     # smartmin users
     'smartmin.users',
     'authtools',
 )
+
+MIDDLEWARE = [
+    # ...
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # ...
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -64,6 +75,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -153,14 +165,14 @@ LOGOUT_REDIRECT_URL = reverse_lazy("landing")
 AUTH_USER_MODEL = 'authtools.User'
 
 KNOWN_PREFIXES = {
-    'RG':'SELF_REGISTRATION',
-    'SDS':'STOCK_DEBUT_SEMAINE',
-    'SR':'STOCK_RECU',
-    'SF':'STOCK_FINAL',
-    'B':'BENEFICIAIRE',
-	'RUP' : 'RUPTURE_STOCK',
-	'PC' : 'POPULATION_CIBLE',
-	'X':'EXIT',
+    'RG': 'SELF_REGISTRATION',
+    'SDS': 'STOCK_DEBUT_SEMAINE',
+    'SR': 'STOCK_RECU',
+    'SF': 'STOCK_FINAL',
+    'B': 'BENEFICIAIRE',
+    'RUP': 'RUPTURE_STOCK',
+    'PC': 'POPULATION_CIBLE',
+    'X': 'EXIT',
 }
 
 #------------------------------------------------
@@ -169,11 +181,11 @@ KNOWN_PREFIXES = {
 
 # create the smartmin CRUDL permissions on all objects
 PERMISSIONS = {
-  '*': ('create', # can create an object
-        'read',   # can read an object, viewing it's details
-        'update', # can update an object
-        'delete', # can delete an object,
-        'list'),  # can view a list of the objects
+  '*': ('create',   # can create an object
+        'read',     # can read an object, viewing it's details
+        'update',   # can update an object
+        'delete',   # can delete an object,
+        'list'),    # can view a list of the objects
 }
 
 # assigns the permissions that each group should have, here creating an Administrator group with
@@ -201,6 +213,8 @@ LANGUAGES = (
 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-12345678-9'
 GOOGLE_ANALYTICS_DOMAIN = 'mydomain.com'
+
+INTERNAL_IPS = ('127.0.0.1',)
 
 try:
     from localsettings import *

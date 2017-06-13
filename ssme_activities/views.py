@@ -793,6 +793,18 @@ def get_reports_by_remaining(request, **kwargs):
         )
 
 
+@login_required
+def get_reports_by_rates(request, **kwargs):
+    initial_data = initialise_data(request, **kwargs)
+    mycode = initial_data["mycode"]
+    pop_total = initial_data["pop_total"]
+    recus = total_received(request, mycode['mycode'])
+
+    return render(request, "ssme_activities/reports_by_rates.html", {
+        "recus": recus, 'pop_total': pop_total}
+        )
+
+
 # Benef
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
