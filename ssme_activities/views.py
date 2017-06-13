@@ -20,6 +20,8 @@ from django.core import serializers
 from django.db.models import Sum
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
+from ssme_activities.serilaizers import *
+from rest_framework import viewsets
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -981,3 +983,27 @@ def getprovinces(request):
         provinces = Province.objects.all()
         response_data = serializers.serialize('json', provinces)
     return HttpResponse(response_data, content_type="application/json")
+
+
+class ProvinceViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit Province.
+    """
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+
+
+class DistrictViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit District.
+    """
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+
+
+class CDSViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit CDS.
+    """
+    queryset = CDS.objects.all()
+    serializer_class = CDSSerializer
