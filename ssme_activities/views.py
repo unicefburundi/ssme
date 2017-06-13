@@ -866,6 +866,8 @@ def participation(request):
     else:
         the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
 
+    target_population_for_this_campaign = CampaignCDS.objects.filter(campaign = the_last_campaign).aggregate(Sum('population_cible'))
+
     the_camp_start_date = the_last_campaign.start_date
     date_of_day_two = the_camp_start_date+datetime.timedelta(days=1)
     date_of_day_three = the_camp_start_date+datetime.timedelta(days=2)
@@ -882,6 +884,8 @@ def participation(request):
             r["beneficiary_name"] = beneficiary.designation
             r["campaign_start_date"] = the_last_campaign.start_date
             r["campaign_end_date"] = the_last_campaign.end_date
+
+            r["target_population"] = target_population_for_this_campaign["population_cible__sum"]
 
             received_number_on_first_date = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = the_camp_start_date).aggregate(Sum('received_number'))
             r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]

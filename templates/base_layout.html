@@ -120,40 +120,67 @@
                 success: function (response) {
                   if(response.length != 0){
                   $('#divparticipation').html("");
-                  $('#divparticipation').append('<p><b>Participation:</b></p>' +
+
+                  var targeted_population = response[0]["target_population"];
+
+                  $('#divparticipation').append('<div id="target_pop" style="clear:both;"><p><h2>Target :'+targeted_population+'</h2></p></div');
+
+
+
+                  $('#divparticipation').append('<p><b></b></p>' +
 
                 '<div style="clear:both; height:10px;"></div>' +
 
                 '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
                 
                   $('#tblparticipation').append('<thead>' +
-                '<th>Beneficiairies</th><th>Target</th><th>Received by day 1</th><th>Received by day 2</th><th>Received by day 3</th><th>Received by day 4</th><th>Total Received</th><th>Received %</th>' +
+                '<th>Beneficiairies</th><th>Received by day 1</th><th>Received by day 2</th><th>Received by day 3</th><th>Received by day 4</th><th>Total Received</th>' +
                 '</thead>' +
                   
                 '<tbody>' +
                   
                 '</tbody>');
+                  var total_column_1 = 0;
+                  var total_column_2 = 0;
+                  var total_column_3 = 0;
+                  var total_column_4 = 0;
+                  var total_column_5 = 0;
+
                   for (i = 0; i < response.length; i++){
                     var beneficiary_category = response[i]["beneficiary_name"];
                     var received_people = response[i]["received_people"];
-                    var expected_people = response[i]["received_people"];
+                    var expected_people = response[i]["target_population"];
                     var received_on_day_1 = response[i]["received_on_day_one"];
                     var received_on_day_2 = response[i]["received_on_day_two"];
                     var received_on_day_3 = response[i]["received_on_day_three"];
                     var received_on_day_4 = response[i]["received_on_day_four"];
                     var received_parcentage = (received_people * 100)/expected_people
 
+                    total_column_1 = total_column_1 + received_on_day_1;
+                    total_column_2 = total_column_2 + received_on_day_2;
+                    total_column_3 = total_column_3 + received_on_day_3;
+                    total_column_4 = total_column_4 + received_on_day_4;
+                    total_column_5 = total_column_5 + received_people;
+
+
                     $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
             
                     $('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
-                    $('#tblparticipation tr:last').append('<td>' + expected_people +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_1 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
+                    //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                     }
+                    $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
+                    $('#tblparticipation tr:last').append('<td><b>Percentages</b></td>');
+                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_1*100)/targeted_population +  ' %</b></td>');
+                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_2*100)/targeted_population +  ' %</b></td>');
+                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_3*100)/targeted_population +  ' %</b></td>');
+                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_4*100)/targeted_population +  ' %</b></td>');
+                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_5*100)/targeted_population + ' %</b></td>');
+                    //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                   }
                 },
 
