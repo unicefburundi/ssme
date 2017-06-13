@@ -1,48 +1,81 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
 {% block page_title %}
+{% load staticfiles %}
+
 <ul class="nav nav-tabs">
-<div class="page-header">
-  <h5>Rapport au niveau du  {{mymoh_facility}}</h5>
-  </div>
-  <li {% block activefinal %}class="active"{% endblock activefinal %} >
+  <div class="page-header">
+    <h5>Rapport au niveau du  {{mymoh_facility}}</h5>
+</div>
+<li {% block activefinal %}class="active"{% endblock activefinal %} >
     <a href="#final"   data-toggle="tab">Taux de raportage</a>
-  </li>
+</li>
 </ul>
 {% endblock page_title  %}
 
 {% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-<div class="col-md-10">
+<script src="{% static "js/ssme-rates.js" %}"></script>
+<div class="col-md-10" ng-app="StockApp" ng-controller="StockCtrl">
+
+    <div class="navbar-default sidebar" role="navigation" >
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" >
+            <li >
+              {% block search_form %}
+              <form role="form" class="side-form" >
+                <!-- Province -->
+                <div id="province-group" class="form-group">
+                  <label>Province</label>
+                  <select class="form-control"  ng-model="province" ng-options="x.name for x in provinces track by x.code" ng-change="update_province()"></select>
+              </div>
+
+              <!-- District -->
+              <div id="district-group" class="form-group">
+                  <label>District</label>
+                  <select class="form-control"  ng-model="district" ng-options="x.name for x in districts track by x.code"  ng-change="update_district()" ></select>
+              </div>
+
+              <!-- CDS -->
+              <div id="cds-group" class="form-group">
+                  <label>CDS</label>
+                  <select class="form-control"  ng-model="cds" ng-options="x.name for x in cdss track by x.code"  ng-change="update_cds()" ></select>
+              </div>
+            </form>
+            {% endblock search_form %}
+            </li>
+            </ul>
+        </div>
+    </div>
 <script>
+    function consumptionTextFormatter(data) {
+      return '<strong class="text-primary" >Consommé</strong>';
+  }
 
-function consumptionTextFormatter(data) {
-          return '<strong class="text-primary" >Consommé</strong>';
+  function consumptionFormatter(data) {
+      var recus = "{{recus|safe}}";
+      recus = eval( "(" + recus + ")" );
+      var total = 0;
+      field = this.field;
+      if (data.length <= 0) {
+        return '';
+    } else{
+        var last = Array( data[data.length - 1]);
+        $.each(last, function (i, row) {
+          total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
+      });
+        pourcentage =  (total/recus[this.title] )*100;
+        consomme = recus[this.title] - total;
+        if (pourcentage >=75) {
+          return '<strong class="text-danger" >' + consomme + '</strong>';
+
       }
-
-function consumptionFormatter(data) {
-        var recus = "{{recus|safe}}";
-        recus = eval( "(" + recus + ")" );
-        var total = 0;
-        field = this.field;
-        if (data.length <= 0) {
-          return '';
-        } else{
-          var last = Array( data[data.length - 1]);
-          $.each(last, function (i, row) {
-                total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
-            });
-          pourcentage =  (total/recus[this.title] )*100;
-          consomme = recus[this.title] - total;
-          if (pourcentage >=75) {
-            return '<strong class="text-danger" >' + consomme + '</strong>';
-
-          }
-          else{
-             return '<strong class="text-primary" >' + consomme +'</strong>' ;
-          }
-        }
-      }
+      else{
+       return '<strong class="text-primary" >' + consomme +'</strong>' ;
+   }
+}
+}
 
 </script>
 </div>

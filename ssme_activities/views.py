@@ -15,6 +15,8 @@ from ssme_activities.models import *
 from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
+from ssme_activities.serilaizers import *
+from rest_framework import viewsets
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -858,3 +860,27 @@ def total_received(request, mycode=''):
 
         recus.update({str(h['products']): recu['received_quantity__sum']})
     return convert(recus)
+
+
+class ProvinceViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit Province.
+    """
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+
+
+class DistrictViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit District.
+    """
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+
+
+class CDSViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit CDS.
+    """
+    queryset = CDS.objects.all()
+    serializer_class = CDSSerializer
