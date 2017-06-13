@@ -24,8 +24,10 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
               .then(function (response) {
                 $scope.districts = response.data;
                 $scope.raports = response.data;
-            });
-          }
+                $scope.cdss = "";
+
+          });
+        }
       };
           // district
           $scope.update_district = function () {
@@ -35,8 +37,8 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
               .then(function (response) {
                 $scope.cdss = response.data;
                 $scope.raports = response.data;
-              });
-          }
+          });
+        }
       };
         // CDS
         $scope.update_cds = function () {
@@ -46,7 +48,7 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
               .then(function (response) {
                 $scope.raports = response.data;
               });
-    }
-  };
+            }
+          };
 }]);
 

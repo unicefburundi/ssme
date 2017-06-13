@@ -923,7 +923,6 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     """
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
-    filter_field = ('')
 
 
 class DistrictViewSet(viewsets.ModelViewSet):

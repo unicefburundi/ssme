@@ -17,9 +17,8 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <script src="{% static "js/ssme-rates.js" %}"></script>
-<div class="col-md-11" ng-app="StockApp" ng-controller="StockCtrl">
-<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="col-md-2">
+<div ng-app="StockApp" ng-controller="StockCtrl">
+        <div class="col-md-2" >
             <ul class="nav" >
             <li >
               {% block search_form %}
@@ -29,13 +28,11 @@
                   <label>Province</label>
                   <select class="form-control"  ng-model="province" ng-options="x.name for x in provinces track by x.code" ng-change="update_province()"></select>
               </div>
-
               <!-- District -->
               <div id="district-group" class="form-group">
                   <label>District</label>
                   <select class="form-control"  ng-model="district" ng-options="x.name for x in districts track by x.code"  ng-change="update_district()" ></select>
               </div>
-
               <!-- CDS -->
               <div id="cds-group" class="form-group">
                   <label>CDS</label>
@@ -46,8 +43,7 @@
             </li>
             </ul>
         </div>
-        <div class="col-md-10">
-          <div class="row" id="province-group">
+        <div class="col-md-8">
             <table class="table table-boredered">
             {% verbatim %}
             <thead>
@@ -69,6 +65,5 @@
             {% endverbatim %}
             </table>
           </div>
-        </div>
 </div>
 {% endblock content %}
