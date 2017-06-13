@@ -41,7 +41,7 @@
 
           if ("{{ campaigns }}") {
             {% for c in campaigns %}
-              $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.start_date}}</option>');
+              $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.end_date}}</option>');
             {% endfor %}
           }
 
@@ -127,7 +127,7 @@
                 '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
                 
                   $('#tblparticipation').append('<thead>' +
-                '<th>Beneficiairies</th><th>Target</th><th>Received</th><th>Received</th>' +
+                '<th>Beneficiairies</th><th>Target</th><th>Received on day 1</th><th>Received on day 2</th><th>Received on day 3</th><th>Received on day 4</th><th>Received</th><th>Received</th>' +
                 '</thead>' +
                   
                 '<tbody>' +
@@ -137,12 +137,20 @@
                     var beneficiary_category = response[i]["beneficiary_name"];
                     var received_people = response[i]["received_people"];
                     var expected_people = response[i]["received_people"];
+                    var received_on_day_1 = response[i]["received_on_day_one"];
+                    var received_on_day_2 = response[i]["received_on_day_two"];
+                    var received_on_day_3 = response[i]["received_on_day_three"];
+                    var received_on_day_4 = response[i]["received_on_day_four"];
                     var received_parcentage = (received_people * 100)/expected_people
 
                     $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
             
                     $('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
                     $('#tblparticipation tr:last').append('<td>' + expected_people +  '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_on_day_1 +  '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
+                    $('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                     }
