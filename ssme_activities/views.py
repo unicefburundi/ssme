@@ -887,13 +887,13 @@ def participation(request):
             r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
 
             received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
-            r["received_on_day_two"] = received_number_on_day_2["received_number__sum"]
+            r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
 
             received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
-            r["received_on_day_three"] = received_number_on_day_3["received_number__sum"]
+            r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
 
             received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
-            r["received_on_day_four"] = received_number_on_day_4["received_number__sum"]
+            r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
 
         response_data = json.dumps(rows, default=date_handler)
         print("------------------")
