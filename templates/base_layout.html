@@ -134,7 +134,7 @@
                 '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
                 
                   $('#tblparticipation').append('<thead>' +
-                '<th>Beneficiairies</th><th>Received by day 1</th><th>Received by day 2</th><th>Received by day 3</th><th>Received by day 4</th><th>Total Received</th>' +
+                '<th>Beneficiairies</th><th>Received by day 1</th><th>Received by day 2</th><th>Received by day 3</th><th>Received by day 4</th>' +
                 '</thead>' +
                   
                 '<tbody>' +
@@ -170,7 +170,7 @@
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
+                    //$('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
                     //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                     }
                     $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
@@ -179,7 +179,7 @@
                     $('#tblparticipation tr:last').append('<td><b>' + (total_column_2*100)/targeted_population +  ' %</b></td>');
                     $('#tblparticipation tr:last').append('<td><b>' + (total_column_3*100)/targeted_population +  ' %</b></td>');
                     $('#tblparticipation tr:last').append('<td><b>' + (total_column_4*100)/targeted_population +  ' %</b></td>');
-                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_5*100)/targeted_population + ' %</b></td>');
+                    //$('#tblparticipation tr:last').append('<td><b>' + (total_column_5*100)/targeted_population + ' %</b></td>');
                     //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                   }
                 },
