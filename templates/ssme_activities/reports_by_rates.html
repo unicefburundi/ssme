@@ -1,0 +1,49 @@
+{% extends "base_layout.html" %}
+{% load extras_utils2  %}
+{% block page_title %}
+<ul class="nav nav-tabs">
+<div class="page-header">
+  <h5>Rapport au niveau du  {{mymoh_facility}}</h5>
+  </div>
+  <li {% block activefinal %}class="active"{% endblock activefinal %} >
+    <a href="#final"   data-toggle="tab">Taux de raportage</a>
+  </li>
+</ul>
+{% endblock page_title  %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<div class="col-md-10">
+<script>
+
+function consumptionTextFormatter(data) {
+          return '<strong class="text-primary" >Consommé</strong>';
+      }
+
+function consumptionFormatter(data) {
+        var recus = "{{recus|safe}}";
+        recus = eval( "(" + recus + ")" );
+        var total = 0;
+        field = this.field;
+        if (data.length <= 0) {
+          return '';
+        } else{
+          var last = Array( data[data.length - 1]);
+          $.each(last, function (i, row) {
+                total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
+            });
+          pourcentage =  (total/recus[this.title] )*100;
+          consomme = recus[this.title] - total;
+          if (pourcentage >=75) {
+            return '<strong class="text-danger" >' + consomme + '</strong>';
+
+          }
+          else{
+             return '<strong class="text-primary" >' + consomme +'</strong>' ;
+          }
+        }
+      }
+
+</script>
+</div>
+{% endblock content %}
