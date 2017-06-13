@@ -26,9 +26,10 @@ today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 
 def dashboard(request):
-    d = {}
-    d['campaigns'] = Campaign.objects.all() 
-    return render(request, 'base_layout.html', d)
+	d = {}
+	d['campaigns'] = Campaign.objects.all() 
+	
+	return render(request, 'base_layout.html', d)
 
 
 def moh_facility(request):
@@ -857,49 +858,78 @@ def total_received(request, mycode=''):
 
 
 @login_required
+def fetchbeneficiaries(request):
+	camp_id = request.GET["camp_id"]
+	response_data = {}
+	if (camp_id):
+		the_last_campaign = Campaign.objects.get(id=camp_id)
+		data = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
+		response_data = serializers.serialize('json', data)
+	else:
+		response_data = serializers.serialize('json', "No data")
+	return HttpResponse(response_data, content_type="application/json")
+	
+	
+@login_required
 def participation(request):
-    response_data = {}
+	response_data = {}
+	beneficiaryid = request.GET["beneficiaryid"]
+	
+	if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
+		the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+	else:
+		the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
 
-    #if not request.GET["camp_id"] or request.GET["camp_id"] == -1:
-    if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
-        the_last_campaign = Campaign.objects.all().order_by('-id')[0]
-    else:
-        the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
+	target_population_for_this_campaign = CampaignCDS.objects.filter(campaign = the_last_campaign).aggregate(Sum('population_cible'))
+	the_camp_start_date = the_last_campaign.start_date
+	date_of_day_two = the_camp_start_date+datetime.timedelta(days=1)
+	date_of_day_three = the_camp_start_date+datetime.timedelta(days=2)
+	date_of_day_four = the_camp_start_date+datetime.timedelta(days=3)
+	the_camp_end_date = the_last_campaign.end_date
 
-    target_population_for_this_campaign = CampaignCDS.objects.filter(campaign = the_last_campaign).aggregate(Sum('population_cible'))
+	if(the_last_campaign):
+		beneficiaries_4_last_campaign = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
+		
+		if (beneficiaryid.isdigit()):
+			related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign, beneficiary__id=beneficiaryid).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
+		else:
+			related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
+		
+		response_data = json.dumps(list(related_campaign_beneficiaries), cls=DjangoJSONEncoder)
+		rows = json.loads(response_data)
+		
+		for r in rows:
+			beneficiary = Beneficiaire.objects.get(id = r['beneficiary_id'])
+			r["beneficiary_name"] = beneficiary.designation
+			r["campaign_start_date"] = the_last_campaign.start_date
+			r["campaign_end_date"] = the_last_campaign.end_date
+			r["target_population"] = target_population_for_this_campaign["population_cible__sum"]
+			
+			received_number_on_first_date = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = the_camp_start_date).aggregate(Sum('received_number'))
+			r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
 
-    the_camp_start_date = the_last_campaign.start_date
-    date_of_day_two = the_camp_start_date+datetime.timedelta(days=1)
-    date_of_day_three = the_camp_start_date+datetime.timedelta(days=2)
-    date_of_day_four = the_camp_start_date+datetime.timedelta(days=3)
-    the_camp_end_date = the_last_campaign.end_date
+			received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
+			r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
 
-    if(the_last_campaign):
-        beneficiaries_4_last_campaign = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
-        related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
-        response_data = json.dumps(list(related_campaign_beneficiaries), cls=DjangoJSONEncoder)
-        rows = json.loads(response_data)
-        for r in rows:
-            beneficiary = Beneficiaire.objects.get(id = r['beneficiary_id'])
-            r["beneficiary_name"] = beneficiary.designation
-            r["campaign_start_date"] = the_last_campaign.start_date
-            r["campaign_end_date"] = the_last_campaign.end_date
+			received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
+			r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
 
-            r["target_population"] = target_population_for_this_campaign["population_cible__sum"]
-
-            received_number_on_first_date = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = the_camp_start_date).aggregate(Sum('received_number'))
-            r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
-
-            received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
-            r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
-
-            received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
-            r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
-
-            received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
-            r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
-
-        response_data = json.dumps(rows, default=date_handler)
-        print("------------------")
-        print(response_data)
-        return HttpResponse(response_data, content_type="application/json")
+			received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
+			r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
+			
+			if (beneficiaryid.isdigit() and beneficiaryid > 0):
+				beneficiary_target = CampaignBeneficiary.objects.get(campaign = the_last_campaign, beneficiary__id=beneficiaryid).pourcentage_attendu
+				r["percentage_on_day_one"] = (r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100
+				r["percentage_on_day_two"] = (r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100
+				r["percentage_on_day_three"] = (r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100
+				r["percentage_on_day_four"] = (r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100
+			else:
+				r["percentage_on_day_one"] = 0
+				r["percentage_on_day_two"] = 0
+				r["percentage_on_day_three"] = 0
+				r["percentage_on_day_four"] = 0
+			
+		response_data = json.dumps(rows, default=date_handler)
+		#print("------------------")
+		#print(response_data)
+		return HttpResponse(response_data, content_type="application/json")

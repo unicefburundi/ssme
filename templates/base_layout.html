@@ -8,6 +8,11 @@
     <script type="text/javascript" src="{% static 'js/libs/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
 
+	<!-- Highcharts -->
+	<script src="https://github.highcharts.com/master/highcharts.src.js"></script>
+	<script src="https://github.highcharts.com/master/highcharts-more.js"></script>
+	<script src="https://github.highcharts.com/master/modules/exporting.src.js"></script>
+	
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
@@ -18,9 +23,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
-
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
+    <!--<link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">-->
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'js/bootstrap-table/bootstrap-table.min.js' %}"></script>
@@ -29,7 +33,7 @@
     <script src="{% static 'js/bootstrap-table/extensions/export/bootstrap-table-export.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-
+	
     <script type="text/javascript">
       // Change JQueryUI plugin names to fix name collision with Bootstrap.
       $.widget.bridge('uitooltip', $.ui.tooltip);
@@ -44,7 +48,7 @@
               $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.end_date}}</option>');
             {% endfor %}
           }
-
+		  
           participation();
 
       });
@@ -97,8 +101,105 @@
           return '<strong>' + total + '</strong>';
         }
     }
-      
-    function participation(campaign){
+    
+	
+	function fetchbeneficiaries(campaignid) {
+		var posturl = "fetchbeneficiaries";
+		
+		if (campaignid) {
+			if ((campaignid == undefined) || (campaignid == "")){
+				campaignid = -1;
+			}
+			
+			$.ajax({
+				  /*beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				  },*/
+					url: posturl,
+					type: "get",
+					data: {
+					  camp_id : campaignid
+					},
+					
+					success: function (response) {
+						// populate beneficiaries dropdown with response
+						if (response){
+							if(response.length != 0){ 
+								$("#beneficiaries option").each(function(){
+									if ($(this).val()) {
+										$(this).remove();
+									}
+								});
+								
+								for (i = 0; i < response.length; i++) {
+									$('#beneficiaries').append('<option value=' + response[i].pk +'>' + response[i].fields['designation'] + '</option>');
+								}
+							} else {
+								alert("No beneficiary found for selected campaign");
+							}
+						} else {
+							alert("No beneficiary found for selected campaign");
+						}
+						
+						// fetch participation
+						participation(campaignid);
+					},
+					
+					failure: function (json) {
+						alert("failure");
+					},
+
+					error: function (jqXHR, exception) {
+						alert(getajaxerrormessage(jqXHR, exception));
+					}
+				});
+				
+			} else {
+				participation(campaignid);
+			}
+	}
+	
+	
+	function getajaxerrormessage(jqXHR, exception) {
+            var msg = jqXHR.responseText;
+			
+            if (jqXHR.status === 0) {
+                msg = "Not connect.n Verify Network. -- " + jqXHR.responseText;
+            } else if (jqXHR.status == 401) {
+                msg = "Requested page not found. [401] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 402) {
+                msg = "Requested page not found. [402] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 403) {
+                msg = "Requested page not found. [403] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 404) {
+                msg = "Requested page not found. [404] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 500) {
+                msg = "Internal Server Error. [500] --" + jqXHR.responseText;
+            } else if (exception === 'parsererror') {
+                msg = "Requested JSON parse failed.--" + jqXHR.responseText;
+            } else if (exception === 'timeout') {
+                msg = "Time out error.--" + jqXHR.responseText;
+            } else if (exception === 'abort') {
+                msg = "Ajax request aborted.--" + jqXHR.responseText;
+            } else {
+                msg = "Uncaught Error.n--" + jqXHR.responseText;
+            }
+            return msg;
+        }
+	
+	function fetchparticipation(beneficiaryid) {
+		$('#ct-campaignchart').empty();
+		
+		if (!isNaN(beneficiaryid)) {
+			participation($('#campaigns option:selected').val(), beneficiaryid);
+		} else {
+			participation($('#campaigns option:selected').val());
+		}
+	}
+	
+    function participation(campaign, beneficiaryid=null){
       var posturl = "participation";
       var data = campaign;
       if ((data == undefined) || (data == "")){
@@ -114,7 +215,7 @@
                 url: posturl,
                 type: "get",
                 data: { 
-                  camp_id : data
+                  camp_id : data, beneficiaryid : beneficiaryid
                 },
 
                 success: function (response) {
@@ -123,7 +224,7 @@
 
                   var targeted_population = response[0]["target_population"];
 
-                  $('#divparticipation').append('<div id="target_pop" style="clear:both;"><p><h2>Target :'+targeted_population+'</h2></p></div');
+                  $('#divparticipation').append('<div id="target_pop" style="clear:both;"><p><h4>Target Population: '+targeted_population+'</h4></p></div');
 
 
 
@@ -170,17 +271,82 @@
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
                     $('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
-                    //$('#tblparticipation tr:last').append('<td>' + received_people + '</td>');
-                    //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
                     }
-                    $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
-                    $('#tblparticipation tr:last').append('<td><b>Percentages</b></td>');
-                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_1*100)/targeted_population +  ' %</b></td>');
-                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_2*100)/targeted_population +  ' %</b></td>');
-                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_3*100)/targeted_population +  ' %</b></td>');
-                    $('#tblparticipation tr:last').append('<td><b>' + (total_column_4*100)/targeted_population +  ' %</b></td>');
-                    //$('#tblparticipation tr:last').append('<td><b>' + (total_column_5*100)/targeted_population + ' %</b></td>');
-                    //$('#tblparticipation tr:last').append('<td>' + received_parcentage + '%</td>');
+                   
+					// graph
+					if (response.length == 1 && !isNaN(beneficiaryid)) {
+						chartdata = []
+						chartdata.push(parseFloat(response[0]["percentage_on_day_one"]));
+						chartdata.push(parseFloat(response[0]["percentage_on_day_two"]));
+						chartdata.push(parseFloat(response[0]["percentage_on_day_three"]));
+						chartdata.push(parseFloat(response[0]["percentage_on_day_four"]));
+						
+						var chart = new Highcharts.Chart({
+							chart: {
+								renderTo: 'ct-campaignchart',
+								type: 'line'
+							},
+							credits: {
+								enabled: false
+							},
+							title: {
+								text: 'Graph of Percentage of Target Reached for ' + $('#beneficiaries option:selected').text(),
+								x: -20 //center
+							},
+							xAxis: {
+								title: {
+									text: 'Campaign Days'
+								},
+								categories: [1, 2, 3, 4],
+								gridLineColor: '#D8D8D8',
+								gridLineWidth: 1,
+							},
+							yAxis: [{
+								title: {
+									text: 'Percentage Target Reached'
+								},
+								plotLines: [{
+									value: 0,
+									width: 1,
+									color: '#808080'
+								}],
+								
+								allowDecimals: true,
+								opposite: false,
+								gridLineColor: '#D8D8D8',
+								gridLineWidth: 1,
+								min: 0,
+								max: 100
+							}],
+							plotOptions: {
+								series: {
+									marker: {
+										enabled: false
+									}
+								}
+							},
+							
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom',
+								borderWidth: 0
+							},
+							series: [{
+								name: 'Percentage',
+								data: chartdata,
+								yAxis: 0,
+								tooltip: {
+									valueSuffix: ' %'
+								}
+							}]
+						});
+						
+						
+					}
+					
+					
+					
                   }
                 },
 
@@ -189,13 +355,18 @@
                 },
 
                 error: function (jqXHR, exception) {
-                    alert("error");
-                } 
+					alert(getajaxerrormessage(jqXHR, exception));
+				}
         });
     }
       function avgFormatter(data) {
           return sumFormatter.call(this, data) / data.length;
       };
+	  
+	function isNumber(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
     </script>
     <!-- Google Analytics -->
       <script>
@@ -380,16 +551,29 @@
         <div class="container">
           {% block content %}
           <!--  MAIN CONTENT GOES HERE -->
-            <div class="form-inline" style="padding-left :5px; padding-right :5px;">
-              <label for="campaigns">Campagne:</label>
-              <select id="campaigns" class="form-control" style="width:140px" onchange="participation(this.value)" required="required">
+		  <div class="form-group col-sm-12">
+            <div class="form-group col-sm-4" style="padding-left :5px; padding-right :5px;">
+              <label class="col-sm-4 control-label" for="campaigns">Campagne:</label>
+              <select id="campaigns" class="form-control" style="width:200px" onchange="fetchbeneficiaries(this.value)" required="required">
                 <option value="" selected="selected">[ Select Campaign ]</option>
               </select>  
             </div>
+			
+			<div class="form-group col-sm-4" style="padding-left :5px; padding-right :5px;">
+              <label class="col-sm-4 control-label" for="beneficiaries">Beneficiairies:</label>
+              <select id="beneficiaries" class="form-control" style="width:200px" onchange="fetchparticipation(this.value)" required="required">
+                <option value="" selected="selected">[ Select Beneficiary ]</option>
+              </select>  
+            </div>
+			</div>
 
             <div id="divparticipation" class="form-inline" style="padding-left :5px; padding-right :5px;">
               <p style="color:red;">No records found</p>
             </div>
+			
+			<div id="ct-campaignchart" style="width:100% !important; height:100% !important;">
+			
+			</div>
           {% endblock content %}
         </div>
     </div><!--/col-span-10-->

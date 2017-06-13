@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^profile_user/$', profile_user, name='profile_user'),
     url(r'^campaigns/$', campaigns, name='campaigns'),
     url(r'^beneficiaries/$', beneficiaries, name='beneficiaries'),
+	#url(r'^fetchbeneficiaries/$', fetchbeneficiaries, name='fetchbeneficiaries'),
+	
 
     url(r'^cds/$', _(CDSListView.as_view()), name='cds_list'),
     url(r'^cds/add/$', _(CDSCreateView.as_view()), name='cds_add'),
