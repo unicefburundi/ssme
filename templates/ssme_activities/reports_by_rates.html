@@ -34,7 +34,7 @@
               <!-- District -->
               <div id="district-group" class="form-group">
                   <label>District</label>
-                  <select class="form-control"  ng-model="district" ng-options="x.name for x in districts track by x.code"  ng-change="update_district()" ></select>
+                  <select class="form-control"  ng-model="district" ng-options="x for x in districts track by x.code"  ng-change="update_district()" ></select>
               </div>
 
               <!-- CDS -->

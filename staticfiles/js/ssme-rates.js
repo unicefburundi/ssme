@@ -17,6 +17,7 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         });
         $scope.update_province = function () {
             var province = $scope.province;
+            console.log(province);
             if (province) {
               $http.get("/ssme/district/" + province.code + "/" )
               .then(function (response) {

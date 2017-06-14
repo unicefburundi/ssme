@@ -35,4 +35,3 @@ class CDSSerializer(serializers.ModelSerializer):
     class Meta:
         model = CDS
         fields = ("id", "name", "code", "district")
->>>>>>> develop

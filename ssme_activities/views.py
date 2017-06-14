@@ -16,10 +16,8 @@ from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
 import json
-from django.core import serializers
 from django.db.models import Sum
 from django.core.serializers.json import DjangoJSONEncoder
-from flask import request
 from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
@@ -29,7 +27,7 @@ today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 def dashboard(request):
     d = {}
-    d['campaigns'] = Campaign.objects.all() 
+    d['campaigns'] = Campaign.objects.all()
     return render(request, 'base_layout.html', d)
 
 
@@ -917,12 +915,15 @@ def participation(request):
         print("------------------")
         print(response_data)
         return HttpResponse(response_data, content_type="application/json")
+
+
 class ProvinceViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to view or edit Province.
     """
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
+    filter_field = ('')
 
 
 class DistrictViewSet(viewsets.ModelViewSet):
@@ -931,6 +932,8 @@ class DistrictViewSet(viewsets.ModelViewSet):
     """
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
+    lookup_field = 'code'
+    filter_fields = ('province__code',)
 
 
 class CDSViewSet(viewsets.ModelViewSet):
@@ -939,3 +942,4 @@ class CDSViewSet(viewsets.ModelViewSet):
     """
     queryset = CDS.objects.all()
     serializer_class = CDSSerializer
+    filter_field = ('')

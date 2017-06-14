@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'controlcenter',
     'betterforms',
     'django_tables2',
     'django_extensions',
@@ -53,20 +52,12 @@ INSTALLED_APPS = (
     'formtools',
     'guardian',
     'smartmin',
-    'explorer',
-    'debug_toolbar',
     # import tasks
     'smartmin.csv_imports',
     # smartmin users
     'smartmin.users',
     'authtools',
 )
-
-MIDDLEWARE = [
-    # ...
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    # ...
-]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,7 +66,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -215,6 +205,12 @@ GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-12345678-9'
 GOOGLE_ANALYTICS_DOMAIN = 'mydomain.com'
 
 INTERNAL_IPS = ('127.0.0.1',)
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
 
 try:
     from localsettings import *
