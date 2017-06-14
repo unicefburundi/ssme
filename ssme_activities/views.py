@@ -906,28 +906,56 @@ def participation(request):
 			r["target_population"] = target_population_for_this_campaign["population_cible__sum"]
 			
 			received_number_on_first_date = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = the_camp_start_date).aggregate(Sum('received_number'))
-			r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
-
-			received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
-			r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
-
-			received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
-			r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
-
-			received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
-			r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
+			if (received_number_on_first_date):
+				r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
 			
+				received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
+				if (received_number_on_day_2):
+					r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
+					
+					received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
+					if (received_number_on_day_3):
+						r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
+						
+						received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
+						if (received_number_on_day_4):
+							r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
+						else:
+							r["received_on_day_four"] = None
+					
+					else:
+						received_number_on_day_3 = None
+				
+				else:
+					r["received_on_day_two"] = None
+			
+			else:
+				r["received_on_day_one"] = None
+
 			if (beneficiaryid.isdigit() and beneficiaryid > 0):
 				beneficiary_target = CampaignBeneficiary.objects.get(campaign = the_last_campaign, beneficiary__id=beneficiaryid).pourcentage_attendu
-				r["percentage_on_day_one"] = (r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100
-				r["percentage_on_day_two"] = (r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100
-				r["percentage_on_day_three"] = (r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100
-				r["percentage_on_day_four"] = (r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100
+				
+				if (r["received_on_day_one"]):
+					r["percentage_on_day_one"] = (r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100
+				else:
+					r["percentage_on_day_one"] = None
+				if (r["received_on_day_two"]):
+					r["percentage_on_day_two"] = (r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100
+				else:
+					r["percentage_on_day_two"] = None
+				if (r["received_on_day_three"]):
+					r["percentage_on_day_three"] = (r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100
+				else:
+					r["percentage_on_day_three"] = None
+				if (r["received_on_day_four"]):
+					r["percentage_on_day_four"] = (r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100
+				else:
+					r["percentage_on_day_four"] = None
 			else:
-				r["percentage_on_day_one"] = 0
-				r["percentage_on_day_two"] = 0
-				r["percentage_on_day_three"] = 0
-				r["percentage_on_day_four"] = 0
+				r["percentage_on_day_one"] = None
+				r["percentage_on_day_two"] = None
+				r["percentage_on_day_three"] = None
+				r["percentage_on_day_four"] = None
 			
 		response_data = json.dumps(rows, default=date_handler)
 		#print("------------------")

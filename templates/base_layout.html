@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <script type="text/javascript" src="{% static 'js/libs/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
-
+	
 	<!-- Highcharts -->
 	<script src="https://github.highcharts.com/master/highcharts.src.js"></script>
 	<script src="https://github.highcharts.com/master/highcharts-more.js"></script>
@@ -22,10 +22,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
-
+	
     <!-- Latest compiled and minified CSS -->
     <!--<link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">-->
-
+	
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'js/bootstrap-table/bootstrap-table.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-table/extensions/export/tableExport.js' %}"></script>
@@ -39,35 +39,31 @@
       $.widget.bridge('uitooltip', $.ui.tooltip);
       $.widget.bridge('uibutton', $.ui.button);
       // on page load
-
       $(document).ready(function() {
           $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
-
           if ("{{ campaigns }}") {
             {% for c in campaigns %}
               $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.end_date}}</option>');
             {% endfor %}
           }
 		  
-          participation();
-
+		  if(window.location.href.indexOf("dashboard") > -1) 
+		  {
+                participation();
+          }
       });
-
       $(function() {
       $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
       });
       function runningFormatter(value, row, index) {
           return index;
       };
-
       function totalTextFormatter(data) {
           return '<strong class="text-primary" >Total</strong>';
       };
-
       function totalFormatter(data) {
           return data.length;
       };
-
       function sumFormatter(data) {
           var total = 0;
           field = this.field;
@@ -76,7 +72,6 @@
             });
           return '<strong>'+ total + '</strong>';
       };
-
       function benefFormatter(data) {
       var pop_total = parseFloat($("#pop_total").html().replace(',','').replace(' ','').replace('&nbsp;',''));
       var total = 0;
@@ -150,7 +145,6 @@
 					failure: function (json) {
 						alert("failure");
 					},
-
 					error: function (jqXHR, exception) {
 						alert(getajaxerrormessage(jqXHR, exception));
 					}
@@ -217,21 +211,13 @@
                 data: { 
                   camp_id : data, beneficiaryid : beneficiaryid
                 },
-
                 success: function (response) {
                   if(response.length != 0){
                   $('#divparticipation').html("");
-
                   var targeted_population = response[0]["target_population"];
-
                   $('#divparticipation').append('<div id="target_pop" style="clear:both;"><p><h4>Target Population: '+targeted_population+'</h4></p></div');
-
-
-
                   $('#divparticipation').append('<p><b></b></p>' +
-
                 '<div style="clear:both; height:10px;"></div>' +
-
                 '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
                 
                   $('#tblparticipation').append('<thead>' +
@@ -246,40 +232,69 @@
                   var total_column_3 = 0;
                   var total_column_4 = 0;
                   var total_column_5 = 0;
-
+				  var beneficiary_category;
+                  var received_people;
+                  var expected_people;
+                  var received_on_day_1;
+                  var received_on_day_2;
+                  var received_on_day_3;
+                  var received_on_day_4;
+                  var received_parcentage;
+				  
                   for (i = 0; i < response.length; i++){
-                    var beneficiary_category = response[i]["beneficiary_name"];
-                    var received_people = response[i]["received_people"];
-                    var expected_people = response[i]["target_population"];
-                    var received_on_day_1 = response[i]["received_on_day_one"];
-                    var received_on_day_2 = response[i]["received_on_day_two"];
-                    var received_on_day_3 = response[i]["received_on_day_three"];
-                    var received_on_day_4 = response[i]["received_on_day_four"];
-                    var received_parcentage = (received_people * 100)/expected_people
-
-                    total_column_1 = total_column_1 + received_on_day_1;
-                    total_column_2 = total_column_2 + received_on_day_2;
-                    total_column_3 = total_column_3 + received_on_day_3;
-                    total_column_4 = total_column_4 + received_on_day_4;
+                    beneficiary_category = response[i]["beneficiary_name"];
+                    received_people = response[i]["received_people"];
+                    expected_people = response[i]["target_population"];
+					
+					$('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
+					$('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
+					
+					if (response[i]["received_on_day_one"]) {
+						received_on_day_1 = response[i]["received_on_day_one"];
+						total_column_1 = total_column_1 + received_on_day_1;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_1 +  '</td>');
+					}
+					if (response[i]["received_on_day_two"]) {
+						received_on_day_2 = response[i]["received_on_day_two"];
+						total_column_2 = total_column_2 + received_on_day_2;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
+					}
+					if (response[i]["received_on_day_three"]) {
+						received_on_day_3 = response[i]["received_on_day_three"];
+						total_column_3 = total_column_3 + received_on_day_3;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
+					}
+					if (response[i]["received_on_day_four"]) {
+						received_on_day_4 = response[i]["received_on_day_four"];
+						total_column_4 = total_column_4 + received_on_day_4;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
+					}
+					
+                    received_parcentage = (received_people * 100)/expected_people
                     total_column_5 = total_column_5 + received_people;
-
-
-                    $('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
-            
-                    $('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_on_day_1 +  '</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
-                    $('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
                     }
-                   
+					
 					// graph
 					if (response.length == 1 && !isNaN(beneficiaryid)) {
-						chartdata = []
-						chartdata.push(parseFloat(response[0]["percentage_on_day_one"]));
-						chartdata.push(parseFloat(response[0]["percentage_on_day_two"]));
-						chartdata.push(parseFloat(response[0]["percentage_on_day_three"]));
-						chartdata.push(parseFloat(response[0]["percentage_on_day_four"]));
+						var chartdata = []
+						var dayslist = [];
+						
+						if (response[0]["percentage_on_day_one"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_one"]));
+							dayslist.push(1);
+						}
+						if (response[0]["percentage_on_day_two"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_two"]));
+							dayslist.push(2);
+						}
+						if (response[0]["percentage_on_day_three"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_three"]));
+							dayslist.push(3);
+						}
+						if (response[0]["percentage_on_day_four"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_four"]));
+							dayslist.push(4);
+						}
 						
 						var chart = new Highcharts.Chart({
 							chart: {
@@ -297,7 +312,7 @@
 								title: {
 									text: 'Campaign Days'
 								},
-								categories: [1, 2, 3, 4],
+								categories: dayslist,
 								gridLineColor: '#D8D8D8',
 								gridLineWidth: 1,
 							},
@@ -349,11 +364,9 @@
 					
                   }
                 },
-
                 failure: function (json) {
                     alert("failure");
                 },
-
                 error: function (jqXHR, exception) {
 					alert(getajaxerrormessage(jqXHR, exception));
 				}
@@ -366,7 +379,6 @@
 	function isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}
-
     </script>
     <!-- Google Analytics -->
       <script>
@@ -374,10 +386,8 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
       ga('create', '{{ GOOGLE_ANALYTICS_PROPERTY_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
       ga('send', 'pageview');
-
     </script>
 <!-- End Google Analytics -->
     <script type="text/javascript" src="{% static 'js/c3.min.js' %}"></script>
@@ -390,9 +400,9 @@
     <script src="{% static 'js/export_renderers.min.js' %}"></script>
     {% block css_section %}
         <!-- Bootstrap core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+  <!--   <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-theme.css' %}" rel="stylesheet">
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet"> -->
     <style>
         .row.vdivide [class*='col-']:not(:last-child):after {
           background: #e0e0e0;
@@ -407,7 +417,7 @@
         }
     </style>
     {% endblock css_section %}
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script> -->
     <title>SSME - {% block title %}App{% endblock title %} </title>
   </head>
   <body>
