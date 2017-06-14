@@ -93,35 +93,38 @@ class Reporter(models.Model):
     class Meta:
         ordering = ('phone_number',)
 
+
 class Campaign(models.Model):
-	'''In this model, we will store campaigns'''
-	name = models.CharField(max_length=500)
-	start_date = models.DateField()
-	end_date = models.DateField()
-	going_on = models.BooleanField(default=False)
+    '''In this model, we will store campaigns'''
+    name = models.CharField(max_length=500)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    going_on = models.BooleanField(default=False)
 
-	def __str__(self):
-		return self.name
+    def __str__(self):
+        return self.name
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
 
-	class Meta:
-		ordering = ('end_date',)
+    class Meta:
+        ordering = ('end_date',)
+
 
 class Beneficiaire(models.Model):
-	'''In this model, we will store every category of beneficiaries for ssme campaign'''
-	designation = models.CharField(max_length=100)
-	nombre_mois_min = models.IntegerField(null=True, blank=True)
-	nombre_mois_max = models.IntegerField(null=True, blank=True)
-	def __unicode__(self):
-		return self.designation
+    '''In this model, we will store every category of beneficiaries for ssme campaign'''
+    designation = models.CharField(max_length=100)
+    nombre_mois_min = models.IntegerField(null=True, blank=True)
+    nombre_mois_max = models.IntegerField(null=True, blank=True)
+    def __unicode__(self):
+        return self.designation
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
 
-	class Meta:
-		ordering = ('designation',)
+    class Meta:
+        ordering = ('designation',)
+
 
 class Product(models.Model):
     '''In this model, we will store names of medecines which may be used in ssme campaigns'''
@@ -138,23 +141,24 @@ class Product(models.Model):
     class Meta:
         ordering = ('name',)
 
+
 class CampaignBeneficiary(models.Model):
-	'''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
-	campaign = models.ForeignKey(Campaign)
-	beneficiary = models.ForeignKey(Beneficiaire)
-	#The below field will be removed
-	order_in_sms = models.IntegerField()
-	pourcentage_attendu = models.FloatField(default=100.0, null=True)
+    '''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
+    campaign = models.ForeignKey(Campaign)
+    beneficiary = models.ForeignKey(Beneficiaire)
+    #The below field will be removed
+    order_in_sms = models.IntegerField()
+    pourcentage_attendu = models.FloatField(default=100.0, null=True)
 
-	class Meta:
-		ordering = ('beneficiary',)
-		unique_together = ('campaign', 'beneficiary',)
+    class Meta:
+        ordering = ('beneficiary',)
+        unique_together = ('campaign', 'beneficiary',)
 
-	def __unicode__(self):
-		return self.beneficiary.designation
+    def __unicode__(self):
+        return self.beneficiary.designation
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
 
 
 class CampaignBeneficiaryCDS(models.Model):
@@ -168,39 +172,41 @@ class CampaignBeneficiaryCDS(models.Model):
 
 
 class CampaignProduct(models.Model):
-	'''With this model we will be able to define and identify concerned medecines for a given campaign'''
-	campaign = models.ForeignKey(Campaign)
-	product = models.ForeignKey(Product)
-	order_in_sms = models.IntegerField()
+    '''With this model we will be able to define and identify concerned medecines for a given campaign'''
+    campaign = models.ForeignKey(Campaign)
+    product = models.ForeignKey(Product)
+    order_in_sms = models.IntegerField()
 
-	def __unicode__(self):
-		return self.product.name
+    def __unicode__(self):
+        return self.product.name
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
 
-	class Meta:
-		ordering = ('product',)
-		unique_together = ('campaign', 'product', 'order_in_sms',)
+    class Meta:
+        ordering = ('product',)
+        unique_together = ('campaign', 'product', 'order_in_sms',)
+
 
 class CampaignBeneficiaryProduct(models.Model):
-	'''With this model, we will be able to define and identify which medecines will be received by each beneficiary
+    '''With this model, we will be able to define and identify which medecines will be received by each beneficiary
     category and quantity for each Beneficiary'''
-	campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
-	campaign_product = models.ForeignKey(CampaignProduct)
-	dosage = models.FloatField(null = True)
-	pourcentage_attendu = models.FloatField(default=0.0, null=True)
-	order_in_sms = models.IntegerField()
+    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    campaign_product = models.ForeignKey(CampaignProduct)
+    dosage = models.FloatField(null = True)
+    pourcentage_attendu = models.FloatField(default=0.0, null=True)
+    order_in_sms = models.IntegerField()
 
-	def __unicode__(self):
-		return self.campaign_beneficiary.beneficiary.designation
+    def __unicode__(self):
+        return self.campaign_beneficiary.beneficiary.designation
 
-	def get_absolute_url(self):
-		return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
+    def get_absolute_url(self):
+        return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
 
-	class Meta:
-		ordering = ('campaign_beneficiary',)
-		unique_together = ('campaign_beneficiary', 'campaign_product', 'order_in_sms',)
+    class Meta:
+        ordering = ('campaign_beneficiary',)
+        unique_together = ('campaign_beneficiary', 'campaign_product', 'order_in_sms',)
+
 
 class Report(models.Model):
     '''In this model, we will store each report'''
@@ -221,19 +227,21 @@ class Report(models.Model):
     class Meta:
         ordering = ('reporting_date',)
 
+
 class ReportBeneficiary(models.Model):
-	#The below fied will be removed
-	campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
-	beneficiaries_per_product = models.ForeignKey(CampaignBeneficiaryProduct)
-	reception_date = models.DateField()
-	received_number = models.IntegerField(null=True)
-	report = models.ForeignKey(Report, null=True)
+    #The below fied will be removed
+    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
+    beneficiaries_per_product = models.ForeignKey(CampaignBeneficiaryProduct)
+    reception_date = models.DateField()
+    received_number = models.IntegerField(null=True)
+    report = models.ForeignKey(Report, null=True)
 
-	def __unicode__(self):
-		return self.report.text
+    def __unicode__(self):
+        return self.report.text
 
-	class Meta:
-		get_latest_by = 'id'
+    class Meta:
+        get_latest_by = 'id'
+
 
 class ReportProductReception(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
@@ -246,6 +254,7 @@ class ReportProductReception(models.Model):
 
     class Meta:
         get_latest_by = 'id'
+
 
 class ReportProductRemainStock(models.Model):
     campaign_product = models.ForeignKey(CampaignProduct)
@@ -270,6 +279,7 @@ class Temporary(models.Model):
 
     def __unicode__(self):
         return self.phone_number
+
 
 class CampaignCDS(models.Model):
     campaign = models.ForeignKey(Campaign)

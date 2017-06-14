@@ -17,9 +17,8 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         });
         $scope.update_province = function () {
             var province = $scope.province;
-            console.log(province);
             if (province) {
-              $http.get("/ssme/district/" + province.code + "/" )
+              $http.get("/ssme/district/?province__code=" + province.code)
               .then(function (response) {
                 $scope.districts = response.data;
             });
@@ -29,9 +28,9 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
           $scope.update_district = function () {
             var district = $scope.district;
             if (district) {
-              $http.get("/ssme/district/" + district.code + "/" )
+              $http.get("/ssme/cdss/?district__code=" + district.code )
               .then(function (response) {
-                  $scope.cdss = response.data.etablissements;
+                  $scope.cdss = response.data;
               });
           }
       };
@@ -39,9 +38,9 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.update_cds = function () {
             var cds = $scope.cds;
             if (cds) {
-              $http.get("/ssme/cds/" + cds.code + "/" )
+              $http.get("/ssme/cdss/" + cds.code )
               .then(function (response) {
-                  $scope.etablissements = response.data.etablissements;
+                  $scope.etablissement = response.data.etablissements;
               });
     }
   };

@@ -222,19 +222,6 @@
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-theme.css' %}" rel="stylesheet">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet">
-    <style>
-        .row.vdivide [class*='col-']:not(:last-child):after {
-          background: #e0e0e0;
-          width: 1px;
-          content: "";
-          display:block;
-          position: absolute;
-          top:0;
-          bottom: 0;
-          right: 0;
-          min-height: 70px;
-        }
-    </style>
     {% endblock css_section %}
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <title>SSME - {% block title %}App{% endblock title %} </title>
@@ -306,9 +293,10 @@
                   <li><a href="{% url 'reports_by_benef' %}">Bénéficiaires</a></li>
                   <li><a href="{% url 'reports_by_received' %}">Stock Reçus</a></li>
                   <li><a href="{% url 'reports_by_remaining' %}">Stock Final</a></li>
-                  <li><a href="{% url 'reports_by_rates' %}">Taux Raportage</a></li>
+                  
               </ul>
           </li>
+          <li><a href="{% url 'reports_by_rates' %}">Taux Raportage</a></li>
           <li>
           {% endif %}
           {% if user|has_group:"CDS" %}

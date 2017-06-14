@@ -942,4 +942,5 @@ class CDSViewSet(viewsets.ModelViewSet):
     """
     queryset = CDS.objects.all()
     serializer_class = CDSSerializer
-    filter_field = ('')
+    lookup_field = 'code'
+    filter_fields = ('district__code',)

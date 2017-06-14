@@ -17,10 +17,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <script src="{% static "js/ssme-rates.js" %}"></script>
-<div class="col-md-10" ng-app="StockApp" ng-controller="StockCtrl">
-
-    <div class="navbar-default sidebar" role="navigation" >
-        <div class="sidebar-nav navbar-collapse">
+<div class="col-md-11" ng-app="StockApp" ng-controller="StockCtrl">
+<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="col-md-2">
             <ul class="nav" >
             <li >
               {% block search_form %}
@@ -34,7 +33,7 @@
               <!-- District -->
               <div id="district-group" class="form-group">
                   <label>District</label>
-                  <select class="form-control"  ng-model="district" ng-options="x for x in districts track by x.code"  ng-change="update_district()" ></select>
+                  <select class="form-control"  ng-model="district" ng-options="x.name for x in districts track by x.code"  ng-change="update_district()" ></select>
               </div>
 
               <!-- CDS -->
@@ -47,35 +46,25 @@
             </li>
             </ul>
         </div>
-    </div>
-<script>
-    function consumptionTextFormatter(data) {
-      return '<strong class="text-primary" >Consommé</strong>';
-  }
-
-  function consumptionFormatter(data) {
-      var recus = "{{recus|safe}}";
-      recus = eval( "(" + recus + ")" );
-      var total = 0;
-      field = this.field;
-      if (data.length <= 0) {
-        return '';
-    } else{
-        var last = Array( data[data.length - 1]);
-        $.each(last, function (i, row) {
-          total += +(parseFloat((row[field]).replace(',','').replace(' ','').replace('&nbsp;','')));
-      });
-        pourcentage =  (total/recus[this.title] )*100;
-        consomme = recus[this.title] - total;
-        if (pourcentage >=75) {
-          return '<strong class="text-danger" >' + consomme + '</strong>';
-
-      }
-      else{
-       return '<strong class="text-primary" >' + consomme +'</strong>' ;
-   }
-}
-}
-</script>
+        <div class="col-md-10">
+          <div class="row" id="province-group">
+            <table class="table table-boredered">
+            {% verbatim %}
+            <thead>
+              <tr>
+                <td>Id</td>
+                <td>Province</td>
+                <td>Stock debut de semaine en %</td>
+              </tr>
+            </thead>
+              <tr ng-repeat="x in provinces">
+                <td>{{ x.id }}</td>
+                <td>{{ x.name }}</td>
+                <td>{{x.stock_debut_semaine / x.facilities * 100| number :1 }}</td>
+              </tr>
+            {% endverbatim %}
+            </table>
+          </div>
+        </div>
 </div>
 {% endblock content %}
