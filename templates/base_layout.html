@@ -379,6 +379,69 @@
 	function isNumber(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}
+
+  function deplayReportingRates(){
+    $('#datacontent').empty();
+    var selectmenus = document.createElement('div');
+    selectmenus.id = 'selectmenus';
+    selectmenus.className = 'form-inline';
+    $("#datacontent")[0].appendChild(selectmenus);
+
+
+    var divGroup1 = document.createElement('div');
+    divGroup1.className = 'form-group';
+    divGroup1.id = 'provinceGroup';
+    $("#selectmenus")[0].appendChild(divGroup1);
+    var selectList1 = document.createElement("select");
+    selectList1.id = 'province';
+    var provinceLabel = document.createElement('Label');
+    provinceLabel.setAttribute("for", selectList1);
+    provinceLabel.innerHTML = "Province : ";
+    $("#provinceGroup")[0].appendChild(provinceLabel);
+    $("#provinceGroup")[0].appendChild(selectList1);
+
+
+    var divGroup2 = document.createElement('div');
+    divGroup2.className = 'form-group';
+    divGroup2.id = 'districtGroup';
+    $("#selectmenus")[0].appendChild(divGroup2);
+    var selectList2 = document.createElement("select");
+    selectList2.id = 'district';
+    var districtLabel = document.createElement('Label');
+    districtLabel.setAttribute("for", selectList2);
+    districtLabel.innerHTML = "District : ";
+    $("#districtGroup")[0].appendChild(districtLabel);
+    $("#districtGroup")[0].appendChild(selectList2);
+
+
+    var divGroup3 = document.createElement('div');
+    divGroup3.className = 'form-group';
+    divGroup3.id = 'cdsGroup';
+    $("#selectmenus")[0].appendChild(divGroup3);
+    var selectList3 = document.createElement("select");
+    selectList3.id = 'cds';
+    var cdsLabel = document.createElement('Label');
+    cdsLabel.setAttribute("for", selectList2);
+    cdsLabel.innerHTML = "CDS : ";
+    $("#cdsGroup")[0].appendChild(cdsLabel);
+    $("#cdsGroup")[0].appendChild(selectList3);
+
+
+    var divGroup4 = document.createElement('div');
+    divGroup4.className = 'form-group';
+    divGroup4.id = 'reportsCategoryGroup';
+    $("#selectmenus")[0].appendChild(divGroup4);
+    var selectList4 = document.createElement("select");
+    selectList4.id = 'reportscategory';
+    var reportCategoryLabel = document.createElement('Label');
+    reportCategoryLabel.setAttribute("for", selectList4);
+    reportCategoryLabel.innerHTML = "Report Category : ";
+    $("#reportsCategoryGroup")[0].appendChild(reportCategoryLabel);
+    $("#reportsCategoryGroup")[0].appendChild(selectList4);
+
+  }
+
+
     </script>
     <!-- Google Analytics -->
       <script>
@@ -540,12 +603,17 @@
              </ul>
           </li>
           {% endif %}
+
+          {% if user|has_group:"CEN" or user.is_superuser %}
+            <li><a onclick="deplayReportingRates();" href="#"> Reporting Rates </li>
+          {% endif %}
+
       </ul>
 
       <hr>
 
     </div><!-- /span-2 -->
-    <div class="col-sm-10">
+    <div id="datacontent" class="col-sm-10">
 
       <!-- column 2 -->
       {% if user.is_authenticated %}
