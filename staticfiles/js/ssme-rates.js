@@ -7,11 +7,13 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         .then(function (response) {
             if (response.data.length > 0) {
                 $scope.provinces = response.data;
+                $scope.raports = response.data;
             } else {
                 $("#province-group").hide();
                 $http.get("/ssme/district/")
                 .then(function (response) {
                     $scope.districts = response.data;
+                  $scope.raports = response.data;
                 });
             }
         });
@@ -21,6 +23,7 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
               $http.get("/ssme/district/?province__code=" + province.code)
               .then(function (response) {
                 $scope.districts = response.data;
+                $scope.raports = response.data;
             });
           }
       };
@@ -30,7 +33,8 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
             if (district) {
               $http.get("/ssme/cdss/?district__code=" + district.code )
               .then(function (response) {
-                  $scope.cdss = response.data;
+                $scope.cdss = response.data;
+                $scope.raports = response.data;
               });
           }
       };
@@ -38,9 +42,9 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         $scope.update_cds = function () {
             var cds = $scope.cds;
             if (cds) {
-              $http.get("/ssme/cdss/" + cds.code )
+              $http.get("/ssme/cdss/?code=" + cds.code )
               .then(function (response) {
-                  $scope.etablissement = response.data.etablissements;
+                $scope.raports = response.data;
               });
     }
   };

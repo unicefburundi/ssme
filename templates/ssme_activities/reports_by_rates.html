@@ -54,13 +54,17 @@
               <tr>
                 <td>Id</td>
                 <td>Province</td>
-                <td>Stock debut de semaine en %</td>
+                <td>Stock debut de semaine</td>
+                <td>Stock finals</td>
+                <td>Beneficiaires</td>
               </tr>
             </thead>
-              <tr ng-repeat="x in provinces">
+              <tr ng-repeat="x in raports">
                 <td>{{ x.id }}</td>
                 <td>{{ x.name }}</td>
                 <td>{{x.stock_debut_semaine / x.facilities * 100| number :1 }}</td>
+                <td>{{x.stock_finals / (x.facilities * 4) * 100| number :1 }}</td>
+                <td>{{x.beneficiaires / (x.facilities * 4) * 100| number :1 }}</td>
               </tr>
             {% endverbatim %}
             </table>
