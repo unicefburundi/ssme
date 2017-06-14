@@ -1,10 +1,16 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from ssme_activities.backend import handel_rapidpro_request
 from ssme_activities.views import *
 from django.contrib.auth.decorators import login_required as _
+from rest_framework import routers
 
+router = routers.DefaultRouter()
+router.register(r'province', ProvinceViewSet)
+router.register(r'district', DistrictViewSet)
+router.register(r'cdss', CDSViewSet)
 
 urlpatterns = patterns('',
+    url(r'^', include(router.urls)),
     url(r'external_request', handel_rapidpro_request, name="handel_request"),
     url(r'^moh_facility/$', moh_facility, name='moh_facility'),
     url(r'^profile_user/$', profile_user, name='profile_user'),
