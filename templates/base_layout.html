@@ -380,13 +380,16 @@
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	}
 
-  function deplayReportingRates(){
+  function desplayReportingRates(){
     $('#datacontent').empty();
     var selectmenus = document.createElement('div');
     selectmenus.id = 'selectmenus';
     selectmenus.className = 'form-inline';
+    selectmenus.style["padding-left"] = "5px";
+    selectmenus.style["padding-right"] = "5px";
     $("#datacontent")[0].appendChild(selectmenus);
 
+    //object.
 
     var divGroup1 = document.createElement('div');
     divGroup1.className = 'form-group';
@@ -394,6 +397,8 @@
     $("#selectmenus")[0].appendChild(divGroup1);
     var selectList1 = document.createElement("select");
     selectList1.id = 'province';
+    selectList1.style["width"] = "140px";
+    //selectList1.onchange = fetchDistricts();
     var provinceLabel = document.createElement('Label');
     provinceLabel.setAttribute("for", selectList1);
     provinceLabel.innerHTML = "Province : ";
@@ -407,6 +412,7 @@
     $("#selectmenus")[0].appendChild(divGroup2);
     var selectList2 = document.createElement("select");
     selectList2.id = 'district';
+    selectList2.style["width"] = "140px";
     var districtLabel = document.createElement('Label');
     districtLabel.setAttribute("for", selectList2);
     districtLabel.innerHTML = "District : ";
@@ -420,6 +426,7 @@
     $("#selectmenus")[0].appendChild(divGroup3);
     var selectList3 = document.createElement("select");
     selectList3.id = 'cds';
+    selectList3.style["width"] = "140px";
     var cdsLabel = document.createElement('Label');
     cdsLabel.setAttribute("for", selectList2);
     cdsLabel.innerHTML = "CDS : ";
@@ -433,13 +440,88 @@
     $("#selectmenus")[0].appendChild(divGroup4);
     var selectList4 = document.createElement("select");
     selectList4.id = 'reportscategory';
+    selectList4.style["width"] = "140px";
     var reportCategoryLabel = document.createElement('Label');
     reportCategoryLabel.setAttribute("for", selectList4);
     reportCategoryLabel.innerHTML = "Report Category : ";
     $("#reportsCategoryGroup")[0].appendChild(reportCategoryLabel);
     $("#reportsCategoryGroup")[0].appendChild(selectList4);
 
+    fetchProvinces();
   }
+
+
+function fetchProvinces() {
+      $("#district option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+        $("#cds option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+        $("#reportscategory option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+
+        ajaxurl = 'getprovinces';
+        code = -1;
+        //data = JSON.stringify({ 'code': code });
+        ajaxpostbackfunction = "fetchprovinces";
+        ajaxpost(ajaxurl, code);
+          
+    }
+
+  function fetchDistricts(){
+    alert("fetchDistricts");
+  }
+
+  function ajaxpost(posturl, data) {
+            ajaxresults = null;
+            $.ajax({
+              /*beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },*/
+                /*type: 'POST',
+                url: posturl,
+                data: data,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',*/
+                url: posturl,
+                type: "get",
+                data: { 
+                  code : data
+                },
+
+                success: function (response) {
+                  if (ajaxpostbackfunction == "fetchprovinces") {
+                    code = -1;
+                    name = [" Select Province"];
+                    $('#province').append('<option value=' + code +'>' + name + '</option>');
+                    for (i = 0; i < response.length; i++) {
+                        var code = jQuery.makeArray(response[i].fields)[0].code;
+                        var name = jQuery.makeArray(response[i].fields)[0].name;
+                        
+                        $('#province').append('<option value=' + code +'>' + name + '</option>');
+                }
+                  }
+                },
+                failure: function (json) {
+                  alert("Failure");
+                },
+                error: function (jqXHR, exception) {
+                  alert("Error");
+                }
+            });
+            
+            return false;
+  }    
 
 
     </script>
@@ -605,7 +687,7 @@
           {% endif %}
 
           {% if user|has_group:"CEN" or user.is_superuser %}
-            <li><a onclick="deplayReportingRates();" href="#"> Reporting Rates </li>
+            <li><a onclick="desplayReportingRates();" href="#"> Reporting Rates </a></li>
           {% endif %}
 
       </ul>

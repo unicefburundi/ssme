@@ -28,7 +28,7 @@ today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 def dashboard(request):
 	d = {}
 	d['campaigns'] = Campaign.objects.all() 
-	
+	d['provinces'] = Province.objects.all()
 	return render(request, 'base_layout.html', d)
 
 
@@ -961,3 +961,12 @@ def participation(request):
 		#print("------------------")
 		#print(response_data)
 		return HttpResponse(response_data, content_type="application/json")
+
+def getprovinces(request):
+    response_data = {}
+    code = request.GET["code"]
+    code = int(code)
+    if (code == -1):
+        provinces = Province.objects.all()
+        response_data = serializers.serialize('json', provinces)
+    return HttpResponse(response_data, content_type="application/json")

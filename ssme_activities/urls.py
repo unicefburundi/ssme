@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     url(r'^calcul_recus/$', get_recus_in_json, name="calcul_recus"),
     url(r'^calcul_final/$', get_final_in_json, name="calcul_final"),
 
+    #url(r'^dashboard/getprovinces', getprovinces, name='getprovinces'),
 )
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()

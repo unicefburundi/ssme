@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
+import ssme_activities
 
 urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
@@ -18,6 +19,7 @@ urlpatterns  += i18n_patterns(
     url(r'^dashboard/participation/$', 'ssme_activities.views.participation', name='participation'),
 	url(r'^dashboard/fetchbeneficiaries/$', 'ssme_activities.views.fetchbeneficiaries', name='fetchbeneficiaries'),
     url(r'^$', 'ssme.views.landing', name='landing'),
+    url(r'^dashboard/getprovinces/$', ssme_activities.views.getprovinces, name='getprovinces'),
 ) +  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 #In development, static files should be served from app static directories
