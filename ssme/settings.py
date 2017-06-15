@@ -206,6 +206,11 @@ GOOGLE_ANALYTICS_DOMAIN = 'mydomain.com'
 
 INTERNAL_IPS = ('127.0.0.1',)
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
 
 try:

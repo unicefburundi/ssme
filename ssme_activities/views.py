@@ -16,7 +16,6 @@ from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
 import json
-from django.core import serializers
 from django.db.models import Sum
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
@@ -28,7 +27,7 @@ today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 def dashboard(request):
     d = {}
-    d['campaigns'] = Campaign.objects.all() 
+    d['campaigns'] = Campaign.objects.all()
     d['provinces'] = Province.objects.all()
     return render(request, 'base_layout.html', d)
 
@@ -975,6 +974,7 @@ def participation(request):
         #print(response_data)
         return HttpResponse(response_data, content_type="application/json")
 
+
 def getprovinces(request):
     response_data = {}
     code = request.GET["code"]
@@ -999,6 +999,8 @@ class DistrictViewSet(viewsets.ModelViewSet):
     """
     queryset = District.objects.all()
     serializer_class = DistrictSerializer
+    lookup_field = 'code'
+    filter_fields = ('province__code',)
 
 
 class CDSViewSet(viewsets.ModelViewSet):
@@ -1007,3 +1009,6 @@ class CDSViewSet(viewsets.ModelViewSet):
     """
     queryset = CDS.objects.all()
     serializer_class = CDSSerializer
+
+    lookup_field = 'code'
+    filter_fields = ('district__code', 'code')

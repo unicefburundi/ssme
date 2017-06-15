@@ -2,7 +2,6 @@ from django.conf.urls import include, url, patterns
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.i18n import i18n_patterns
 import ssme_activities
 
@@ -21,4 +20,4 @@ urlpatterns += i18n_patterns(
     url(r'^$', 'ssme.views.landing', name='landing'),
     url(r'^dashboard/getprovinces/$', ssme_activities.views.getprovinces, name='getprovinces'),
     url(r'^$', 'ssme.views.landing', name='landing'),
-) +  static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
