@@ -1,15 +1,22 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from ssme_activities.backend import handel_rapidpro_request
 from ssme_activities.views import *
 from django.contrib.auth.decorators import login_required as _
+from rest_framework import routers
 
+router = routers.DefaultRouter()
+router.register(r'province', ProvinceViewSet)
+router.register(r'district', DistrictViewSet)
+router.register(r'cdss', CDSViewSet)
 
 urlpatterns = patterns('',
+    url(r'^', include(router.urls)),
     url(r'external_request', handel_rapidpro_request, name="handel_request"),
     url(r'^moh_facility/$', moh_facility, name='moh_facility'),
     url(r'^profile_user/$', profile_user, name='profile_user'),
     url(r'^campaigns/$', campaigns, name='campaigns'),
     url(r'^beneficiaries/$', beneficiaries, name='beneficiaries'),
+	
 
     url(r'^cds/$', _(CDSListView.as_view()), name='cds_list'),
     url(r'^cds/add/$', _(CDSCreateView.as_view()), name='cds_add'),
@@ -39,12 +46,13 @@ urlpatterns = patterns('',
     url(r'^reports/benef/$', get_reports_by_benef, name="reports_by_benef"),
     url(r'^reports/received/$', get_reports_by_received,
         name="reports_by_received"),
-    url(r'^reports/received/$', get_reports_by_remaining,
-        name="reports_by_remaining"),
+    url(r'^reports/received/$', get_reports_by_remaining, name="reports_by_remaining"),
+    url(r'^reports/rates/$', get_reports_by_rates, name="reports_by_rates"),
     url(r'^calcul_benef/$', get_benef_in_json, name="calcul_benef"),
     url(r'^calcul_recus/$', get_recus_in_json, name="calcul_recus"),
     url(r'^calcul_final/$', get_final_in_json, name="calcul_final"),
 
+    #url(r'^dashboard/getprovinces', getprovinces, name='getprovinces'),
 )
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()

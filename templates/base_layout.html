@@ -7,9 +7,25 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <script type="text/javascript" src="{% static 'js/libs/jquery.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/libs/jquery-ui.min.js' %}"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
+	
+	<!-- Highcharts -->
+	<script src="https://github.highcharts.com/master/highcharts.src.js"></script>
+	<script src="https://github.highcharts.com/master/highcharts-more.js"></script>
+	<script src="https://github.highcharts.com/master/modules/exporting.src.js"></script>
+	
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+	
+    <!-- Latest compiled and minified CSS -->
+    <!--<link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">-->
+	
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'js/bootstrap-table/bootstrap-table.min.js' %}"></script>
     <script src="{% static 'js/bootstrap-table/extensions/export/tableExport.js' %}"></script>
@@ -17,27 +33,37 @@
     <script src="{% static 'js/bootstrap-table/extensions/export/bootstrap-table-export.js' %}"></script>
     <link rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
     <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-
+	
     <script type="text/javascript">
       // Change JQueryUI plugin names to fix name collision with Bootstrap.
       $.widget.bridge('uitooltip', $.ui.tooltip);
       $.widget.bridge('uibutton', $.ui.button);
       // on page load
+      $(document).ready(function() {
+          $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
+          if ("{{ campaigns }}") {
+            {% for c in campaigns %}
+              $('#campaigns').append('<option value="{{ c.id }}">{{ c.start_date }} - {{c.end_date}}</option>');
+            {% endfor %}
+          }
+		  
+		  if(window.location.href.indexOf("dashboard") > -1) 
+		  {
+                participation();
+          }
+      });
       $(function() {
       $( ".datePicker" ).datepicker({ dateFormat: 'dd/mm/yy' });
       });
       function runningFormatter(value, row, index) {
           return index;
       };
-
       function totalTextFormatter(data) {
           return '<strong class="text-primary" >Total</strong>';
       };
-
       function totalFormatter(data) {
           return data.length;
       };
-
       function sumFormatter(data) {
           var total = 0;
           field = this.field;
@@ -46,7 +72,6 @@
             });
           return '<strong>'+ total + '</strong>';
       };
-
       function benefFormatter(data) {
       var pop_total = parseFloat($("#pop_total").html().replace(',','').replace(' ','').replace('&nbsp;',''));
       var total = 0;
@@ -71,10 +96,434 @@
           return '<strong>' + total + '</strong>';
         }
     }
-
+    
+	
+	function fetchbeneficiaries(campaignid) {
+		var posturl = "fetchbeneficiaries";
+		
+		if (campaignid) {
+			if ((campaignid == undefined) || (campaignid == "")){
+				campaignid = -1;
+			}
+			
+			$.ajax({
+				  /*beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				  },*/
+					url: posturl,
+					type: "get",
+					data: {
+					  camp_id : campaignid
+					},
+					
+					success: function (response) {
+						// populate beneficiaries dropdown with response
+						if (response){
+							if(response.length != 0){ 
+								$("#beneficiaries option").each(function(){
+									if ($(this).val()) {
+										$(this).remove();
+									}
+								});
+								
+								for (i = 0; i < response.length; i++) {
+									$('#beneficiaries').append('<option value=' + response[i].pk +'>' + response[i].fields['designation'] + '</option>');
+								}
+							} else {
+								alert("No beneficiary found for selected campaign");
+							}
+						} else {
+							alert("No beneficiary found for selected campaign");
+						}
+						
+						// fetch participation
+						participation(campaignid);
+					},
+					
+					failure: function (json) {
+						alert("failure");
+					},
+					error: function (jqXHR, exception) {
+						alert(getajaxerrormessage(jqXHR, exception));
+					}
+				});
+				
+			} else {
+				participation(campaignid);
+			}
+	}
+	
+	
+	function getajaxerrormessage(jqXHR, exception) {
+            var msg = jqXHR.responseText;
+			
+            if (jqXHR.status === 0) {
+                msg = "Not connect.n Verify Network. -- " + jqXHR.responseText;
+            } else if (jqXHR.status == 401) {
+                msg = "Requested page not found. [401] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 402) {
+                msg = "Requested page not found. [402] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 403) {
+                msg = "Requested page not found. [403] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 404) {
+                msg = "Requested page not found. [404] --" + jqXHR.responseText;
+            } else if (jqXHR.status == 500) {
+                msg = "Internal Server Error. [500] --" + jqXHR.responseText;
+            } else if (exception === 'parsererror') {
+                msg = "Requested JSON parse failed.--" + jqXHR.responseText;
+            } else if (exception === 'timeout') {
+                msg = "Time out error.--" + jqXHR.responseText;
+            } else if (exception === 'abort') {
+                msg = "Ajax request aborted.--" + jqXHR.responseText;
+            } else {
+                msg = "Uncaught Error.n--" + jqXHR.responseText;
+            }
+            return msg;
+        }
+	
+	function fetchparticipation(beneficiaryid) {
+		$('#ct-campaignchart').empty();
+		
+		if (!isNaN(beneficiaryid)) {
+			participation($('#campaigns option:selected').val(), beneficiaryid);
+		} else {
+			participation($('#campaigns option:selected').val());
+		}
+	}
+	
+    function participation(campaign, beneficiaryid=null){
+      var posturl = "participation";
+      var data = campaign;
+      if ((data == undefined) || (data == "")){
+        data = -1;
+      }
+      $('#divparticipation').empty();
+        $.ajax({
+              /*beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+              },*/
+                url: posturl,
+                type: "get",
+                data: { 
+                  camp_id : data, beneficiaryid : beneficiaryid
+                },
+                success: function (response) {
+                  if(response.length != 0){
+                  $('#divparticipation').html("");
+                  var targeted_population = response[0]["target_population"];
+                  $('#divparticipation').append('<div id="target_pop" style="clear:both;"><p><h4>Target Population: '+targeted_population+'</h4></p></div');
+                  $('#divparticipation').append('<p><b></b></p>' +
+                '<div style="clear:both; height:10px;"></div>' +
+                '<table id="tblparticipation" class="table table-striped table-bordered table-condensed">');
+                
+                  $('#tblparticipation').append('<thead>' +
+                '<th>Beneficiairies</th><th>Received by day 1</th><th>Received by day 2</th><th>Received by day 3</th><th>Received by day 4</th>' +
+                '</thead>' +
+                  
+                '<tbody>' +
+                  
+                '</tbody>');
+                  var total_column_1 = 0;
+                  var total_column_2 = 0;
+                  var total_column_3 = 0;
+                  var total_column_4 = 0;
+                  var total_column_5 = 0;
+				  var beneficiary_category;
+                  var received_people;
+                  var expected_people;
+                  var received_on_day_1;
+                  var received_on_day_2;
+                  var received_on_day_3;
+                  var received_on_day_4;
+                  var received_parcentage;
+				  
+                  for (i = 0; i < response.length; i++){
+                    beneficiary_category = response[i]["beneficiary_name"];
+                    received_people = response[i]["received_people"];
+                    expected_people = response[i]["target_population"];
+					
+					$('#tblparticipation').find('tbody').append('<tr style="cursor:pointer;"></tr>');
+					$('#tblparticipation tr:last').append('<td>' + beneficiary_category +'</td>');
+					
+					if (response[i]["received_on_day_one"]) {
+						received_on_day_1 = response[i]["received_on_day_one"];
+						total_column_1 = total_column_1 + received_on_day_1;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_1 +  '</td>');
+					}
+					if (response[i]["received_on_day_two"]) {
+						received_on_day_2 = response[i]["received_on_day_two"];
+						total_column_2 = total_column_2 + received_on_day_2;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_2 +  '</td>');
+					}
+					if (response[i]["received_on_day_three"]) {
+						received_on_day_3 = response[i]["received_on_day_three"];
+						total_column_3 = total_column_3 + received_on_day_3;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_3 +  '</td>');
+					}
+					if (response[i]["received_on_day_four"]) {
+						received_on_day_4 = response[i]["received_on_day_four"];
+						total_column_4 = total_column_4 + received_on_day_4;
+						$('#tblparticipation tr:last').append('<td>' + received_on_day_4 +  '</td>');
+					}
+					
+                    received_parcentage = (received_people * 100)/expected_people
+                    total_column_5 = total_column_5 + received_people;
+                    }
+					
+					// graph
+					if (response.length == 1 && !isNaN(beneficiaryid)) {
+						var chartdata = []
+						var dayslist = [];
+						
+						if (response[0]["percentage_on_day_one"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_one"]));
+							dayslist.push(1);
+						}
+						if (response[0]["percentage_on_day_two"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_two"]));
+							dayslist.push(2);
+						}
+						if (response[0]["percentage_on_day_three"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_three"]));
+							dayslist.push(3);
+						}
+						if (response[0]["percentage_on_day_four"]) {
+							chartdata.push(parseFloat(response[0]["percentage_on_day_four"]));
+							dayslist.push(4);
+						}
+						
+						var chart = new Highcharts.Chart({
+							chart: {
+								renderTo: 'ct-campaignchart',
+								type: 'line'
+							},
+							credits: {
+								enabled: false
+							},
+							title: {
+								text: 'Graph of Percentage of Target Reached for ' + $('#beneficiaries option:selected').text(),
+								x: -20 //center
+							},
+							xAxis: {
+								title: {
+									text: 'Campaign Days'
+								},
+								categories: dayslist,
+								gridLineColor: '#D8D8D8',
+								gridLineWidth: 1,
+							},
+							yAxis: [{
+								title: {
+									text: 'Percentage Target Reached'
+								},
+								plotLines: [{
+									value: 0,
+									width: 1,
+									color: '#808080'
+								}],
+								
+								allowDecimals: true,
+								opposite: false,
+								gridLineColor: '#D8D8D8',
+								gridLineWidth: 1,
+								min: 0,
+								max: 100
+							}],
+							plotOptions: {
+								series: {
+									marker: {
+										enabled: false
+									}
+								}
+							},
+							
+							legend: {
+								layout: 'horizontal',
+								align: 'center',
+								verticalAlign: 'bottom',
+								borderWidth: 0
+							},
+							series: [{
+								name: 'Percentage',
+								data: chartdata,
+								yAxis: 0,
+								tooltip: {
+									valueSuffix: ' %'
+								}
+							}]
+						});
+						
+						
+					}
+					
+					
+					
+                  }
+                },
+                failure: function (json) {
+                    alert("failure");
+                },
+                error: function (jqXHR, exception) {
+                    console.log("error");
+                } 
+        });
+    }
       function avgFormatter(data) {
           return sumFormatter.call(this, data) / data.length;
       };
+	  
+	function isNumber(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+  function desplayReportingRates(){
+    $('#datacontent').empty();
+    var selectmenus = document.createElement('div');
+    selectmenus.id = 'selectmenus';
+    selectmenus.className = 'form-inline';
+    selectmenus.style["padding-left"] = "5px";
+    selectmenus.style["padding-right"] = "5px";
+    $("#datacontent")[0].appendChild(selectmenus);
+
+    //object.
+
+    var divGroup1 = document.createElement('div');
+    divGroup1.className = 'form-group';
+    divGroup1.id = 'provinceGroup';
+    $("#selectmenus")[0].appendChild(divGroup1);
+    var selectList1 = document.createElement("select");
+    selectList1.id = 'province';
+    selectList1.style["width"] = "140px";
+    //selectList1.onchange = fetchDistricts();
+    var provinceLabel = document.createElement('Label');
+    provinceLabel.setAttribute("for", selectList1);
+    provinceLabel.innerHTML = "Province : ";
+    $("#provinceGroup")[0].appendChild(provinceLabel);
+    $("#provinceGroup")[0].appendChild(selectList1);
+
+
+    var divGroup2 = document.createElement('div');
+    divGroup2.className = 'form-group';
+    divGroup2.id = 'districtGroup';
+    $("#selectmenus")[0].appendChild(divGroup2);
+    var selectList2 = document.createElement("select");
+    selectList2.id = 'district';
+    selectList2.style["width"] = "140px";
+    var districtLabel = document.createElement('Label');
+    districtLabel.setAttribute("for", selectList2);
+    districtLabel.innerHTML = "District : ";
+    $("#districtGroup")[0].appendChild(districtLabel);
+    $("#districtGroup")[0].appendChild(selectList2);
+
+
+    var divGroup3 = document.createElement('div');
+    divGroup3.className = 'form-group';
+    divGroup3.id = 'cdsGroup';
+    $("#selectmenus")[0].appendChild(divGroup3);
+    var selectList3 = document.createElement("select");
+    selectList3.id = 'cds';
+    selectList3.style["width"] = "140px";
+    var cdsLabel = document.createElement('Label');
+    cdsLabel.setAttribute("for", selectList2);
+    cdsLabel.innerHTML = "CDS : ";
+    $("#cdsGroup")[0].appendChild(cdsLabel);
+    $("#cdsGroup")[0].appendChild(selectList3);
+
+
+    var divGroup4 = document.createElement('div');
+    divGroup4.className = 'form-group';
+    divGroup4.id = 'reportsCategoryGroup';
+    $("#selectmenus")[0].appendChild(divGroup4);
+    var selectList4 = document.createElement("select");
+    selectList4.id = 'reportscategory';
+    selectList4.style["width"] = "140px";
+    var reportCategoryLabel = document.createElement('Label');
+    reportCategoryLabel.setAttribute("for", selectList4);
+    reportCategoryLabel.innerHTML = "Report Category : ";
+    $("#reportsCategoryGroup")[0].appendChild(reportCategoryLabel);
+    $("#reportsCategoryGroup")[0].appendChild(selectList4);
+
+    fetchProvinces();
+  }
+
+
+function fetchProvinces() {
+      $("#district option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+        $("#cds option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+        $("#reportscategory option").each(function(){
+            if ($(this).val()) {
+              $(this).remove();
+            }
+        });
+
+        ajaxurl = 'getprovinces';
+        code = -1;
+        //data = JSON.stringify({ 'code': code });
+        ajaxpostbackfunction = "fetchprovinces";
+        ajaxpost(ajaxurl, code);
+          
+    }
+
+  function fetchDistricts(){
+    alert("fetchDistricts");
+  }
+
+  function ajaxpost(posturl, data) {
+            ajaxresults = null;
+            $.ajax({
+              /*beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },*/
+                /*type: 'POST',
+                url: posturl,
+                data: data,
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',*/
+                url: posturl,
+                type: "get",
+                data: { 
+                  code : data
+                },
+
+                success: function (response) {
+                  if (ajaxpostbackfunction == "fetchprovinces") {
+                    code = -1;
+                    name = [" Select Province"];
+                    $('#province').append('<option value=' + code +'>' + name + '</option>');
+                    for (i = 0; i < response.length; i++) {
+                        var code = jQuery.makeArray(response[i].fields)[0].code;
+                        var name = jQuery.makeArray(response[i].fields)[0].name;
+                        
+                        $('#province').append('<option value=' + code +'>' + name + '</option>');
+                }
+                  }
+                },
+                failure: function (json) {
+                  alert("Failure");
+                },
+                error: function (jqXHR, exception) {
+                  alert("Error");
+                }
+            });
+            
+            return false;
+  }    
+
+
     </script>
     <!-- Google Analytics -->
       <script>
@@ -82,10 +531,8 @@
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
       ga('create', '{{ GOOGLE_ANALYTICS_PROPERTY_ID }}', '{{ GOOGLE_ANALYTICS_DOMAIN }}');
       ga('send', 'pageview');
-
     </script>
 <!-- End Google Analytics -->
     <script type="text/javascript" src="{% static 'js/c3.min.js' %}"></script>
@@ -98,24 +545,11 @@
     <script src="{% static 'js/export_renderers.min.js' %}"></script>
     {% block css_section %}
         <!-- Bootstrap core CSS -->
-    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'css/bootstrap-theme.css' %}" rel="stylesheet">
     <link href="{% static 'css/styles.css' %}" rel="stylesheet">
-    <style>
-        .row.vdivide [class*='col-']:not(:last-child):after {
-          background: #e0e0e0;
-          width: 1px;
-          content: "";
-          display:block;
-          position: absolute;
-          top:0;
-          bottom: 0;
-          right: 0;
-          min-height: 70px;
-        }
-    </style>
+    <!-- <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script> -->
     {% endblock css_section %}
-    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <title>SSME - {% block title %}App{% endblock title %} </title>
   </head>
   <body>
@@ -187,6 +621,7 @@
                   <li><a href="{% url 'reports_by_remaining' %}">Stock Final</a></li>
               </ul>
           </li>
+          <li><a href="{% url 'reports_by_rates' %}">Taux Raportage</a></li>
           <li>
           {% endif %}
           {% if user|has_group:"CDS" %}
@@ -238,12 +673,17 @@
              </ul>
           </li>
           {% endif %}
+
+          {% if user|has_group:"CEN" or user.is_superuser %}
+            <li><a onclick="desplayReportingRates();" href="#"> Reporting Rates </a></li>
+          {% endif %}
+
       </ul>
 
       <hr>
 
     </div><!-- /span-2 -->
-    <div class="col-sm-10">
+    <div id="datacontent" class="col-sm-10">
 
       <!-- column 2 -->
       {% if user.is_authenticated %}
@@ -259,6 +699,29 @@
         <div class="container">
           {% block content %}
           <!--  MAIN CONTENT GOES HERE -->
+		  <div class="form-group col-sm-12">
+            <div class="form-group col-sm-4" style="padding-left :5px; padding-right :5px;">
+              <label class="col-sm-4 control-label" for="campaigns">Campagne:</label>
+              <select id="campaigns" class="form-control" style="width:200px" onchange="fetchbeneficiaries(this.value)" required="required">
+                <option value="" selected="selected">[ Select Campaign ]</option>
+              </select>  
+            </div>
+			
+			<div class="form-group col-sm-4" style="padding-left :5px; padding-right :5px;">
+              <label class="col-sm-4 control-label" for="beneficiaries">Beneficiairies:</label>
+              <select id="beneficiaries" class="form-control" style="width:200px" onchange="fetchparticipation(this.value)" required="required">
+                <option value="" selected="selected">[ Select Beneficiary ]</option>
+              </select>  
+            </div>
+			</div>
+
+            <div id="divparticipation" class="form-inline" style="padding-left :5px; padding-right :5px;">
+              <p style="color:red;">No records found</p>
+            </div>
+			
+			<div id="ct-campaignchart" style="width:100% !important; height:100% !important;">
+			
+			</div>
           {% endblock content %}
         </div>
     </div><!--/col-span-10-->

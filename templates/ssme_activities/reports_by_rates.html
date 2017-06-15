@@ -1,0 +1,69 @@
+{% extends "base_layout.html" %}
+{% load extras_utils2  %}
+{% block page_title %}
+{% load staticfiles %}
+
+<ul class="nav nav-tabs">
+  <div class="page-header">
+    <h5>Rapport au niveau du  {{mymoh_facility}}</h5>
+</div>
+<li {% block activefinal %}class="active"{% endblock activefinal %} >
+    <a href="#final"   data-toggle="tab">Taux de raportage</a>
+</li>
+</ul>
+{% endblock page_title  %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
+<script src="{% static "js/ssme-rates.js" %}"></script>
+<div ng-app="StockApp" ng-controller="StockCtrl">
+        <div class="col-md-2" >
+            <ul class="nav" >
+            <li >
+              {% block search_form %}
+              <form role="form" class="side-form" >
+                <!-- Province -->
+                <div id="province-group" class="form-group">
+                  <label>Province</label>
+                  <select class="form-control"  ng-model="province" ng-options="x.name for x in provinces track by x.code" ng-change="update_province()"></select>
+              </div>
+              <!-- District -->
+              <div id="district-group" class="form-group">
+                  <label>District</label>
+                  <select class="form-control"  ng-model="district" ng-options="x.name for x in districts track by x.code"  ng-change="update_district()" ></select>
+              </div>
+              <!-- CDS -->
+              <div id="cds-group" class="form-group">
+                  <label>CDS</label>
+                  <select class="form-control"  ng-model="cds" ng-options="x.name for x in cdss track by x.code"  ng-change="update_cds()" ></select>
+              </div>
+            </form>
+            {% endblock search_form %}
+            </li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-boredered">
+            {% verbatim %}
+            <thead>
+              <tr>
+                <td>Id</td>
+                <td>Province</td>
+                <td>Stock debut de semaine</td>
+                <td>Stock finals</td>
+                <td>Beneficiaires</td>
+              </tr>
+            </thead>
+              <tr ng-repeat="x in raports">
+                <td>{{ x.id }}</td>
+                <td>{{ x.name }}</td>
+                <td>{{x.stock_debut_semaine / x.facilities * 100| number :1 }}</td>
+                <td>{{x.stock_finals / (x.facilities * 4) * 100| number :1 }}</td>
+                <td>{{x.beneficiaires / (x.facilities * 4) * 100| number :1 }}</td>
+              </tr>
+            {% endverbatim %}
+            </table>
+          </div>
+</div>
+{% endblock content %}

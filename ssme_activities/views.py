@@ -15,12 +15,22 @@ from ssme_activities.models import *
 from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
+import json
+from django.db.models import Sum
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Sum
+from ssme_activities.serilaizers import *
+from rest_framework import viewsets
+from django.core import serializers
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
 
 def dashboard(request):
-    return render(request, 'base_layout.html')
+    d = {}
+    d['campaigns'] = Campaign.objects.all()
+    d['provinces'] = Province.objects.all()
+    return render(request, 'base_layout.html', d)
 
 
 def moh_facility(request):
@@ -785,6 +795,18 @@ def get_reports_by_remaining(request, **kwargs):
         )
 
 
+@login_required
+def get_reports_by_rates(request, **kwargs):
+    initial_data = initialise_data(request, **kwargs)
+    mycode = initial_data["mycode"]
+    pop_total = initial_data["pop_total"]
+    recus = total_received(request, mycode['mycode'])
+
+    return render(request, "ssme_activities/reports_by_rates.html", {
+        "recus": recus, 'pop_total': pop_total}
+        )
+
+
 # Benef
 def date_handler(obj):
     return obj.isoformat() if hasattr(obj, 'isoformat') else obj
@@ -846,3 +868,148 @@ def total_received(request, mycode=''):
 
         recus.update({str(h['products']): recu['received_quantity__sum']})
     return convert(recus)
+
+
+@login_required
+def fetchbeneficiaries(request):
+    camp_id = request.GET["camp_id"]
+    response_data = {}
+    if (camp_id):
+        the_last_campaign = Campaign.objects.get(id=camp_id)
+        data = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
+        response_data = serializers.serialize('json', data)
+    else:
+        response_data = serializers.serialize('json', "No data")
+    return HttpResponse(response_data, content_type="application/json")
+    
+    
+@login_required
+def participation(request):
+    response_data = {}
+    beneficiaryid = request.GET["beneficiaryid"]
+    
+    if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
+        the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+    else:
+        the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
+
+    target_population_for_this_campaign = CampaignCDS.objects.filter(campaign = the_last_campaign).aggregate(Sum('population_cible'))
+    the_camp_start_date = the_last_campaign.start_date
+    date_of_day_two = the_camp_start_date+datetime.timedelta(days=1)
+    date_of_day_three = the_camp_start_date+datetime.timedelta(days=2)
+    date_of_day_four = the_camp_start_date+datetime.timedelta(days=3)
+    the_camp_end_date = the_last_campaign.end_date
+
+    if(the_last_campaign):
+        beneficiaries_4_last_campaign = Beneficiaire.objects.filter(campaignbeneficiary__campaign = the_last_campaign)
+        
+        if (beneficiaryid.isdigit()):
+            related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign, beneficiary__id=beneficiaryid).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
+        else:
+            related_campaign_beneficiaries = CampaignBeneficiary.objects.filter(campaign = the_last_campaign).annotate(received_people = Sum('campaignbeneficiaryproduct__reportbeneficiary__received_number')).values()
+        
+        response_data = json.dumps(list(related_campaign_beneficiaries), cls=DjangoJSONEncoder)
+        rows = json.loads(response_data)
+        
+        for r in rows:
+            beneficiary = Beneficiaire.objects.get(id = r['beneficiary_id'])
+            r["beneficiary_name"] = beneficiary.designation
+            r["campaign_start_date"] = the_last_campaign.start_date
+            r["campaign_end_date"] = the_last_campaign.end_date
+            r["target_population"] = target_population_for_this_campaign["population_cible__sum"]
+            
+            received_number_on_first_date = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = the_camp_start_date).aggregate(Sum('received_number'))
+            if (received_number_on_first_date):
+                r["received_on_day_one"] = received_number_on_first_date["received_number__sum"]
+            
+                received_number_on_day_2 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_two).aggregate(Sum('received_number'))
+                if (received_number_on_day_2):
+                    r["received_on_day_two"] = received_number_on_day_2["received_number__sum"] + r["received_on_day_one"]
+                    
+                    received_number_on_day_3 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_three).aggregate(Sum('received_number'))
+                    if (received_number_on_day_3):
+                        r["received_on_day_three"] = received_number_on_day_3["received_number__sum"] + r["received_on_day_two"]
+                        
+                        received_number_on_day_4 = ReportBeneficiary.objects.filter(beneficiaries_per_product__campaign_beneficiary__id = r['id'] ,reception_date = date_of_day_four).aggregate(Sum('received_number'))
+                        if (received_number_on_day_4):
+                            r["received_on_day_four"] = received_number_on_day_4["received_number__sum"] + r["received_on_day_three"]
+                        else:
+                            r["received_on_day_four"] = None
+                    
+                    else:
+                        received_number_on_day_3 = None
+                
+                else:
+                    r["received_on_day_two"] = None
+            
+            else:
+                r["received_on_day_one"] = None
+
+            if (beneficiaryid.isdigit() and beneficiaryid > 0):
+                beneficiary_target = CampaignBeneficiary.objects.get(campaign = the_last_campaign, beneficiary__id=beneficiaryid).pourcentage_attendu
+                
+                if (r["received_on_day_one"]):
+                    r["percentage_on_day_one"] = (r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100
+                else:
+                    r["percentage_on_day_one"] = None
+                if (r["received_on_day_two"]):
+                    r["percentage_on_day_two"] = (r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100
+                else:
+                    r["percentage_on_day_two"] = None
+                if (r["received_on_day_three"]):
+                    r["percentage_on_day_three"] = (r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100
+                else:
+                    r["percentage_on_day_three"] = None
+                if (r["received_on_day_four"]):
+                    r["percentage_on_day_four"] = (r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100
+                else:
+                    r["percentage_on_day_four"] = None
+            else:
+                r["percentage_on_day_one"] = None
+                r["percentage_on_day_two"] = None
+                r["percentage_on_day_three"] = None
+                r["percentage_on_day_four"] = None
+            
+        response_data = json.dumps(rows, default=date_handler)
+        #print("------------------")
+        #print(response_data)
+        return HttpResponse(response_data, content_type="application/json")
+
+
+def getprovinces(request):
+    response_data = {}
+    code = request.GET["code"]
+    code = int(code)
+    if (code == -1):
+        provinces = Province.objects.all()
+        response_data = serializers.serialize('json', provinces)
+    return HttpResponse(response_data, content_type="application/json")
+
+
+class ProvinceViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit Province.
+    """
+    queryset = Province.objects.all()
+    serializer_class = ProvinceSerializer
+
+
+class DistrictViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit District.
+    """
+    queryset = District.objects.all()
+    serializer_class = DistrictSerializer
+    lookup_field = 'code'
+    filter_fields = ('province__code',)
+
+
+class CDSViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit CDS.
+    """
+    queryset = CDS.objects.all()
+    serializer_class = CDSSerializer
+
+    lookup_field = 'code'
+    filter_fields = ('district__code', 'code')

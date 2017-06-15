@@ -34,7 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.sites',
+    #'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     'django_extensions',
     'ssme_activities',
     'import_export',
+    'rest_framework',
+    'django_filters',
     'formtools',
     'guardian',
     'smartmin',
@@ -153,14 +155,14 @@ LOGOUT_REDIRECT_URL = reverse_lazy("landing")
 AUTH_USER_MODEL = 'authtools.User'
 
 KNOWN_PREFIXES = {
-    'RG':'SELF_REGISTRATION',
-    'SDS':'STOCK_DEBUT_SEMAINE',
-    'SR':'STOCK_RECU',
-    'SF':'STOCK_FINAL',
-    'B':'BENEFICIAIRE',
-	'RUP' : 'RUPTURE_STOCK',
-	'PC' : 'POPULATION_CIBLE',
-	'X':'EXIT',
+    'RG': 'SELF_REGISTRATION',
+    'SDS': 'STOCK_DEBUT_SEMAINE',
+    'SR': 'STOCK_RECU',
+    'SF': 'STOCK_FINAL',
+    'B': 'BENEFICIAIRE',
+    'RUP': 'RUPTURE_STOCK',
+    'PC': 'POPULATION_CIBLE',
+    'X': 'EXIT',
 }
 
 #------------------------------------------------
@@ -169,11 +171,11 @@ KNOWN_PREFIXES = {
 
 # create the smartmin CRUDL permissions on all objects
 PERMISSIONS = {
-  '*': ('create', # can create an object
-        'read',   # can read an object, viewing it's details
-        'update', # can update an object
-        'delete', # can delete an object,
-        'list'),  # can view a list of the objects
+  '*': ('create',   # can create an object
+        'read',     # can read an object, viewing it's details
+        'update',   # can update an object
+        'delete',   # can delete an object,
+        'list'),    # can view a list of the objects
 }
 
 # assigns the permissions that each group should have, here creating an Administrator group with
@@ -201,6 +203,15 @@ LANGUAGES = (
 
 GOOGLE_ANALYTICS_PROPERTY_ID = 'UA-12345678-9'
 GOOGLE_ANALYTICS_DOMAIN = 'mydomain.com'
+
+INTERNAL_IPS = ('127.0.0.1',)
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+}
+
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'guardian.backends.ObjectPermissionBackend')
 
 try:
     from localsettings import *
