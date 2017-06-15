@@ -21,6 +21,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
+from django.core import serializers
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
