@@ -975,7 +975,7 @@ def participation(request):
         #print(response_data)
         return HttpResponse(response_data, content_type="application/json")
 
-
+"""
 def getprovinces(request):
     response_data = {}
     code = request.GET["code"]
@@ -984,7 +984,7 @@ def getprovinces(request):
         provinces = Province.objects.all()
         response_data = serializers.serialize('json', provinces)
     return HttpResponse(response_data, content_type="application/json")
-
+"""
 
 class ProvinceViewSet(viewsets.ModelViewSet):
     """
