@@ -23,6 +23,16 @@
             <li >
               {% block search_form %}
               <form role="form" class="side-form" >
+                <!-- Campain -->
+                <div id="campaign-group" class="form-group">
+                  <label>Campain</label>
+                  <select class="form-control"  ng-model="campaign" ng-options="x.name for x in campaigns track by x.id" ng-change="update_campaign()"></select>
+              </div>
+              <!-- Days -->
+                <div id="day-group" class="form-group">
+                  <label>Days</label>
+                  <select class="form-control"  ng-model="day" ng-options="x for x in days track by x" ng-change="update_day()"></select>
+              </div>
                 <!-- Province -->
                 <div id="province-group" class="form-group">
                   <label>Province</label>
