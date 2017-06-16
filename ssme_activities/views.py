@@ -993,6 +993,10 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     queryset = Province.objects.all()
     serializer_class = ProvinceSerializer
 
+    def get_serializer_context(self):
+        if "dates" in self.request.GET:
+            return {"dates": self.request.GET["dates"]}
+
 
 class DistrictViewSet(viewsets.ModelViewSet):
     """
@@ -1002,6 +1006,10 @@ class DistrictViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
     lookup_field = 'code'
     filter_fields = ('province__code',)
+
+    def get_serializer_context(self):
+        if "dates" in self.request.GET:
+            return {"dates": self.request.GET["dates"]}
 
 
 class CDSViewSet(viewsets.ModelViewSet):
@@ -1013,3 +1021,15 @@ class CDSViewSet(viewsets.ModelViewSet):
 
     lookup_field = 'code'
     filter_fields = ('district__code', 'code')
+
+
+class CampaignViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to view or edit Campaign.
+    """
+    queryset = Campaign.objects.all()
+    serializer_class = CampaignSerializer
+
+    def get_serializer_context(self):
+        if "dates" in self.request.GET:
+            return {"dates": self.request.GET["dates"]}
