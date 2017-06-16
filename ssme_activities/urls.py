@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 router.register(r'province', ProvinceViewSet)
 router.register(r'district', DistrictViewSet)
 router.register(r'cdss', CDSViewSet)
+router.register(r'campaign', CampaignViewSet)
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),
