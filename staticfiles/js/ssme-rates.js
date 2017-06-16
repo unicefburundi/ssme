@@ -2,6 +2,37 @@ var app = angular.module('StockApp', []);
 
 app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
 
+        // campaign
+        $http.get("/ssme/campaign/")
+        .then(function (response) {
+            if (response.data.length > 0) {
+                $scope.campaigns = response.data;
+            }
+        });
+
+        $scope.update_campaign = function () {
+            $scope.days = "";
+            var campaign = $scope.campaign;
+            if (campaign) {
+                $scope.days = campaign.days;
+        }
+      };
+
+      $scope.update_day = function () {
+            var day = $scope.day;
+            console.log(day);
+            if (day) {
+                $http.get("/ssme/province/?dates=" + day )
+                  .then(function (response) {
+                      if (response.data.length > 0) {
+                          $scope.provinces = response.data;
+                          $scope.raports = response.data;
+                      }
+                       
+                  });
+        }
+      };
+
         // province
         $http.get("/ssme/province/")
         .then(function (response) {
