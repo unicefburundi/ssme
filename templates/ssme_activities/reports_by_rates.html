@@ -1,7 +1,7 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
-{% block page_title %}
 {% load staticfiles %}
+{% block page_title %}
 
 <ul class="nav nav-tabs">
   <div class="page-header">
@@ -58,20 +58,22 @@
             {% verbatim %}
             <thead>
               <tr>
-                <td>Id</td>
-                <td>Province</td>
-                <td>Stock debut de semaine</td>
-                <td>Stock finals</td>
-                <td>Beneficiaires</td>
+                <th>Id</th>
+                <th>Province</th>
+                <th>Stock debut de semaine</th>
+                <th>Stock finals</th>
+                <th>Beneficiaires</th>
               </tr>
             </thead>
+            <tbody>
               <tr ng-repeat="x in raports">
                 <td>{{ x.id }}</td>
                 <td>{{ x.name }}</td>
                 <td>{{x.stock_debut_semaine / x.facilities * 100| number :1 }}</td>
-                <td>{{x.stock_finals / (x.facilities * 4) * 100| number :1 }}</td>
-                <td>{{x.beneficiaires / (x.facilities * 4) * 100| number :1 }}</td>
+                <td>{{x.stock_finals / x.facilities * 100| number :1 }}</td>
+                <td>{{x.beneficiaires / x.facilities * 100| number :1 }}</td>
               </tr>
+            </tbody>
             {% endverbatim %}
             </table>
           </div>
