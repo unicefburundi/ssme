@@ -54,7 +54,7 @@ def beneficiaries(request):
 
 
 def get_pop_total(request, code=''):
-    pop_total = CampaignCDS.objects.all()
+    pop_total = CampaignCDS.objects.filter(campaign__going_on=True)
     if not code:
         return pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
     if not pop_total:
@@ -123,9 +123,9 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
             for t in headers_benef:
                 ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
-                    res.update({t['beneficiaires']:0})
+                    res.update({t['beneficiaires']: 0})
                 else:
-                    res.update({t['beneficiaires']:ress['total']})
+                    res.update({t['beneficiaires']: ress['total']})
             body_benef.append(res)
         return body_benef
 
@@ -135,11 +135,11 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
     if not dates_reception:
         res, ress = today, {}
         if 'cds' in kwargs:
-            queryset_reception = queryset_reception.filter( report__cds=kwargs.get('cds').id)
+            queryset_reception = queryset_reception.filter(report__cds=kwargs.get('cds').id)
         elif 'district' in kwargs:
-            queryset_reception = queryset_reception.filter( report__cds__district=kwargs.get('district').id)
+            queryset_reception = queryset_reception.filter(report__cds__district=kwargs.get('district').id)
         elif 'province' in kwargs:
-            queryset_reception = queryset_reception.filter( report__cds__district__province=kwargs.get('province').id)
+            queryset_reception = queryset_reception.filter(report__cds__district__province=kwargs.get('province').id)
         if not queryset_reception:
             return []
         else:
@@ -275,7 +275,7 @@ class ProvinceDetailView(DetailView):
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
         # benef
-        headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -289,7 +289,7 @@ class ProvinceDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         # reception
-        headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for district in districts:
@@ -349,7 +349,7 @@ class DistrictDetailView(DetailView):
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
         # benef
-        headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -363,7 +363,7 @@ class DistrictDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         # reception
-        headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for cds in cdss:
@@ -422,14 +422,14 @@ class CDSDetailView(DetailView):
         else:
             pop_total = pop_total.latest('id')
         # beneficiaires
-        headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
         body_benef = []
         if queryset_benef:
             body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
         # reception
-        headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
         body_reception = []
@@ -673,8 +673,8 @@ def initialise_data(request, **kwargs):
     pop_total = get_pop_total(request, mycode['mycode'])
 
     # beneficiaires
-    headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
-    headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
     taux = get_per_category_taux(request)
 
     return {"mycode": mycode, "pop_total": pop_total, "headers_benef": headers_benef, "headers_recept": headers_recept, "taux": taux}
@@ -845,7 +845,7 @@ def get_final_in_json(request):
 
 
 def estimate(request, cds=''):
-    headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
     benefs = []
     for h in headers_benef:
         benef = ReportBeneficiary.objects.filter(report__cds__code=cds, campaign_beneficiary__beneficiary__designation=h['beneficiaires']).aggregate(Sum('received_number'))
@@ -860,7 +860,7 @@ def estimate(request, cds=''):
 
 
 def total_received(request, mycode=''):
-    headers_recept = CampaignProduct.objects.all().annotate(products=F('product__name')).values('products').distinct()
+    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct()
     recus = {}
     queryset_recu = get_report_by_code(request, mycode, ReportProductReception)
     for h in headers_recept:
