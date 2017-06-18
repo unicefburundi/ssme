@@ -26,6 +26,8 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
                       if (response.data.length > 0) {
                           $scope.provinces = response.data;
                           $scope.raports = response.data;
+                          $scope.districts = null;
+                          $scope.cdss = null;
                       }
                        
                   });
@@ -49,7 +51,6 @@ app.controller('StockCtrl', ['$scope', '$http', function($scope, $http) {
         });
         $scope.update_province = function () {
             var province = $scope.province;
-            console.log($scope.day);
             if (province && $scope.day != null) {
               $http.get("/ssme/district/?province__code=" + province.code + "&dates=" +  $scope.day)
               .then(function (response) {
