@@ -18,6 +18,7 @@ class CampaignBeneficiaryProductResource(resources.ModelResource):
 class CampaignBeneficiaryProductAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignBeneficiaryProductResource
     list_display = ('campaign_beneficiary', 'campaign_product', 'dosage', 'pourcentage_attendu')
+    list_filter = ('campaign_beneficiary__campaign', )
 
 
 class CampaignBeneficiaryResource(resources.ModelResource):
@@ -29,6 +30,7 @@ class CampaignBeneficiaryResource(resources.ModelResource):
 class CampaignBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignBeneficiaryResource
     list_display = ('campaign','beneficiary','order_in_sms', 'pourcentage_attendu')
+    list_filter = ('campaign', )
 
 
 class CampaignProductResource(resources.ModelResource):
@@ -39,6 +41,7 @@ class CampaignProductResource(resources.ModelResource):
 class CampaignProductAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignProductResource
     list_display = ('campaign','product','order_in_sms')
+    list_filter = ('campaign', )
 
 
 class CampaignCDSResource(resources.ModelResource):
