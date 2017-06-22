@@ -23,14 +23,14 @@ urlpatterns = patterns('',
     url(r'^cds/add/$', _(CDSCreateView.as_view()), name='cds_add'),
     url(r'^cds/(?P<pk>\d+)/$', _(CDSDetailView.as_view()), name='cds_detail'),
     # Districts
-    url(r'^district/$', _(DistrictListView.as_view()), name='district_list'),
-    url(r'^district/add/$', _(DistrictCreateView.as_view()), name='district_add'),
-    url(r'^district/(?P<pk>\d+)/$', _(DistrictDetailView.as_view()),
+    url(r'^districts/$', _(DistrictListView.as_view()), name='district_list'),
+    url(r'^districts/add/$', _(DistrictCreateView.as_view()), name='district_add'),
+    url(r'^districts/(?P<pk>\d+)/$', _(DistrictDetailView.as_view()),
         name='district_detail'),
     # Provinces
-    url(r'^province/$', _(ProvinceListView.as_view()), name='province_list'),
-    url(r'^province/add/$', _(ProvinceCreateView.as_view()), name='province_add'),
-    url(r'^province/(?P<pk>\d+)/$', _(ProvinceDetailView.as_view()),
+    url(r'^provinces/$', _(ProvinceListView.as_view()), name='province_list'),
+    url(r'^provinces/add/$', _(ProvinceCreateView.as_view()), name='province_add'),
+    url(r'^provinces/(?P<pk>\d+)/$', _(ProvinceDetailView.as_view()),
         name='province_detail'),
 
     # ProfileUser
