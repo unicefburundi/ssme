@@ -4,6 +4,9 @@ import datetime
 
 days = Campaign.objects.filter(going_on=True).values('start_date', 'end_date')
 
+#get average if no campaign day is selected
+campaigndays = (datetime.datetime.strptime(days[0]['end_date'].isoformat(), "%Y-%m-%d").date() - datetime.datetime.strptime(days[0]['start_date'].isoformat(), "%Y-%m-%d").date()).days
+
 
 class ProvinceSerializer(serializers.ModelSerializer):
     """ Serializer to represent the Province model """
@@ -20,19 +23,19 @@ class ProvinceSerializer(serializers.ModelSerializer):
         rappors = Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds__district__province=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds__district__province=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_stock_finals(self, obj):
         rappors = Report.objects.filter(category="STOCK_FINAL", cds__district__province=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_FINAL", cds__district__province=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_beneficiaires(self, obj):
         rappors = Report.objects.filter(category="BENEFICIAIRE", cds__district__province=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="BENEFICIAIRE", cds__district__province=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_facilities(self, obj):
         facilities = CDS.objects.filter(district__province=obj).distinct().count()
@@ -54,19 +57,19 @@ class DistrictSerializer(serializers.ModelSerializer):
         rappors = Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds__district=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds__district=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_stock_finals(self, obj):
         rappors = Report.objects.filter(category="STOCK_FINAL", cds__district=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_FINAL", cds__district=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_beneficiaires(self, obj):
         rappors = Report.objects.filter(category="BENEFICIAIRE", cds__district=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="BENEFICIAIRE", cds__district=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_facilities(self, obj):
         facilities = CDS.objects.filter(district=obj).distinct().count()
@@ -88,19 +91,19 @@ class CDSSerializer(serializers.ModelSerializer):
         rappors = Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_DEBUT_SEMAINE", cds=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_stock_finals(self, obj):
         rappors = Report.objects.filter(category="STOCK_FINAL", cds=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="STOCK_FINAL", cds=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_beneficiaires(self, obj):
         rappors = Report.objects.filter(category="BENEFICIAIRE", cds=obj, concerned_date__range=[days[0]['start_date'], days[0]['end_date']]).distinct()
         if self.context and "dates" in self.context:
             return Report.objects.filter(category="BENEFICIAIRE", cds=obj, reporting_date=datetime.datetime.strptime(self.context["dates"], '%Y-%m-%d')).count()
-        return rappors.count()
+        return rappors.count()/campaigndays
 
     def get_facilities(self, obj):
         facilities = CDS.objects.filter(pk=obj.pk).distinct().count()
