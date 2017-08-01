@@ -334,6 +334,14 @@
 								max: 100
 							}],
 							plotOptions: {
+								line : {
+									dataLabels : {
+										enabled : true,
+										formatter : function() {
+											return this.y + ' %';
+										}
+									}
+								},
 								series: {
 									marker: {
 										enabled: false
@@ -356,6 +364,33 @@
 								}
 							}]
 						});
+						
+						// update series 0 chart
+						var chartseries = chart.series[0];
+						for (j = 0; j < chartseries.data.length; j++) {
+							chartseries.data[j].update({
+								marker:{
+									enabled: true,
+									symbol: 'circle',
+									radius: 7,
+									fillColor: 'white',
+									lineColor: '#FF0000',
+									lineWidth: 1,
+									states: {
+										allowPointSelect: true,
+										hover: {
+											fillColor: '#FF0000',
+											lineColor: '#FF0000'                                	
+										}
+									}
+								}
+							});
+						}
+						
+						
+						
+						
+						
 						
 						
 					}

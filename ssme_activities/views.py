@@ -21,6 +21,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.renderers import BrowsableAPIRenderer
 from django.core import serializers
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
@@ -243,20 +245,21 @@ class ProvinceCreateView(CreateView):
 
 
 class ProvinceListView(ListView):
-    model = Province
-    paginate_by = 100
+	renderer_classes = (BrowsableAPIRenderer, )
+	model = Province
+	paginate_by = 100
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(ProvinceListView, self).dispatch(*args, **kwargs)
+	@method_decorator(login_required)
+	def dispatch(self, *args, **kwargs):
+		return super(ProvinceListView, self).dispatch(*args, **kwargs)
         
-    def get_queryset(self):
-        """Returns Province that belong to the current user"""
-        mycode = myfacility(self.request)
-        if not mycode['mycode']:
-            return Province.objects.all()
-        else:
-            return Province.objects.filter(code=mycode['mycode'])
+	def get_queryset(self):
+		"""Returns Province that belong to the current user"""
+		mycode = myfacility(self.request)
+		if not mycode['mycode']:
+			return Province.objects.all()
+		else:
+			return Province.objects.filter(code=mycode['mycode'])
 
 
 class ProvinceDetailView(DetailView):
@@ -638,7 +641,6 @@ FORMS = [("campaign", CampaignForm1),
 
 
 class CampaignWizard(SessionWizardView):
-
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict['campaign'].save()
         products, orders = set(), set()
@@ -889,7 +891,10 @@ def participation(request):
     beneficiaryid = request.GET["beneficiaryid"]
     
     if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
-        the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+		if Campaign.objects.filter(going_on = True):
+			the_last_campaign = Campaign.objects.get(going_on = True)
+		else:
+			the_last_campaign = Campaign.objects.all().order_by('-id')[0]
     else:
         the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
 
@@ -949,19 +954,19 @@ def participation(request):
                 beneficiary_target = CampaignBeneficiary.objects.get(campaign = the_last_campaign, beneficiary__id=beneficiaryid).pourcentage_attendu
                 
                 if (r["received_on_day_one"]):
-                    r["percentage_on_day_one"] = (r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100
+                    r["percentage_on_day_one"] = round((r["received_on_day_one"]/(beneficiary_target * r["target_population"]/100))*100, 2)
                 else:
                     r["percentage_on_day_one"] = None
                 if (r["received_on_day_two"]):
-                    r["percentage_on_day_two"] = (r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100
+                    r["percentage_on_day_two"] = round((r["received_on_day_two"]/(beneficiary_target * r["target_population"]/100))*100, 2)
                 else:
                     r["percentage_on_day_two"] = None
                 if (r["received_on_day_three"]):
-                    r["percentage_on_day_three"] = (r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100
+                    r["percentage_on_day_three"] = round((r["received_on_day_three"]/(beneficiary_target * r["target_population"]/100))*100, 2)
                 else:
                     r["percentage_on_day_three"] = None
                 if (r["received_on_day_four"]):
-                    r["percentage_on_day_four"] = (r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100
+                    r["percentage_on_day_four"] = round((r["received_on_day_four"]/(beneficiary_target * r["target_population"]/100))*100, 2)
                 else:
                     r["percentage_on_day_four"] = None
             else:
