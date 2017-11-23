@@ -893,7 +893,7 @@ def check_stock_out_values_validity(args):
 
 def alert_for_stock_out(args):
     ''' This function alerts in case of a stock out '''
-
+    print("Begin alert_for_stock_out function")
     url = 'https://api.rapidpro.io/api/v1/broadcasts.json'
     token = getattr(settings,'TOKEN','')
 
@@ -904,8 +904,11 @@ def alert_for_stock_out(args):
         the_sup_phone_number = "tel:"+args['the_sender'].supervisor_phone_number
         data = {"urns": [the_sup_phone_number],"text": args['message_to_send_for_alert']}
 
+        print("Before sending alert to a supervisor")
+        print(data)
 
         response = requests.post(url, headers={'Content-type': 'application/json', 'Authorization': 'Token %s' % token}, data = json.dumps(data))
+        print("After sending alert to a supervisor")
         print(response.content)
 
 
