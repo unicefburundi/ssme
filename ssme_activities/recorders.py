@@ -896,7 +896,7 @@ def alert_for_stock_out(args):
     print("Begin alert_for_stock_out function")
     # url = 'https://api.rapidpro.io/api/v1/broadcasts.json'
     url = 'https://api.rapidpro.io/api/v2/broadcasts.json'
-    token = getattr(settings, 'TOKEN', '')
+    token = getattr(settings,'TOKEN','')
 
     # Let's first send an alert to the phone number given by this reporter on his registration
 
