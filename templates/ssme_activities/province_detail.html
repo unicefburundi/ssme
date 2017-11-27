@@ -43,9 +43,9 @@
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
-                                <th data-footer-formatter="totalTextFormatter">District</th>
+                                <th >District</th>
                                 {% for header in headers_benef %}
-                                  <th data-footer-formatter="benefFormatter">{{header.beneficiaires}}</th>
+                                  <th >{{header.beneficiaires}}</th>
                                 {% endfor %}
                               </tr>
                             </thead>
