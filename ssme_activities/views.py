@@ -21,10 +21,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
-from rest_framework.views import APIView
 from rest_framework.renderers import BrowsableAPIRenderer
 from django.core import serializers
-from rest_framework.renderers import JSONRenderer
 
 today = {'reception_date': datetime.date.today().strftime('%Y-%m-%d')}
 
@@ -95,12 +93,12 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                 return []
             else:
                 for t in headers_benef:
-                    ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                    ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                     if not ress:
-                        res.update({t['beneficiaires']:0})
+                        res.update({t['beneficiaires']: 0})
                     else:
                         ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
-                        res.update({t['beneficiaires']:ress['received_number']})
+                        res.update({t['beneficiaires']: ress['received_number']})
                     body_benef.update(res)
                 return body_benef
         elif 'district' in kwargs:
@@ -110,8 +108,9 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         if not queryset_benef:
             return []
         else:
+            print queryset_benef
             for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                 if not ress:
                     res.update({t['beneficiaires']: 0})
                 else:
@@ -124,7 +123,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
                     res.update({t['beneficiaires']: 0})
                 else:
@@ -147,7 +146,7 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
             return []
         else:
             for t in headers_recept:
-                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                ress = queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
                 if not ress['total']:
                     res.update({t['products']: 0})
                 else:
