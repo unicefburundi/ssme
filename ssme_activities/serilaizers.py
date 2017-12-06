@@ -17,11 +17,11 @@ def get_report_by_code(request, code, model):
     if not code:
         return queryset
     if len(code) <= 2:
-        return queryset.filter(report__cds__district__province__code=int(code))
+        return queryset.filter(report__cds__district__province__code=int(code)).order_by('report__concerned_date')
     if len(code) > 2 and len(code) <= 4:
-        return queryset.filter(report__cds__district__code=int(code))
+        return queryset.filter(report__cds__district__code=int(code)).order_by('report__concerned_date')
     if len(code) > 4:
-        return queryset.filter(report__cds__code=code)
+        return queryset.filter(report__cds__code=code).order_by('report__concerned_date')
 
 
 class ProvinceSerializer(serializers.ModelSerializer):
@@ -140,7 +140,6 @@ class CampaignSerializer(serializers.ModelSerializer):
         return dict(list(enumerate(lesdates)))
 
     def get_benefs(self, obj):
-        print self
         dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
         queryset_benef = get_report_by_code(self.context.get("request"), self.context.get("mycode"), ReportBeneficiary)
         body_benef = []
