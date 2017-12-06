@@ -1026,5 +1026,8 @@ class CampaignViewSet(viewsets.ModelViewSet):
     serializer_class = CampaignSerializer
 
     def get_serializer_context(self):
+        ct = {'request': self.request, 'mycode': myfacility(self.request)}
         if "dates" in self.request.GET:
-            return {"dates": self.request.GET["dates"]}
+            return ct.update({"dates": self.request.GET["dates"]})
+        else:
+            return ct

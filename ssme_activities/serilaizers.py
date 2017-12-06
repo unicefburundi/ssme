@@ -140,6 +140,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         return dict(list(enumerate(lesdates)))
 
     def get_benefs(self, obj):
+        print self
         dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
         queryset_benef = get_report_by_code(self.context.get("request"), self.context.get("mycode"), ReportBeneficiary)
         body_benef = []
@@ -147,7 +148,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress = ReportBeneficiary.objects.annotate(beneficiaires=F('beneficiaries_per_product__campaign_product__product__name')).filter(reception_date=i['reception_date'], beneficiaries_per_product=t['id']).values('received_number').aggregate(total=Sum('received_number'))
+                ress = queryset_benef.annotate(beneficiaires=F('beneficiaries_per_product__campaign_product__product__name')).filter(reception_date=i['reception_date'], beneficiaries_per_product=t['id']).values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
                     res.update({t['beneficiaires']: 0})
                 else:

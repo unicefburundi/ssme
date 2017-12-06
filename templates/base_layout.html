@@ -244,7 +244,7 @@
         {% if user.is_superuser %}
                     <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profil d'utilisateur</a></li>
                 {% endif %}
-          {% if user.is_staff %}
+          {% if user.is_superuser %}
             <li role="separator" class="divider"></li>
                     <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
                     <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires</a></li>
