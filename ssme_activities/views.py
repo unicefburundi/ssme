@@ -729,7 +729,7 @@ def get_reports_by_benef(request, **kwargs):
     pop_total = initial_data["pop_total"]
     headers_benef = initial_data["headers_benef"]
     taux = initial_data["taux"]
-    serializer = CampaignSerializer(Campaign.objects.get(going_on=True), context={'request': request, 'mycode': mycode})
+    serializer = CampaignSerializer(Campaign.objects.get(going_on=True), context={'request': request, 'mycode': mycode['mycode']})
     body_benef = serializer.data
     return render(request, "ssme_activities/reports_by_benef.html", {
         'body_benef': body_benef['benefs'], 'headers_benef': headers_benef,
