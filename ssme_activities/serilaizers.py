@@ -140,7 +140,7 @@ class CampaignSerializer(serializers.ModelSerializer):
         return dict(list(enumerate(lesdates)))
 
     def get_benefs(self, obj):
-        dates_benef = ReportBeneficiary.objects.values('reception_date').distinct()
+        dates_benef = ReportBeneficiary.objects.values('reception_date').distinct().order_by('reception_date')
         queryset_benef = get_report_by_code(self.context.get("request"), self.context.get("mycode"), ReportBeneficiary)
         body_benef = []
         headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires', 'id').order_by('id')
