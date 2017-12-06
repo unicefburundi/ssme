@@ -108,7 +108,6 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         if not queryset_benef:
             return []
         else:
-            print queryset_benef
             for t in headers_benef:
                 ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                 if not ress:
