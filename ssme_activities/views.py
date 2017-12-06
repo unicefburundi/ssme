@@ -21,7 +21,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
-from rest_framework.views import APIView
 from rest_framework.renderers import BrowsableAPIRenderer
 from django.core import serializers
 
@@ -94,12 +93,12 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
                 return []
             else:
                 for t in headers_benef:
-                    ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                    ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                     if not ress:
-                        res.update({t['beneficiaires']:0})
+                        res.update({t['beneficiaires']: 0})
                     else:
                         ress = reduce(lambda x, y: dict((k, v + y[k]) for k, v in x.iteritems()), ress)
-                        res.update({t['beneficiaires']:ress['received_number']})
+                        res.update({t['beneficiaires']: ress['received_number']})
                     body_benef.update(res)
                 return body_benef
         elif 'district' in kwargs:
@@ -109,8 +108,9 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         if not queryset_benef:
             return []
         else:
+            print queryset_benef
             for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
+                ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date__lte=today['reception_date'], beneficiaires=t['beneficiaires']).values('received_number')
                 if not ress:
                     res.update({t['beneficiaires']: 0})
                 else:
@@ -123,7 +123,7 @@ def get_benef(queryset_benef, dates_benef, headers_benef, **kwargs ):
         for i in dates_benef:
             res, ress = i, {}
             for t in headers_benef:
-                ress = queryset_benef.annotate(beneficiaires=F('campaign_beneficiary__beneficiary__designation')).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
+                ress = queryset_benef.annotate(beneficiaires=Concat(Substr(F('beneficiaries_per_product__campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).filter(reception_date=i['reception_date'], beneficiaires=t['beneficiaires']).values('received_number').aggregate(total=Sum('received_number'))
                 if not ress['total']:
                     res.update({t['beneficiaires']: 0})
                 else:
@@ -146,7 +146,7 @@ def get_reception(queryset_reception, dates_reception, headers_recept, **kwargs)
             return []
         else:
             for t in headers_recept:
-                ress =  queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
+                ress = queryset_reception.annotate(products=F('campaign_product__product__name')).filter(reception_date__lte=today['reception_date'], products=t['products']).values('received_quantity').aggregate(total=Sum('received_quantity'))
                 if not ress['total']:
                     res.update({t['products']: 0})
                 else:
@@ -245,21 +245,21 @@ class ProvinceCreateView(CreateView):
 
 
 class ProvinceListView(ListView):
-	renderer_classes = (BrowsableAPIRenderer, )
-	model = Province
-	paginate_by = 100
+    renderer_classes = (BrowsableAPIRenderer, )
+    model = Province
+    paginate_by = 100
 
-	@method_decorator(login_required)
-	def dispatch(self, *args, **kwargs):
-		return super(ProvinceListView, self).dispatch(*args, **kwargs)
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProvinceListView, self).dispatch(*args, **kwargs)
         
-	def get_queryset(self):
-		"""Returns Province that belong to the current user"""
-		mycode = myfacility(self.request)
-		if not mycode['mycode']:
-			return Province.objects.all()
-		else:
-			return Province.objects.filter(code=mycode['mycode'])
+    def get_queryset(self):
+        """Returns Province that belong to the current user"""
+        mycode = myfacility(self.request)
+        if not mycode['mycode']:
+            return Province.objects.all()
+        else:
+            return Province.objects.filter(code=mycode['mycode'])
 
 
 class ProvinceDetailView(DetailView):
@@ -278,7 +278,7 @@ class ProvinceDetailView(DetailView):
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
         # benef
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -352,7 +352,7 @@ class DistrictDetailView(DetailView):
             pop_total = pop_total.values('population_cible').aggregate(population_cible=Sum('population_cible'))
         context['pop_total'] = pop_total
         # benef
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_today = []
         body_benef = []
@@ -425,7 +425,7 @@ class CDSDetailView(DetailView):
         else:
             pop_total = pop_total.latest('id')
         # beneficiaires
-        headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+        headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
         queryset_benef = get_report_by_code(self.request, mycode, ReportBeneficiary)
         dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
         body_benef = []
@@ -675,10 +675,10 @@ def initialise_data(request, **kwargs):
     pop_total = get_pop_total(request, mycode['mycode'])
 
     # beneficiaires
-    headers_benef = CampaignBeneficiary.objects.filter(campaign__going_on=True).annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
     taux = get_per_category_taux(request)
-
+    print headers_benef
     return {"mycode": mycode, "pop_total": pop_total, "headers_benef": headers_benef, "headers_recept": headers_recept, "taux": taux}
 
 
@@ -730,20 +730,10 @@ def get_reports_by_benef(request, **kwargs):
     pop_total = initial_data["pop_total"]
     headers_benef = initial_data["headers_benef"]
     taux = initial_data["taux"]
-    # for i in headers_benef:
-    #     i['colspan'] = len(CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=i['beneficiaires']))
-    #     i['products'] = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__beneficiary__designation=i['beneficiaires']).annotate(product=F('campaign_product__product__name')).values('product')
-    queryset_benef = get_report_by_code(request, mycode['mycode'], ReportBeneficiary)
-    dates_benef = []
-    body_benef = []
-    if not queryset_benef:
-        pass
-    else:
-        dates_benef = queryset_benef.values('reception_date').distinct().order_by('reception_date')
-        body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
-
+    serializer = CampaignSerializer(Campaign.objects.get(going_on=True), context={'request': request, 'mycode': mycode})
+    body_benef = serializer.data
     return render(request, "ssme_activities/reports_by_benef.html", {
-        'body_benef': body_benef, 'headers_benef': headers_benef,
+        'body_benef': body_benef['benefs'], 'headers_benef': headers_benef,
         'pop_total': pop_total, 'taux': taux})
 
 
@@ -891,10 +881,10 @@ def participation(request):
     beneficiaryid = request.GET["beneficiaryid"]
     
     if int(request.GET["camp_id"]) == -1 or request.GET["camp_id"] == None:
-		if Campaign.objects.filter(going_on = True):
-			the_last_campaign = Campaign.objects.get(going_on = True)
-		else:
-			the_last_campaign = Campaign.objects.all().order_by('-id')[0]
+        if Campaign.objects.filter(going_on = True):
+            the_last_campaign = Campaign.objects.get(going_on = True)
+        else:
+            the_last_campaign = Campaign.objects.all().order_by('-id')[0]
     else:
         the_last_campaign = Campaign.objects.get(id=request.GET["camp_id"])
 
@@ -1036,5 +1026,8 @@ class CampaignViewSet(viewsets.ModelViewSet):
     serializer_class = CampaignSerializer
 
     def get_serializer_context(self):
+        ct = {'request': self.request, 'mycode': myfacility(self.request)}
         if "dates" in self.request.GET:
-            return {"dates": self.request.GET["dates"]}
+            return ct.update({"dates": self.request.GET["dates"]})
+        else:
+            return ct
