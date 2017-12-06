@@ -229,7 +229,7 @@ class Report(models.Model):
 
 
 class ReportBeneficiary(models.Model):
-    #The below fied will be removed
+    # The below fied will be removed
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     beneficiaries_per_product = models.ForeignKey(CampaignBeneficiaryProduct)
     reception_date = models.DateField()
