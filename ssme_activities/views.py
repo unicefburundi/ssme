@@ -270,6 +270,11 @@ class ProvinceDetailView(DetailView):
         mycode = str(context['object'].code)
         districts = District.objects.filter(province__code=mycode)
         pop_total = CampaignCDS.objects.filter(cds__district__province__code=mycode)
+        campaign = None
+        try:
+            campaign = Campaign.objects.get(going_on=True)
+        except:
+            campaign = Campaign.objects.latest('pk')
         if not pop_total:
             pop_total = {}
             pop_total['population_cible'] = 0
@@ -291,7 +296,7 @@ class ProvinceDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         # reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign=campaign).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for district in districts:
@@ -344,6 +349,11 @@ class DistrictDetailView(DetailView):
         mycode = str(context['object'].code)
         cdss = CDS.objects.filter(district__code=mycode)
         pop_total = CampaignCDS.objects.filter(cds__district__code=mycode)
+        campaign = None
+        try:
+            campaign = Campaign.objects.get(going_on=True)
+        except:
+            campaign = Campaign.objects.latest('pk')
         if not pop_total:
             pop_total = {}
             pop_total['population_cible'] = 0
@@ -365,7 +375,7 @@ class DistrictDetailView(DetailView):
         context['body_benef'] = body_benef
         context['headers_benef'] = headers_benef
         # reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign=campaign).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         body_reception = []
         for cds in cdss:
@@ -418,6 +428,11 @@ class CDSDetailView(DetailView):
         context = super(CDSDetailView, self).get_context_data(**kwargs)
         mycode = str(context['object'].code)
         pop_total = CampaignCDS.objects.filter(cds__code=mycode)
+        campaign = None
+        try:
+            campaign = Campaign.objects.get(going_on=True)
+        except:
+            campaign = Campaign.objects.latest('pk')
         if not pop_total:
             pop_total = {}
             pop_total['population_cible'] = 0
@@ -431,7 +446,7 @@ class CDSDetailView(DetailView):
         if queryset_benef:
             body_benef = get_benef(queryset_benef, dates_benef, headers_benef)
         # reception
-        headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+        headers_recept = CampaignProduct.objects.filter(campaign=campaign).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
         queryset_reception = get_report_by_code(self.request, mycode, ReportProductReception)
         dates_reception = queryset_reception.values('reception_date').distinct().order_by('reception_date')
         body_reception = []
