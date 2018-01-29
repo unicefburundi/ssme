@@ -662,6 +662,11 @@ class CampaignWizard(SessionWizardView):
 @login_required
 def initialise_data(request, **kwargs):
     mycode = myfacility(request)
+    campaign = None
+    try:
+        campaign = Campaign.objects.get(going_on=True)
+    except:
+        campaign = Campaign.objects.latest('pk')
     if 'cds' in kwargs:
         mycode['mycode'] = kwargs.get('cds').code
     if not mycode['mycode'] and not request.user.groups.filter(name='CEN').exists() and not request.user.is_superuser:
@@ -675,7 +680,7 @@ def initialise_data(request, **kwargs):
 
     # beneficiaires
     headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
-    headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
+    headers_recept = CampaignProduct.objects.filter(campaign=campaign).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
     taux = get_per_category_taux(request)
     return {"mycode": mycode, "pop_total": pop_total, "headers_benef": headers_benef, "headers_recept": headers_recept, "taux": taux}
 
