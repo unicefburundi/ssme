@@ -677,7 +677,6 @@ def initialise_data(request, **kwargs):
     headers_benef = CampaignBeneficiaryProduct.objects.all().annotate(beneficiaires=Concat(Substr(F('campaign_product__product__name'), 1, 10), V(' ('), Substr(F('campaign_beneficiary__beneficiary__designation'), 1, 5), V(')'), output_field=CharField())).values('beneficiaires').order_by('id')
     headers_recept = CampaignProduct.objects.filter(campaign__going_on=True).annotate(products=F('product__name')).values('products').distinct().order_by('order_in_sms')
     taux = get_per_category_taux(request)
-    print headers_benef
     return {"mycode": mycode, "pop_total": pop_total, "headers_benef": headers_benef, "headers_recept": headers_recept, "taux": taux}
 
 
@@ -729,7 +728,7 @@ def get_reports_by_benef(request, **kwargs):
     pop_total = initial_data["pop_total"]
     headers_benef = initial_data["headers_benef"]
     taux = initial_data["taux"]
-    serializer = CampaignSerializer(Campaign.objects.get(going_on=True), context={'request': request, 'mycode': mycode['mycode']})
+    serializer = CampaignSerializer(Campaign.objects.latest('pk'), context={'request': request, 'mycode': mycode['mycode']})
     body_benef = serializer.data
     return render(request, "ssme_activities/reports_by_benef.html", {
         'body_benef': body_benef['benefs'], 'headers_benef': headers_benef,
@@ -965,8 +964,6 @@ def participation(request):
                 r["percentage_on_day_four"] = None
             
         response_data = json.dumps(rows, default=date_handler)
-        #print("------------------")
-        #print(response_data)
         return HttpResponse(response_data, content_type="application/json")
 
 """

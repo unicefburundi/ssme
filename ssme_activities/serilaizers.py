@@ -4,9 +4,13 @@ import datetime
 from django.db.models import F, Sum
 from django.db.models.functions import Concat, Substr
 from django.db.models import CharField, Value as V
-days = Campaign.objects.filter(going_on=True).values('start_date', 'end_date')
 
-#get average if no campaign day is selected
+
+days = Campaign.objects.filter(going_on=True).values('start_date', 'end_date')
+if not days:
+    days = [{'end_date': datetime.date(2017, 12, 6), 'start_date': datetime.date(2017, 12, 9)}]
+
+# get average if no campaign day is selected
 campaigndays = (datetime.datetime.strptime(days[0]['end_date'].isoformat(), "%Y-%m-%d").date() - datetime.datetime.strptime(days[0]['start_date'].isoformat(), "%Y-%m-%d").date()).days
 
 
