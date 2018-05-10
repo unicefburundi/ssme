@@ -49,24 +49,19 @@ def handel_rapidpro_request(request):
 	#We will put all data sent by RapidPro in this variable
 	incoming_data = {}
 
-	#Two couples of variable/value are separated by &
-	#Let's put couples of variable/value in a list called 'list_of_data'
-	list_of_data = request.body.split("&")
+    # Let's put all the incoming data in the dictionary 'incoming_data'
+    incoming_data = byteify(json.loads(request.body))
 
-	#Let's put all the incoming data in the dictionary 'incoming_data'
-	for couple in list_of_data:
-		incoming_data[couple.split("=")[0]] = couple.split("=")[1]
+    # Let's assume that the incoming data is valid
+    incoming_data['valide'] = True
+    incoming_data['info'] = "The default information."
 
-	#Let's assume that the incoming data is valide
-	incoming_data['valide'] = True
-	incoming_data['info'] = "The default information."
+    # Because RapidPro sends the contact phone number in the format "tel:+12345678925"
+    # let's get it from incomming_data
+    incoming_data['phone'] = incoming_data['contact']['urn'].replace("tel:", "")
 
-	#Because RapidPro sends the contact phone number by replacing "+" by "%2B"
-	#let's rewrite the phone number in a right way.
-	incoming_data['phone'] = incoming_data['phone'].replace("%2B","+")
-
-	#Let's instantiate the variable this function will return
-	response = {}
+    # Let's instantiate the variable this function will return
+    response = {}
 
 	#Let's eliminate unnecessary spaces in the incoming message
 	eliminate_unnecessary_spaces(incoming_data)
