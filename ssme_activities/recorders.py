@@ -9,37 +9,37 @@ from django.conf import settings
 
 def check_number_of_values(args):
     # This function checks if the message sent is composed by an expected number of values
-    print("==len(args['text'].split(' '))==")
-    print(len(args['text'].split(' ')))
-    print(args['text'].split(' '))
+    print("==len(args['text'].split())==")
+    print(len(args['text'].split()))
+    print(args['text'].split())
     if(args['message_type']=='SELF_REGISTRATION'):
-        if len(args['text'].split(' ')) < 3:
+        if len(args['text'].split()) < 3:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) > 3:
+        if len(args['text'].split()) > 3:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) == 3:
+        if len(args['text'].split()) == 3:
             args['valide'] = True
             args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
     if(args['message_type']=='RUPTURE_STOCK'):
-        if len(args['text'].split(' ')) < 3:
+        if len(args['text'].split()) < 3:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) > 3:
+        if len(args['text'].split()) > 3:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) == 3:
+        if len(args['text'].split()) == 3:
             args['valide'] = True
             args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
     if(args['message_type']=='POPULATION_CIBLE'):
-        if len(args['text'].split(' ')) < 2:
+        if len(args['text'].split()) < 2:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) > 2:
+        if len(args['text'].split()) > 2:
             args['valide'] = False
             args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
-        if len(args['text'].split(' ')) == 2:
+        if len(args['text'].split()) == 2:
             args['valide'] = True
             args['info_to_contact'] = "Le nombre de valeurs envoye est correct."
 
@@ -62,8 +62,6 @@ def identify_the_opened_campaign(args):
         args['opened_campaign'] = campaign
         args['valide'] = True
         args['info_to_contact'] = "Tout vas bien."
-
-
 
 def check_if_is_reporter(args):
     concerned_reporter = Reporter.objects.filter(phone_number = args['phone'])
@@ -92,13 +90,13 @@ def check_date_is_in_camp_period(args):
 
     # expression = r'^((0[1-9])|([1-2][0-9])|(3[01]))-((0[1-9])|(1[0-2]))-[0-9]{4}$'
     expression = r'^((0[1-9])|([1-2][0-9])|(3[01]))((0[1-9])|(1[0-2]))[0-9]{2}$'
-    if re.search(expression, args['text'].split(' ')[1]) is None:
+    if re.search(expression, args['text'].split()[1]) is None:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. La date indiquee n est pas valide."
         return
 
 
-    sent_date = args['text'].split(' ')[1][0:2]+"-"+args['text'].split(' ')[1][2:4]+"-20"+args['text'].split(' ')[1][4:]
+    sent_date = args['text'].split()[1][0:2]+"-"+args['text'].split()[1][2:4]+"-20"+args['text'].split()[1][4:]
 
     sent_date_without_dash = sent_date.replace("-","")
     try:
@@ -121,13 +119,6 @@ def check_date_is_in_camp_period(args):
         args['info_to_contact'] = "Erreur. La date indiquee n est pas encore arrivee."
         return
 
-
-
-
-
-
-
-
 # ------------------------------Bellow functions are common for products-----------------------
 
 def check_number_of_incoming_prod_variables(args):
@@ -136,13 +127,13 @@ def check_number_of_incoming_prod_variables(args):
     the_expected_number_of_values = args['number_of_concerned_products'] + 2
 
     args['expected_vulues_number'] = the_expected_number_of_values
-    if len(args['text'].split(' ')) < the_expected_number_of_values:
+    if len(args['text'].split()) < the_expected_number_of_values:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
-    if len(args['text'].split(' ')) > the_expected_number_of_values:
+    if len(args['text'].split()) > the_expected_number_of_values:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
-    if len(args['text'].split(' ')) == the_expected_number_of_values:
+    if len(args['text'].split()) == the_expected_number_of_values:
         args['valide'] = True
         args['info_to_contact'] = "Tous vas bien jusqu ici."
 
@@ -167,7 +158,7 @@ def check_product_values_validity(args):
     priority = 1
 
     while ((priority <= args['number_of_concerned_products']) and (priority > 0)):
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
         # if there is "colon" for french, treat it
         value = value.replace(',','.')
         # Let's identify the concerned CampaignProduct
@@ -206,7 +197,7 @@ def check_product_values_validity(args):
 
 def check_cds(args):
     ''' This function checks if the CDS code sent by the reporter exists '''
-    the_cds_code = args['text'].split(' ')[1]
+    the_cds_code = args['text'].split()[1]
     concerned_cds = CDS.objects.filter(code = the_cds_code)
     if (len(concerned_cds) > 0):
         args['valide'] = True
@@ -217,7 +208,7 @@ def check_cds(args):
 
 def check_supervisor_phone_number(args):
     ''' This function checks if the phone number of the supervisor is well written '''
-    the_supervisor_phone_number = args['text'].split(' ')[2]
+    the_supervisor_phone_number = args['text'].split()[2]
     the_supervisor_phone_number_no_space = the_supervisor_phone_number.replace(" ", "")
     # expression = r'^(\+?(257)?)((62)|(79)|(71)|(76))([0-9]{6})$'
     expression = r'^(\+?(257)?)((61)|(62)|(68)|(69)|(71)|(72)|(75)|(76)|(79))([0-9]{6})$'
@@ -237,9 +228,9 @@ def check_supervisor_phone_number_not_for_this_contact(args):
     print(args['phone'])
     print("args['phone'][4:]")
     print(args['phone'][4:])
-    print("args['text'].split(' ')[2]")
-    print(args['text'].split(' ')[2])
-    if args['phone'] == args['text'].split(' ')[2] or args['phone'][4:] == args['text'].split(' ')[2]:
+    print("args['text'].split()[2]")
+    print(args['text'].split()[2])
+    if args['phone'] == args['text'].split()[2] or args['phone'][4:] == args['text'].split()[2]:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. Le numero de telephone du superviseur ne peut pas etre le tien."
     else:
@@ -257,13 +248,13 @@ def save_temporary_the_reporter(args):
     else:
         the_phone_number = args['phone']
 
-        the_cds_code = args['text'].split(' ')[1]
+        the_cds_code = args['text'].split()[1]
 
         cds = CDS.objects.filter(code = the_cds_code)
         if len(cds) > 0:
             the_concerned_cds = cds[0]
 
-            the_supervisor_phone_number = args['text'].split(' ')[2]
+            the_supervisor_phone_number = args['text'].split()[2]
             the_supervisor_phone_number_no_space = the_supervisor_phone_number.replace(" ", "")
 
             if len(the_supervisor_phone_number_no_space) == 8:
@@ -471,7 +462,7 @@ def record_sds(args):
 
     while (priority <= args['number_of_concerned_products']):
         # We record each beneficiary number
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
 
         prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -549,7 +540,7 @@ def record_sr(args):
 
     while (priority <= args['number_of_concerned_products']):
         # We record each beneficiary number
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
 
         prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -626,7 +617,7 @@ def record_sf(args):
 
     while (priority <= args['number_of_concerned_products']):
         # We record each beneficiary number
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
 
         prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -710,13 +701,13 @@ def check_number_of_incoming_variables(args):
     # the_expected_number_of_values = args['number_of_concerned_beneficiaries'] + 2
     the_expected_number_of_values = args['number_of_beneficiries_per_product'] + 2
     args['expected_vulues_number'] = the_expected_number_of_values
-    if len(args['text'].split(' ')) < the_expected_number_of_values:
+    if len(args['text'].split()) < the_expected_number_of_values:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. Vous avez envoye peu de valeurs. Veuillez reenvoyer le message corrige."
-    if len(args['text'].split(' ')) > the_expected_number_of_values:
+    if len(args['text'].split()) > the_expected_number_of_values:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. Vous avez envoye beaucoup de valeurs. Veuillez reenvoyer le message corrige."
-    if len(args['text'].split(' ')) == the_expected_number_of_values:
+    if len(args['text'].split()) == the_expected_number_of_values:
         args['valide'] = True
         args['info_to_contact'] = "Tous vas bien jusqu ici."
 
@@ -726,7 +717,7 @@ def check_beneficiary_values_valid(args):
     priority = 1
 
     while ((priority <= args['number_of_concerned_beneficiaries']) and (priority > 0)):
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
         expression = r'^[0-9]+$'
         if re.search(expression, value) is None:
             args['valide'] = False
@@ -786,7 +777,7 @@ def record_beneficiaries(args):
 
     while (priority <= args['number_of_concerned_beneficiaries']):
         # We record each beneficiary number
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
 
         ben_camp = CampaignBeneficiary.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -813,7 +804,7 @@ def record_beneficiaries(args):
     # while (priority <= args['number_of_concerned_beneficiaries']):
     while (priority <= args['number_of_beneficiries_per_product']):
         # We record each beneficiary number
-        value = args['text'].split(' ')[priority+1]
+        value = args['text'].split()[priority+1]
         camp_ben_prod = CampaignBeneficiaryProduct.objects.filter(campaign_beneficiary__campaign = args['opened_campaign'], order_in_sms = priority)
 
         the_concerned_camp_ben_prod = camp_ben_prod[0]
@@ -864,8 +855,8 @@ def exit(args):
 def check_stock_out_values_validity(args):
     ''' This function checks if the values sent by the phone user are the expected ones '''
 
-    priority = args['text'].split(' ')[1]
-    value = args['text'].split(' ')[2]
+    priority = args['text'].split()[1]
+    value = args['text'].split()[2]
 
     # Let's identify the concerned CampaignProduct
     campaign_product = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
@@ -988,8 +979,8 @@ def record_stock_out(args):
 
     # Let's record this stock out report in the model for stock out reports
 
-    priority = args['text'].split(' ')[1]
-    value = args['text'].split(' ')[2]
+    priority = args['text'].split()[1]
+    value = args['text'].split()[2]
 
     prod_camp = CampaignProduct.objects.filter(campaign = args['opened_campaign'], order_in_sms = priority)
 
@@ -1041,7 +1032,7 @@ def record_stock_out(args):
 # ===========================================Population Cible===========================================
 def check_beneficiaries_value(args):
     expression = r'^[0-9]+$'
-    value = args['text'].split(' ')[1]
+    value = args['text'].split()[1]
     if re.search(expression, value) is None:
         args['valide'] = False
         args['info_to_contact'] = "Erreur. La valeur envoyee pour la population cible n est pas valide."
@@ -1084,7 +1075,7 @@ def record_population_cible(args):
     # Let's record the target population
     the_cds = args['cds']
     the_campaign = args['opened_campaign']
-    value = args['text'].split(' ')[1]
+    value = args['text'].split()[1]
 
     the_eventuals_existing_camp_cds = CampaignCDS.objects.filter(campaign = the_campaign, cds = the_cds)
 
