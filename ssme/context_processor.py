@@ -1,18 +1,25 @@
-from ssme_activities.models import CDS, District, Province, ProfileUser, Campaign, CampaignBeneficiary
+from ssme_activities.models import (
+    CDS,
+    District,
+    Province,
+    ProfileUser,
+    Campaign,
+    CampaignBeneficiary,
+)
 from django.db.models import F
 import collections
 from django.conf import settings
 
 
-def get_name_mohfacility(level='', code=''):
-    if level == 'CDS':
+def get_name_mohfacility(level="", code=""):
+    if level == "CDS":
         return CDS.objects.get(code=code)
-    if level == 'BDS':
+    if level == "BDS":
         return District.objects.get(code=code)
-    if level == 'BPS':
+    if level == "BPS":
         return Province.objects.get(code=code)
-    if level == 'CEN':
-        return 'Central'
+    if level == "CEN":
+        return "Central"
 
 
 def myfacility(request):
@@ -24,17 +31,35 @@ def myfacility(request):
     if not created:
         mymoh_facility = get_name_mohfacility(myprofile.level, myprofile.moh_facility)
     if not Campaign.objects.all():
-        campaign = ['no campaign']
+        campaign = ["no campaign"]
     else:
-        campaign = Campaign.objects.latest('end_date')
-    return {'myprofile': myprofile, 'mycode': myprofile.moh_facility, 'mylevel': myprofile.level, 'mymoh_facility': mymoh_facility, 'mycampaign': campaign}
+        campaign = Campaign.objects.latest("end_date")
+    return {
+        "myprofile": myprofile,
+        "mycode": myprofile.moh_facility,
+        "mylevel": myprofile.level,
+        "mymoh_facility": mymoh_facility,
+        "mycampaign": campaign,
+    }
 
 
 def get_per_category_taux(request):
-    headers_benef = CampaignBeneficiary.objects.all().annotate(beneficiaires=F('beneficiary__designation')).values('beneficiaires').distinct().order_by("id")
+    headers_benef = (
+        CampaignBeneficiary.objects.all()
+        .annotate(beneficiaires=F("beneficiary__designation"))
+        .values("beneficiaires")
+        .distinct()
+        .order_by("id")
+    )
     taux = {}
     for i in headers_benef:
-        taux.update({str(i['beneficiaires']): CampaignBeneficiary.objects.filter(beneficiary__designation=i['beneficiaires'])[0].pourcentage_attendu})
+        taux.update(
+            {
+                str(i["beneficiaires"]): CampaignBeneficiary.objects.filter(
+                    beneficiary__designation=i["beneficiaires"]
+                )[0].pourcentage_attendu
+            }
+        )
     return taux
 
 
@@ -61,11 +86,11 @@ def google_analytics(request):
     Use the variables returned in this function to
     render your Google Analytics tracking code template.
     """
-    ga_prop_id = getattr(settings, 'GOOGLE_ANALYTICS_PROPERTY_ID', False)
-    ga_domain = getattr(settings, 'GOOGLE_ANALYTICS_DOMAIN', False)
+    ga_prop_id = getattr(settings, "GOOGLE_ANALYTICS_PROPERTY_ID", False)
+    ga_domain = getattr(settings, "GOOGLE_ANALYTICS_DOMAIN", False)
     if not settings.DEBUG and ga_prop_id and ga_domain:
         return {
-            'GOOGLE_ANALYTICS_PROPERTY_ID': ga_prop_id,
-            'GOOGLE_ANALYTICS_DOMAIN': ga_domain,
+            "GOOGLE_ANALYTICS_PROPERTY_ID": ga_prop_id,
+            "GOOGLE_ANALYTICS_DOMAIN": ga_domain,
         }
     return {}

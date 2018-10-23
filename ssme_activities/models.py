@@ -7,79 +7,108 @@ from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 import datetime
 
+
 class ProfileUser(models.Model):
     MOH_LEVEL_CHOICES = (
-        ('CEN', 'Central'),
-        ('BPS', 'BPS'),
-        ('BDS', 'BDS'),
-        ('CDS', 'CDS'),
+        ("CEN", "Central"),
+        ("BPS", "BPS"),
+        ("BDS", "BDS"),
+        ("CDS", "CDS"),
     )
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     # The additional attributes we wish to include.
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message=_("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
-    telephone = models.CharField('téléphone', validators=[phone_regex], blank=True, help_text=_('The telephone to contact you.'), max_length=16)
-    level = models.CharField('niveau', max_length=3, choices=MOH_LEVEL_CHOICES, blank=True, help_text=_('Either CDS, BDS, PBS, or Central level.'))
-    moh_facility = models.CharField('code', max_length=8, null=True, blank=True, help_text=_('Code of the MoH facility'))
+    phone_regex = RegexValidator(
+        regex=r"^\+?1?\d{9,15}$",
+        message=_(
+            "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+        ),
+    )
+    telephone = models.CharField(
+        "téléphone",
+        validators=[phone_regex],
+        blank=True,
+        help_text=_("The telephone to contact you."),
+        max_length=16,
+    )
+    level = models.CharField(
+        "niveau",
+        max_length=3,
+        choices=MOH_LEVEL_CHOICES,
+        blank=True,
+        help_text=_("Either CDS, BDS, PBS, or Central level."),
+    )
+    moh_facility = models.CharField(
+        "code",
+        max_length=8,
+        null=True,
+        blank=True,
+        help_text=_("Code of the MoH facility"),
+    )
 
     def __unicode__(self):
         return self.user.name
 
     def get_absolute_url(self):
-        return reverse('profile_user_detail', kwargs={'pk': self.id})
+        return reverse("profile_user_detail", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('user',)
+        ordering = ("user",)
 
 
 class Province(models.Model):
-    '''In this model, we will store burundi provinces'''
-    name = models.CharField('nom',unique=True, max_length=20)
+    """In this model, we will store burundi provinces"""
+
+    name = models.CharField("nom", unique=True, max_length=20)
     code = models.IntegerField(unique=True)
 
     def __unicode__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('province_detail', kwargs={'pk': self.id})
+        return reverse("province_detail", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
+
 
 class District(models.Model):
-    '''In this model, we will store districts'''
-    province = models.ForeignKey(Province, verbose_name='province')
-    name = models.CharField('nom', unique=True, max_length=40)
+    """In this model, we will store districts"""
+
+    province = models.ForeignKey(Province, verbose_name="province")
+    name = models.CharField("nom", unique=True, max_length=40)
     code = models.IntegerField(unique=True)
 
     def __unicode__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('district_detail', kwargs={'pk': self.id})
+        return reverse("district_detail", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class CDS(models.Model):
-    '''In this model, we will store facilities'''
-    district = models.ForeignKey(District, verbose_name='district')
-    name = models.CharField('nom', max_length=40)
+    """In this model, we will store facilities"""
+
+    district = models.ForeignKey(District, verbose_name="district")
+    name = models.CharField("nom", max_length=40)
     code = models.CharField(unique=True, max_length=6)
 
     def __unicode__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('cds_detail', kwargs={'pk': self.id})
+        return reverse("cds_detail", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class Reporter(models.Model):
-    '''In this model, we will store reporters'''
+    """In this model, we will store reporters"""
+
     cds = models.ForeignKey(CDS)
     phone_number = models.CharField(max_length=20)
     supervisor_phone_number = models.CharField(max_length=20)
@@ -88,14 +117,15 @@ class Reporter(models.Model):
         return self.phone_number
 
     def get_absolute_url(self):
-        return reverse('reporter_detail', kwargs={'pk': self.id})
+        return reverse("reporter_detail", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('phone_number',)
+        ordering = ("phone_number",)
 
 
 class Campaign(models.Model):
-    '''In this model, we will store campaigns'''
+    """In this model, we will store campaigns"""
+
     name = models.CharField(max_length=500)
     start_date = models.DateField()
     end_date = models.DateField()
@@ -105,29 +135,32 @@ class Campaign(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.campaign_read', kwargs={'pk': self.id})
+        return reverse("ssme_activities.campaign_read", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('end_date',)
+        ordering = ("end_date",)
 
 
 class Beneficiaire(models.Model):
-    '''In this model, we will store every category of beneficiaries for ssme campaign'''
+    """In this model, we will store every category of beneficiaries for ssme campaign"""
+
     designation = models.CharField(max_length=100)
     nombre_mois_min = models.IntegerField(null=True, blank=True)
     nombre_mois_max = models.IntegerField(null=True, blank=True)
+
     def __unicode__(self):
         return self.designation
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.beneficiaire_read', kwargs={'pk': self.id})
+        return reverse("ssme_activities.beneficiaire_read", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('designation',)
+        ordering = ("designation",)
 
 
 class Product(models.Model):
-    '''In this model, we will store names of medecines which may be used in ssme campaigns'''
+    """In this model, we will store names of medecines which may be used in ssme campaigns"""
+
     name = models.CharField(max_length=100)
     can_be_fractioned = models.BooleanField(default=False)
     unite_de_mesure = models.CharField(max_length=10)
@@ -136,29 +169,32 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.product_read', kwargs={'pk': self.id})
+        return reverse("ssme_activities.product_read", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('name',)
+        ordering = ("name",)
 
 
 class CampaignBeneficiary(models.Model):
-    '''With this model, we will be able to define and identify beneficiaries for a given ssme campaign'''
+    """With this model, we will be able to define and identify beneficiaries for a given ssme campaign"""
+
     campaign = models.ForeignKey(Campaign)
     beneficiary = models.ForeignKey(Beneficiaire)
-    #The below field will be removed
+    # The below field will be removed
     order_in_sms = models.IntegerField()
     pourcentage_attendu = models.FloatField(default=100.0, null=True)
 
     class Meta:
-        ordering = ('beneficiary',)
-        unique_together = ('campaign', 'beneficiary',)
+        ordering = ("beneficiary",)
+        unique_together = ("campaign", "beneficiary")
 
     def __unicode__(self):
         return self.beneficiary.designation
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.campaignbeneficiary_read', kwargs={'pk': self.id})
+        return reverse(
+            "ssme_activities.campaignbeneficiary_read", kwargs={"pk": self.id}
+        )
 
 
 class CampaignBeneficiaryCDS(models.Model):
@@ -172,7 +208,8 @@ class CampaignBeneficiaryCDS(models.Model):
 
 
 class CampaignProduct(models.Model):
-    '''With this model we will be able to define and identify concerned medecines for a given campaign'''
+    """With this model we will be able to define and identify concerned medecines for a given campaign"""
+
     campaign = models.ForeignKey(Campaign)
     product = models.ForeignKey(Product)
     order_in_sms = models.IntegerField()
@@ -181,19 +218,20 @@ class CampaignProduct(models.Model):
         return self.product.name
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.campaignproduct_read', kwargs={'pk': self.id})
+        return reverse("ssme_activities.campaignproduct_read", kwargs={"pk": self.id})
 
     class Meta:
-        ordering = ('product',)
-        unique_together = ('campaign', 'product', 'order_in_sms',)
+        ordering = ("product",)
+        unique_together = ("campaign", "product", "order_in_sms")
 
 
 class CampaignBeneficiaryProduct(models.Model):
-    '''With this model, we will be able to define and identify which medecines will be received by each beneficiary
-    category and quantity for each Beneficiary'''
+    """With this model, we will be able to define and identify which medecines will be received by each beneficiary
+    category and quantity for each Beneficiary"""
+
     campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
     campaign_product = models.ForeignKey(CampaignProduct)
-    dosage = models.FloatField(null = True)
+    dosage = models.FloatField(null=True)
     pourcentage_attendu = models.FloatField(default=0.0, null=True)
     order_in_sms = models.IntegerField()
 
@@ -201,15 +239,18 @@ class CampaignBeneficiaryProduct(models.Model):
         return self.campaign_beneficiary.beneficiary.designation
 
     def get_absolute_url(self):
-        return reverse('ssme_activities.campaignbeneficiaryproduct_read', kwargs={'pk': self.id})
+        return reverse(
+            "ssme_activities.campaignbeneficiaryproduct_read", kwargs={"pk": self.id}
+        )
 
     class Meta:
-        ordering = ('campaign_beneficiary',)
-        unique_together = ('campaign_beneficiary', 'campaign_product', 'order_in_sms',)
+        ordering = ("campaign_beneficiary",)
+        unique_together = ("campaign_beneficiary", "campaign_product", "order_in_sms")
 
 
 class Report(models.Model):
-    '''In this model, we will store each report'''
+    """In this model, we will store each report"""
+
     cds = models.ForeignKey(CDS)
     reporting_date = models.DateField(null=True, blank=True)
     concerned_date = models.DateField()
@@ -220,12 +261,12 @@ class Report(models.Model):
         return self.text
 
     def save(self, *args, **kwargs):
-        ''' On save, update timestamps '''
+        """ On save, update timestamps """
         self.reporting_date = datetime.datetime.now().date()
         return super(Report, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ('reporting_date',)
+        ordering = ("reporting_date",)
 
 
 class ReportBeneficiary(models.Model):
@@ -240,7 +281,7 @@ class ReportBeneficiary(models.Model):
         return self.report.text
 
     class Meta:
-        get_latest_by = 'id'
+        get_latest_by = "id"
 
 
 class ReportProductReception(models.Model):
@@ -253,7 +294,7 @@ class ReportProductReception(models.Model):
         return self.report.text
 
     class Meta:
-        get_latest_by = 'id'
+        get_latest_by = "id"
 
 
 class ReportProductRemainStock(models.Model):
@@ -266,13 +307,14 @@ class ReportProductRemainStock(models.Model):
         return self.report.text
 
     class Meta:
-        get_latest_by = 'id'
+        get_latest_by = "id"
 
 
 class Temporary(models.Model):
-    '''
+    """
     This model will be used to temporary store a reporter who doesn't finish his self registration
-    '''
+    """
+
     cds = models.ForeignKey(CDS)
     phone_number = models.CharField(max_length=20)
     supervisor_phone_number = models.CharField(max_length=20)
@@ -284,8 +326,8 @@ class Temporary(models.Model):
 class CampaignCDS(models.Model):
     campaign = models.ForeignKey(Campaign)
     cds = models.ForeignKey(CDS)
-    population_cible = models.IntegerField(null = True)
-    enfant_moins_5_ans = models.IntegerField(null = True)
+    population_cible = models.IntegerField(null=True)
+    enfant_moins_5_ans = models.IntegerField(null=True)
 
     def __unicode__(self):
         return "{0} expects {1}".format(self.cds, self.population_cible)
@@ -297,7 +339,9 @@ class ReportStockOut(models.Model):
     remaining_stock = models.FloatField()
 
     def __unicode__(self):
-        return "{0} report stock-out of {1} with a remaining stock {2}".format(self.report.cds, self.campaign_product.product.name, self.remaining_stock)
+        return "{0} report stock-out of {1} with a remaining stock {2}".format(
+            self.report.cds, self.campaign_product.product.name, self.remaining_stock
+        )
 
 
 class AllSupervisorsOnDistrictLevel(models.Model):
@@ -314,4 +358,6 @@ class DistrictSupervisor(models.Model):
     supervisor = models.ForeignKey(AllSupervisorsOnDistrictLevel)
 
     def __unicode__(self):
-        return "{0} {1} Supervise {2}".format(self.supervisor.first_name, self.supervisor.last_name, self.district.name)
+        return "{0} {1} Supervise {2}".format(
+            self.supervisor.first_name, self.supervisor.last_name, self.district.name
+        )
