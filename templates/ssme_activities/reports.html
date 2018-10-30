@@ -19,7 +19,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-<div class="col-md-10">
+<div class="right_col" role="main">
     <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>

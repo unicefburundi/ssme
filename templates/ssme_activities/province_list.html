@@ -6,6 +6,8 @@
 {% endblock page_title %}
 
 {% block content %}
+<div class="right_col" role="main">
+    
 {% if object_list %}
     <div class="col-md-8">
     <table class="table table-bordered" >
@@ -34,4 +36,5 @@
 
     <p>No Provinces found!!! :(</p>
 {% endif %}
+</div>
 {% endblock content %}

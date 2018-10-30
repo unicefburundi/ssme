@@ -14,6 +14,8 @@
 {% endblock page_title  %}
 
 {% block content %}
+<div class="right_col" role="main">
+  
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <script src="{% static "js/ssme-rates.js" %}"></script>
@@ -79,5 +81,6 @@
             </table>
           </div>
         {% endif %}
+</div>
 </div>
 {% endblock content %}

@@ -31,6 +31,4 @@ urlpatterns += i18n_patterns(
         name="fetchbeneficiaries",
     ),
     url(r"^$", "ssme.views.landing", name="landing"),
-    # url(r'^dashboard/getprovinces/$', ssme_activities.views.getprovinces, name='getprovinces'),
-    url(r"^$", "ssme.views.landing", name="landing"),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

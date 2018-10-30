@@ -6,6 +6,8 @@
 {% endblock page_title %}
 
 {% block content %}
+<div class="right_col" role="main">
+    
 {% if object_list %}
     <div class="col-md-8">
     <table id="list_cds" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
@@ -51,4 +53,5 @@ data-show-toggle="true" data-show-pagination-switch="true" data-pagination="true
 {% else %}
     <p>No CDS found!!! :(</p>
 {% endif %}
+</div>
 {% endblock content %}

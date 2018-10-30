@@ -1,6 +1,8 @@
 {% extends "base_layout.html" %}
 
 {% block content %}
+<div class="right_col" role="main">
+    
 {% if messages %}
 <div class="row">
     <div class="messages col-md-6">
@@ -56,4 +58,5 @@
 {% if object.user.name == user.name %}
 <p><a href="{% url 'profileuser_update' pk=user.id %}">Éditer mon profil</a></p>
 {% endif %}
+</div>
 {% endblock %}

@@ -6,6 +6,8 @@
 {% endblock page_title %}
 
 {% block content %}
+<div class="right_col" role="main">
+    
 {% if object_list %}
     <div class="col-md-8">
     <table id="list_cds" class="table table-bordered" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel']>
@@ -49,4 +51,5 @@
     <p>No District found!!! :(</p>
 {% endif %}
 
+</div>
 {% endblock content %}
