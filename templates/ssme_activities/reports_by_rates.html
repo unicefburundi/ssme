@@ -1,7 +1,7 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
 {% load staticfiles %}
-{% block page_title %}
+{% block title %}
 
 <ul class="nav nav-tabs">
   <div class="page-header">
@@ -11,10 +11,10 @@
     <a href="#final"   data-toggle="tab">Taux de raportage</a>
 </li>
 </ul>
-{% endblock page_title  %}
+{% endblock title  %}
 
 {% block content %}
-<div class="right_col" role="main">
+<div >
   
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />

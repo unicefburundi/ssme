@@ -1,17 +1,21 @@
 {% extends "base_layout.html" %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
+
 {% block content %}
-<div class="right_col" role="main">
-    
-{% if messages %}
-<div class="row">
-    <div class="messages col-md-6">
-    {% for message in messages %}
-    <div class="alert alert-success" role="alert">{{ message }}</div>
-    {% endfor %}
-</div>
-{% endif %}
-</div>
+<div >
+    {% if messages %}
+    <div class="row">
+        <div class="messages col-md-6">
+            {% for message in messages %}
+            <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 <div class="row">
     <h2>Profil de {{ object.user.name|  capfirst }} </h2>
 <div class="container">

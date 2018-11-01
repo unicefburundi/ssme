@@ -34,12 +34,16 @@ class CampaignBeneficiaryProductAdmin(ExportMixin, admin.ModelAdmin):
 class CampaignBeneficiaryResource(resources.ModelResource):
     class Meta:
         model = CampaignBeneficiary
-        fields = ("beneficiary__designation", "pourcentage_attendu", "order_in_sms")
+        fields = (
+            "beneficiary__designation",
+            "pourcentage_attendu", "order_in_sms")
 
 
 class CampaignBeneficiaryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignBeneficiaryResource
-    list_display = ("campaign", "beneficiary", "order_in_sms", "pourcentage_attendu")
+    list_display = (
+        "campaign",
+        "beneficiary", "order_in_sms", "pourcentage_attendu")
     list_filter = ("campaign",)
 
 
@@ -67,12 +71,17 @@ class CampaignCDSResource(resources.ModelResource):
 
 class CampaignCDSAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CampaignCDSResource
-    list_display = ("campaign", "cds", "population_cible", "district", "province")
+    list_display = (
+        "campaign",
+        "cds", "population_cible", "district", "province")
     search_fields = (
         "cds__name",
         "cds__district__name",
         "cds__district__province__name",
     )
+    list_filter = (
+        "cds__district__province__name",
+        "campaign__name", "campaign__going_on")
 
     def district(self, obj):
         return obj.cds.district.name

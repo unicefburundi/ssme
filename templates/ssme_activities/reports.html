@@ -1,10 +1,19 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
-{% block page_title %}
+{% block title %} Reports
+{% endblock title  %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <ul class="nav nav-tabs">
-<div class="page-header">
-  <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
-  </div>
+  <div class="page-header">
+    <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
+    </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
     <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
   </li>
@@ -15,11 +24,7 @@
     <a href="#final"   data-toggle="tab">Stock Final</a>
   </li>
 </ul>
-{% endblock page_title  %}
-
-{% block content %}
-<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-<div class="right_col" role="main">
+<div >
     <div class="tab-content">
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>

@@ -1,12 +1,16 @@
 {% extends "base_layout.html" %}
 {% load extras_utils %}
 
-{% block page_title %}
-<h3><i class="glyphicon glyphicon-list-alt"></i> Centres de Sante.</h3>
-{% endblock page_title %}
+{% block title %} Centres de Sante
+{% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
 
 {% block content %}
-<div class="right_col" role="main">
+<div >
     
 {% if object_list %}
     <div class="col-md-8">

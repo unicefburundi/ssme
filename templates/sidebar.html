@@ -6,7 +6,8 @@
   </div>
 
   <div class="clearfix"></div>
-
+  {% if user.is_authenticated %}
+    
   <!-- menu profile quick info -->
   <div class="profile clearfix">
     <div class="profile_pic">
@@ -26,6 +27,7 @@
     <div class="menu_section">
       <h3>General</h3>
       <ul class="nav side-menu">
+        {% if user.is_superuser %}
         <li><a><i class="fa fa-home"></i> {% trans "Create" %} <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
             <li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
@@ -35,6 +37,7 @@
             <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Bénéficiaires</a></li>
           </ul>
         </li>
+        {% endif %}
         <li><a><i class="fa fa-edit"></i> {% trans "Reports" %} <span class="fa fa-chevron-down"></span></a>
           <ul class="nav child_menu">
             <li><a href="{% url 'reports_by_benef' %}"> Bénéficiaires</a></li>
@@ -68,4 +71,5 @@
     </a>
   </div>
   <!-- /menu footer buttons -->
+  {% endif %}
 </div>

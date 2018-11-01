@@ -52,7 +52,11 @@ def moh_facility(request):
 def profile_user(request):
     profile_form = UserCreationMultiForm
     return render(
-        request, "ssme_activities/profile_user.html", {"profile_form": profile_form}
+        request,
+        "ssme_activities/profile_user.html",
+        {
+            "profile_form": profile_form
+        }
     )
 
 
@@ -956,6 +960,7 @@ FORMS = [
 
 
 class CampaignWizard(SessionWizardView):
+    
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict["campaign"].save()
         products, orders = set(), set()

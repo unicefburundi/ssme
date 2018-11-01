@@ -23,7 +23,10 @@ urlpatterns = patterns(
     url(r"^cds/(?P<pk>\d+)/$", _(CDSDetailView.as_view()), name="cds_detail"),
     # Districts
     url(r"^districts/$", _(DistrictListView.as_view()), name="district_list"),
-    url(r"^districts/add/$", _(DistrictCreateView.as_view()), name="district_add"),
+    url(
+        r"^districts/add/$",
+        _(DistrictCreateView.as_view()),
+        name="district_add"),
     url(
         r"^districts/(?P<pk>\d+)/$",
         _(DistrictDetailView.as_view()),
@@ -31,7 +34,10 @@ urlpatterns = patterns(
     ),
     # Provinces
     url(r"^provinces/$", _(ProvinceListView.as_view()), name="province_list"),
-    url(r"^provinces/add/$", _(ProvinceCreateView.as_view()), name="province_add"),
+    url(
+        r"^provinces/add/$",
+        _(ProvinceCreateView.as_view()),
+        name="province_add"),
     url(
         r"^provinces/(?P<pk>\d+)/$",
         _(ProvinceDetailView.as_view()),
@@ -57,8 +63,16 @@ urlpatterns = patterns(
     # Reports
     url(r"^reports/$", get_reports, name="reports"),
     url(r"^reports/benef/$", get_reports_by_benef, name="reports_by_benef"),
-    url(r"^reports/received/$", get_reports_by_received, name="reports_by_received"),
-    url(r"^reports/remaining/$", get_reports_by_remaining, name="reports_by_remaining"),
+    url(
+        r"^reports/received/$",
+        get_reports_by_received,
+        name="reports_by_received"
+    ),
+    url(
+        r"^reports/remaining/$",
+        get_reports_by_remaining,
+        name="reports_by_remaining"
+    ),
     url(r"^reports/rates/$", get_reports_by_rates, name="reports_by_rates"),
     url(r"^calcul_benef/$", get_benef_in_json, name="calcul_benef"),
     url(r"^calcul_recus/$", get_recus_in_json, name="calcul_recus"),

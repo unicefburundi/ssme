@@ -1,26 +1,45 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
-{% block page_title %}
-<ul class="nav nav-tabs">
-<div class="page-header">
-  <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
-  </div>
-  <li {% block activereception %}class="active"{% endblock activereception %} >
-  <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
-  </li>
-</ul>
-{% endblock page_title  %}
+{% block title %} Stocks Recus {% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
 
 {% block content %}
+
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-<div class="right_col" role="main">
-    <div class="tab-content">
-              <div class="tab-pane {% block activereception1 %}active{% endblock activereception1 %}" id="reception">
-                <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
+    <div>
+        <div class="page-title">
+            <div class="title_left">
+              <h3>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h3>
+            </div>
+
+            <div class="title_right">
+              <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search for...">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">Go!</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>{{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
                 {% block reception %}
-                    <div class="col-md-11">
-                      <table data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel'] data-toolbar="#toolbar"
-data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100, ALL]" data-show-toggle="true" data-show-footer="true">
+                      <table id="datatable" class="table table-striped table-bordered">
                         <thead>
                           <tr>
                             <th data-footer-formatter="totalTextFormatter">Date</th>
@@ -40,11 +59,10 @@ data-show-toggle="true" data-pagination="true" data-page-list="[10, 25, 50, 100,
                           {% endfor %}
                         </tbody>
                       </table>
-                    </div>
-                    <div class="col-md-1"></div>
-                {% endblock reception %}
-              </div>
-              
+                   </div>
+                </div>
+            </div>
+            {% endblock %}
     </div>
 <script>
 

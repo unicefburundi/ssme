@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     # smartmin users
     "smartmin.users",
     "authtools",
+    "widget_tweaks",
 )
 
 MIDDLEWARE_CLASSES = (
