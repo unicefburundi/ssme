@@ -964,39 +964,37 @@ class CampaignWizard(SessionWizardView):
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict["campaign"].save()
         products, orders = set(), set()
-        campaignproduct, campaignbeneficiary = set(), set() 
         for i in form_dict["product"].cleaned_data:
             if (
                 (i != {})
                 and (i["product"] not in products)
                 and (i["order_in_sms"] not in orders)
             ):
-                product = CampaignProduct.objects.get_or_create(
+                CampaignProduct.objects.get_or_create(
                     campaign=campaign,
                     product=i["product"],
                     order_in_sms=i["order_in_sms"],
                 )
                 products.add(i["product"])
-                campaignproduct.add(product)
                 orders.add(i["order_in_sms"])
 
-        orders = set()
+        beneficiaries, orders = set(), set()
         for i in form_dict["beneficiary"].cleaned_data:
             if (
-                (i != {}) and (i["order_in_sms"] not in orders)
+                (i != {})
+                and (i["beneficiary"] not in beneficiaries)
+                and (i["order_in_sms"] not in orders)
             ):
-                beneficiary = CampaignBeneficiary.objects.get_or_create(
+                CampaignBeneficiary.objects.get_or_create(
                     campaign=campaign,
                     beneficiary=i["beneficiary"],
                     order_in_sms=i["order_in_sms"],
                 )
-                campaignbeneficiary.add(beneficiary)
+                beneficiaries.add(i["beneficiary"])
                 orders.add(i["order_in_sms"])
-        # campaignbeneficiaryproduct, orders = set(), set()
-        # import ipdb; ipdb.set_trace()
-        print form_dict["campaignbeneficiaryproduct"]
 
-        return HttpResponseRedirect(campaign.get_absolute_url())
+        return HttpResponseRedirect(reverse(
+            "ssme_activities.campaignbeneficiaryproduct_create"))
 
 
 @login_required

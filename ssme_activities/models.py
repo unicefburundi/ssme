@@ -179,7 +179,7 @@ class CampaignBeneficiary(models.Model):
     """With this model, we will be able to define and identify beneficiaries for a given ssme campaign"""
 
     campaign = models.ForeignKey(Campaign)
-    beneficiary = models.ManyToManyField(Beneficiaire, unique=False)
+    beneficiary = models.ForeignKey(Beneficiaire)
     order_in_sms = models.IntegerField()
     pourcentage_attendu = models.FloatField(default=100.0, null=True)
 
@@ -188,7 +188,7 @@ class CampaignBeneficiary(models.Model):
         unique_together = ("campaign", "beneficiary")
 
     def __unicode__(self):
-        return "{} dans la campaigne {}".format(
+        return "{} dans {}".format(
             self.beneficiary.designation, self.campaign)
 
     def get_absolute_url(self):
@@ -215,7 +215,7 @@ class CampaignProduct(models.Model):
     order_in_sms = models.IntegerField()
 
     def __unicode__(self):
-        return "{} dans la campaigne {}".format(
+        return "{} dans {}".format(
             self.product.name, self.campaign)
 
     def get_absolute_url(self):
