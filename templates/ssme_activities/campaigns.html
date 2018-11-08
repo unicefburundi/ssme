@@ -1,5 +1,10 @@
 {% extends "base_layout.html" %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
+
 {% block actions %}
 <ul class="nav nav-tabs">
   <li  {% block activeuser %}class="active"{% endblock activeuser %} ><a href="#user" data-toggle="tab">Users</a></li>
@@ -10,7 +15,7 @@
 
 {% block content %}
 
-<div class="col-md-10">
+<div >
     <div class="tab-content">
               {% block user1 %}
         <div class="tab-pane {% block activeuser1 %}active{% endblock activeuser1 %}" id="user">

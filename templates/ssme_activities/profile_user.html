@@ -1,12 +1,16 @@
 {% extends "base_layout.html" %}
 
-{% block page_title %}
-<ul class="nav nav-tabs">
-  <li  {% block activeuser %}class="active"{% endblock activeuser %} ><a href="#user" data-toggle="tab"><i class="glyphicon glyphicon-user"></i> Users</a></li>
-{% endblock page_title  %}
+{% block title %}
+ Users
+{% endblock title  %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
 
 {% block content %}
-<div class="col-md-8">
+<div >
     <div class="tab-content">
               {% block user1 %}
         <div class="tab-pane {% block activeuser1 %}active{% endblock activeuser1 %}" id="user">

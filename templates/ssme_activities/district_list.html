@@ -1,13 +1,19 @@
 {% extends "base_layout.html" %}
 {% load extras_utils %}
 
-{% block page_title %}
-<h3><i class="glyphicon glyphicon-list-alt"></i> Districts Sanitaires.</h3>
-{% endblock page_title %}
+{% block title %}
+Districts Sanitaires
+{% endblock title %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
 
 {% block content %}
+<div >
+    
 {% if object_list %}
-    <div class="col-md-8">
     <table id="list_cds" class="table table-bordered" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel']>
         <thead>
               <tr>
@@ -42,11 +48,10 @@
             </span>
         </div>
     {% endif %}
-    </div>
-    <div class="col-md-4"></div>
 
 {% else %}
     <p>No District found!!! :(</p>
 {% endif %}
 
+</div>
 {% endblock content %}

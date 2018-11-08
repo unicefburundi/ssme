@@ -1,15 +1,20 @@
 {% extends "base_layout.html" %}
 
-{% block page_title %}
+{% block title %} Ministry of Defence facilities
+{% endblock title  %}
+
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
+
+{% block content %}
+<div >
+    <div class="tab-content">
 <ul class="nav nav-tabs">
   <li {% block activeprovince %}class="active"{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">Province</a></li>
   <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">District</a></li>
   <li {% block activecds %}{% endblock activecds %} ><a href="#cds"   data-toggle="tab">Cds</a></li>
-{% endblock page_title  %}
-
-{% block content %}
-<div class="col-md-10">
-    <div class="tab-content">
     <hr>
               <div class="tab-pane {% block activeprovince1 %}active{% endblock activeprovince1 %}" id="province">
                 <h4><i class="glyphicon glyphicon-comment"></i></h4>

@@ -1,13 +1,20 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
-{% block page_title %}
-<h5><i class="glyphicon glyphicon-list-alt"></i> {{ object.name|  capfirst }} District</h5>
-{% endblock page_title %}
+{% block title %}
+{{ object.name|  capfirst }} District
+{% endblock title %}
 
+{% block stylesheets %}
+  {{ block.super }}
+  {% include "ssme_activities/stylesheets.html" %}
+{% endblock stylesheets %}
 
 {% block content %}
+<div >
+  
 {% if object %}
     <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="col-md-3">
           <ul class="list-group">
             <li class="list-group-item">
@@ -44,7 +51,6 @@
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block beneficiary %}
-                        <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
@@ -64,16 +70,12 @@
                               </tr>
                               {% endfor %}
                             </tbody>
-
                           </table>
-                        </div>
-                        <div class="col-md-1"></div>
                     {% endblock beneficiary %}
                   </div>
                   <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
                     <h5><i class="glyphicon glyphicon-cog"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block reception %}
-                        <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
@@ -94,14 +96,11 @@
                               {% endfor %}
                             </tbody>
                           </table>
-                        </div>
-                        <div class="col-md-1"></div>
                     {% endblock reception %}
                   </div>
                   <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
                     <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date}} au {{mycampaign.end_date}}</h5>
                     {% block final %}
-                        <div class="col-md-11">
                           <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
                             <thead>
                               <tr>
@@ -123,12 +122,10 @@
                             </tbody>
                           </table>
                         </div>
-                        <div class="col-md-1"></div>
                     {% endblock final %}
                   </div>
+                </div>
         </div>
-        </div>
-        <div class="col-md-1"></div>
     </div>
 {% else %}
 No Patient in this District
@@ -160,4 +157,5 @@ function consumptionFormatter(data) {
       };
 
 </script>
+</div>
 {% endblock content %}
