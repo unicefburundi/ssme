@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-08 10:49+0200\n"
-"PO-Revision-Date: 2018-11-08 10:58+0200\n"
+"POT-Creation-Date: 2018-11-08 12:07+0200\n"
+"PO-Revision-Date: 2018-11-08 12:08+0200\n"
 "Last-Translator: Allan Stockman Rugano <kuristockyrugano@gmail.com>\n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"Language-Team: \n"
 "X-Generator: Poedit 1.8.7.1\n"
 
 #: ssme_activities/forms.py:126
@@ -254,6 +254,7 @@ msgid "log in"
 msgstr "s'identifier"
 
 #: templates/registration/password_reset_confirm.html:6
+#: templates/sidebar.html:68
 msgid "Home"
 msgstr "Accueil"
 
@@ -352,7 +353,25 @@ msgstr "Nouvel utilisateur ?"
 msgid "Invalid data. Please try again."
 msgstr "Données invalides. Veuillez réessayer."
 
-#: templates/sidebar.html:31
+#: templates/sidebar.html:17
+msgid "Welcome"
+msgstr "Bienvenu"
+
+#: templates/sidebar.html:31 templates/ssme_activities/beneficiaries.html:74
+#: templates/ssme_activities/beneficiaries.html:97
+#: templates/ssme_activities/beneficiaries.html:125
+#: templates/ssme_activities/beneficiaries.html:158
+#: templates/ssme_activities/campaigns.html:73
+#: templates/ssme_activities/campaigns.html:96
+#: templates/ssme_activities/campaigns.html:124
+#: templates/ssme_activities/campaigns.html:157
+#: templates/ssme_activities/cds_form.html:31
+#: templates/ssme_activities/district_form.html:13
+#: templates/ssme_activities/moh_facility.html:37
+#: templates/ssme_activities/moh_facility.html:65
+#: templates/ssme_activities/moh_facility.html:98
+#: templates/ssme_activities/profile_user.html:68
+#: templates/ssme_activities/province_form.html:13
 msgid "Create"
 msgstr "Creer "
 
@@ -363,6 +382,30 @@ msgstr "Rapports"
 #: templates/sidebar.html:48
 msgid "Lists"
 msgstr "Listes"
+
+#: templates/sidebar.html:60
+msgid "User profiles"
+msgstr "Profils utilisateurs"
+
+#: templates/sidebar.html:61
+msgid "Campaign"
+msgstr "Campagne"
+
+#: templates/sidebar.html:62
+msgid "Campaign beneficiaries"
+msgstr "Beneficiaires de campagne"
+
+#: templates/sidebar.html:63
+msgid "Campaign beneficiary products"
+msgstr "Produits selon les beneficiaires de campagne"
+
+#: templates/sidebar.html:64
+msgid "Campaign product"
+msgstr "Produit de la campagne"
+
+#: templates/sidebar.html:76
+msgid "Logout"
+msgstr "Se déconnecter"
 
 #: templates/smartmin/delete_confirm.html:11
 msgid "Remove Item?"
@@ -537,6 +580,212 @@ msgstr ""
 "des precedents %(window_days)s jours.\n"
 " "
 
+#: templates/ssme_activities/beneficiaries.html:10
+#: templates/ssme_activities/campaigns.html:10
+#: templates/ssme_activities/profile_user.html:4
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: templates/ssme_activities/beneficiaries.html:11
+#: templates/ssme_activities/campaigns.html:11
+#: templates/ssme_activities/cds_list.html:22
+#: templates/ssme_activities/district_detail.html:31
+#: templates/ssme_activities/district_list.html:22
+#: templates/ssme_activities/moh_facility.html:15
+msgid "Province"
+msgstr "Province"
+
+#: templates/ssme_activities/beneficiaries.html:12
+#: templates/ssme_activities/campaigns.html:12
+#: templates/ssme_activities/cds_detail.html:31
+#: templates/ssme_activities/cds_list.html:21
+#: templates/ssme_activities/moh_facility.html:16
+msgid "District"
+msgstr "District"
+
+#: templates/ssme_activities/beneficiaries.html:61
+#: templates/ssme_activities/campaigns.html:60
+#: templates/ssme_activities/profile_user.html:55
+msgid "Facilities"
+msgstr "Installations"
+
+#: templates/ssme_activities/cds_detail.html:23
+msgid "Name of the CDS"
+msgstr "Nom du CDS"
+
+#: templates/ssme_activities/cds_detail.html:27
+msgid "Code of the CDS"
+msgstr "Code du CDS"
+
+#: templates/ssme_activities/cds_detail.html:35
+msgid "Province "
+msgstr "Province"
+
+#: templates/ssme_activities/cds_detail.html:39
+#: templates/ssme_activities/district_detail.html:35
+#: templates/ssme_activities/province_detail.html:31
+msgid "Population"
+msgstr "Population"
+
+#: templates/ssme_activities/cds_detail.html:46
+msgid "Report at CDS"
+msgstr "Rapport au CDS"
+
+#: templates/ssme_activities/cds_detail.html:49
+#: templates/ssme_activities/district_detail.html:42
+#: templates/ssme_activities/province_detail.html:38
+#: templates/ssme_activities/reports.html:19
+msgid "Beneficiaries"
+msgstr "Les bénéficiaires"
+
+#: templates/ssme_activities/cds_detail.html:52
+#: templates/ssme_activities/district_detail.html:45
+#: templates/ssme_activities/province_detail.html:41
+#: templates/ssme_activities/reports.html:22
+msgid "Stocks received"
+msgstr "Stocks reçus"
+
+#: templates/ssme_activities/cds_detail.html:55
+#: templates/ssme_activities/district_detail.html:48
+#: templates/ssme_activities/province_detail.html:44
+#: templates/ssme_activities/reports.html:25
+msgid "Final Stock"
+msgstr "Stock final"
+
+#: templates/ssme_activities/cds_detail.html:140
+msgid "No Patient in this CDS"
+msgstr "Aucun patient dans ce CDS"
+
+#: templates/ssme_activities/cds_list.html:19
+#: templates/ssme_activities/district_list.html:20
+#: templates/ssme_activities/profileuser_detail.html:37
+#: templates/ssme_activities/province_list.html:38
+msgid "Name"
+msgstr "Nom"
+
+#: templates/ssme_activities/cds_list.html:20
+#: templates/ssme_activities/district_list.html:21
+#: templates/ssme_activities/profileuser_detail.html:49
+#: templates/ssme_activities/province_list.html:39
+msgid "Code"
+msgstr "Code"
+
+#: templates/ssme_activities/cds_list.html:41
+#: templates/ssme_activities/district_list.html:40
+msgid "previous"
+msgstr "précédent"
+
+#: templates/ssme_activities/cds_list.html:44
+#: templates/ssme_activities/district_list.html:43
+msgid "of"
+msgstr "de"
+
+#: templates/ssme_activities/cds_list.html:47
+#: templates/ssme_activities/district_list.html:46
+msgid "next"
+msgstr "suivant"
+
+#: templates/ssme_activities/cds_list.html:54
+msgid "No CDS found!!! :("
+msgstr "Aucun  CDS"
+
+#: templates/ssme_activities/district_detail.html:23
+msgid "Name of the District"
+msgstr "Nom du District"
+
+#: templates/ssme_activities/district_detail.html:27
+msgid "Code of the District"
+msgstr "Code du District"
+
+#: templates/ssme_activities/district_detail.html:132
+msgid "No Patient in this District"
+msgstr "Aucun patient dans ce District"
+
+#: templates/ssme_activities/district_list.html:5
+msgid "Sanitary Districts"
+msgstr "Districts Sanitaires"
+
+#: templates/ssme_activities/district_list.html:53
+msgid "No District found!!! :("
+msgstr "Aucun district trouvé !!! :("
+
+#: templates/ssme_activities/moh_facility.html:3
+msgid "Ministry of Health facilities"
+msgstr "Installations du ministère de la santé"
+
+#: templates/ssme_activities/profileuser_detail.html:20
+msgid "Profil de"
+msgstr "Profil de"
+
+#: templates/ssme_activities/profileuser_detail.html:26
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: templates/ssme_activities/profileuser_detail.html:29
+msgid "First name"
+msgstr "Nom"
+
+#: templates/ssme_activities/profileuser_detail.html:33
+msgid "E-mail"
+msgstr "E-mail"
+
+#: templates/ssme_activities/profileuser_detail.html:41
+msgid "Telephone"
+msgstr "Téléphone"
+
+#: templates/ssme_activities/profileuser_detail.html:45
+msgid "Level"
+msgstr "Niveau"
+
+#: templates/ssme_activities/profileuser_detail.html:53
+msgid "name"
+msgstr "nom"
+
+#: templates/ssme_activities/profileuser_detail.html:63
+msgid "Edit my profile"
+msgstr "Editer mon profil"
+
+#: templates/ssme_activities/profileuser_form.html:32
+msgid "Change Password"
+msgstr "Changer le mot de passe"
+
+#: templates/ssme_activities/province_detail.html:23
+msgid "Name of the Province"
+msgstr "Nom de la Province"
+
+#: templates/ssme_activities/province_detail.html:27
+msgid "Code of the Province"
+msgstr "Code de la Province"
+
+#: templates/ssme_activities/province_detail.html:129
+msgid "No Patient in this Province"
+msgstr "Aucun patient dans cette Province"
+
+#: templates/ssme_activities/province_list.html:19
+msgid "List of provinces"
+msgstr "Liste des Provinces"
+
+#: templates/ssme_activities/province_list.html:56
+msgid "No Provinces found!!! :("
+msgstr "Aucune province trouvée !!! :("
+
+#: templates/ssme_activities/reports.html:16
+#: templates/ssme_activities/reports_by_received.html:16
+#: templates/ssme_activities/reports_by_remaining.html:15
+msgid "Report at"
+msgstr "Rapports au"
+
+#: templates/ssme_activities/reports.html:16
+#: templates/ssme_activities/reports_by_benef.html:15
+#: templates/ssme_activities/reports_by_received.html:16
+#: templates/ssme_activities/reports_by_remaining.html:15
+msgid "with expected population of"
+msgstr "avec population attendue de"
+
+#: templates/top_navigation.html:18
+msgid "Log Out"
+msgstr "Se déconnecter"
+
 #~ msgid "result"
 #~ msgstr "résultat"
 
@@ -545,9 +794,6 @@ msgstr ""
 
 #~ msgid "Results"
 #~ msgstr "Résultats"
-
-#~ msgid "of"
-#~ msgstr "de"
 
 #~ msgid "Edit"
 #~ msgstr "Editer"

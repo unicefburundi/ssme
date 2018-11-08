@@ -1,4 +1,5 @@
 {% extends "base_layout.html" %}
+{% load i18n %}
 {% block stylesheets %}
   {{ block.super }}
   {% include "ssme_activities/stylesheets.html" %}
@@ -6,9 +7,9 @@
 
 {% block actions %}
 <ul class="nav nav-tabs">
-  <li  {% block activeuser %}class="active"{% endblock activeuser %} ><a href="#user" data-toggle="tab">Users</a></li>
-  <li {% block activeprovince %}{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">Province</a></li>
-  <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">District</a></li>
+  <li  {% block activeuser %}class="active"{% endblock activeuser %} ><a href="#user" data-toggle="tab">{% trans "Users" %}</a></li>
+  <li {% block activeprovince %}{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">{% trans "Province" %}</a></li>
+  <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">{% trans "District" %}</a></li>
   <li {% block activecds %}{% endblock activecds %} ><a href="#cds"   data-toggle="tab">Cds</a></li>
   </ul>
 {% endblock actions  %}
@@ -57,7 +58,7 @@
                             <p>{{profile_form.profile.level}}</p>
                         </div>
                         <div class="col-md-3">
-                            <label for="facility">Facilities</label>
+                            <label for="facility">{% trans "Facilities" %}</label>
                             <p></p>
                                 <select name="facility" id="facility">
                                     <option value="">-----</option>
@@ -70,7 +71,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                        <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                     </div>
                 </form>
               </div>
@@ -93,7 +94,7 @@
                             </div>
                          </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock province %}
@@ -121,7 +122,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock district %}
@@ -154,7 +155,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock cds %}

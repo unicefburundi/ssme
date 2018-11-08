@@ -1,5 +1,5 @@
 {% extends "base_layout.html" %}
-
+{% load i18n %}
 {% block stylesheets %}
   {{ block.super }}
   {% include "ssme_activities/stylesheets.html" %}
@@ -17,40 +17,40 @@
     </div>
     {% endif %}
 <div class="row">
-    <h2>Profil de {{ object.user.name|  capfirst }} </h2>
+    <h2>{% trans "Profil de" %} {{ object.user.name|  capfirst }} </h2>
 <div class="container">
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-6">
             <dl  class="dl-horizontal">
-            <dt>Nom d'utilisateur:</dt>
+            <dt>{% trans "Username" %}:</dt>
                 <p>{{ object.user.name }}</p>
             {% if object.user.first_name%}
-            <dt>Prénom :</dt>
+            <dt>{% trans "First name" %} :</dt>
                 <p>{{ object.user.first_name }}</p>
             {% endif %}
             {% if object.user.email %}
-            <dt> Émail  :</dt>
+            <dt> {% trans "E-mail" %}  :</dt>
                 <p>{{ object.user.email  }}</p>
             {% endif %}
             {% if object.user.last_name%}
-            <dt>Nom :</dt>
+            <dt>{% trans "Name" %} :</dt>
                 <p>{{ object.user.last_name }}</p>
             {% endif %}
             {% if object.telephone%}
-            <dt>Téléphone :</dt>
+            <dt>{% trans "Telephone" %} :</dt>
                 <p>{{ object.telephone }}</p>
             {% endif %}
             {% if object.level%}
-            <dt>Niveau :</dt>
+            <dt>{% trans "Level" %} :</dt>
                 <p>{{ object.level }}</p>
             {% endif %}
             {% if object.moh_facility%}
-            <dt>Code  : </dt>
+            <dt>{% trans "Code" %}  : </dt>
                 <p>{{ object.moh_facility }}</p>
             {% endif %}
             {% if object.facility%}
-            <dt>{{ object.level }} nom :  </dt>
+            <dt>{{ object.level }} {% trans "name" %} :  </dt>
                 <p>  {{ object.facility }}</p>
             {% endif %}
         </dl>
@@ -60,7 +60,7 @@
 </div>
 </div>
 {% if object.user.name == user.name %}
-<p><a href="{% url 'profileuser_update' pk=user.id %}">Éditer mon profil</a></p>
+<p><a href="{% url 'profileuser_update' pk=user.id %}">{% trans "Edit my profile" %}</a></p>
 {% endif %}
 </div>
 {% endblock %}

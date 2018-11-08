@@ -1,7 +1,7 @@
 {% extends "base_layout.html" %}
-
+{% load i18n %}
 {% block title %}
- Users
+ {% trans "Users" %}
 {% endblock title  %}
 
 {% block stylesheets %}
@@ -52,7 +52,7 @@
                             <p>{{profile_form.profile.level}}</p>
                         </div>
                         <div class="col-md-3">
-                            <label for="facility">Facilities</label>
+                            <label for="facility">{% trans "Facilities" %}</label>
                             <p></p>
                                 <select name="facility" id="facility">
                                     <option value="">-----</option>
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                        <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                     </div>
                 </form>
               </div>

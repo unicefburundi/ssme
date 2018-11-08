@@ -1,5 +1,6 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
+{% load i18n %}
 {% block title %}
 {{ object.name|  capfirst }} District
 {% endblock title %}
@@ -19,32 +20,32 @@
           <ul class="list-group">
             <li class="list-group-item">
               <span class="badge">{{object.name}}</span>
-              Name of the District :
+              {% trans "Name of the District" %} :
             </li>
             <li class="list-group-item">
               <span class="badge">{{object.code}}</span>
-              Code of the District :
+              {% trans "Code of the District" %} :
             </li>
             <li class="list-group-item">
               <span class="badge">{{object.province}}</span>
-              Province :
+              {% trans "Province" %} :
             </li>
             <li class="list-group-item">
                 <span class="badge" id="pop_total">{{pop_total.population_cible}}</span>
-                 Population :
+                 {% trans "Population" %} :
               </li>
        </ul> 
         </div>
         <div class="col-md-8">
             <ul class="nav nav-tabs">
               <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-                <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
+                <a href="#beneficiary"   data-toggle="tab">{% trans "Beneficiaries" %}</a>
               </li>
               <li {% block activereception %}{% endblock activereception %} >
-                <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
+                <a href="#reception"   data-toggle="tab">{% trans "Stocks received" %}</a>
               </li>
               <li {% block activefinal %}{% endblock activefinal %} >
-                <a href="#final"   data-toggle="tab">Stock Final</a>
+                <a href="#final"   data-toggle="tab">{% trans "Final Stock" %}</a>
               </li>
             </ul>
             <div class="tab-content">
@@ -128,7 +129,7 @@
         </div>
     </div>
 {% else %}
-No Patient in this District
+{% trans "No Patient in this District" %}
 {% endif %}
 
 <script>

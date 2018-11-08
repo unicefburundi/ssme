@@ -1,5 +1,5 @@
 {% extends "base_layout.html" %}
-
+{% load i18n %}
 {% block content %}
 <div >
     
@@ -29,7 +29,7 @@
 </div>
 </div>
 <div class="row">
-    <button class="btn btn-default"><a href="{% url 'password_change' %}">Change Password</a></button>
+    <button class="btn btn-default"><a href="{% url 'password_change' %}">{% trans "Change Password" %}</a></button>
 </div>
 
 </div>

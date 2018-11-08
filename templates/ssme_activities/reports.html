@@ -1,4 +1,5 @@
 {% extends "base_layout.html" %}
+{% load i18n %}
 {% load extras_utils2  %}
 {% block title %} Reports
 {% endblock title  %}
@@ -12,16 +13,16 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 <ul class="nav nav-tabs">
   <div class="page-header">
-    <h5>Rapport au niveau du  {{mymoh_facility}} avec comme population attendue <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
+    <h5>{% trans "Report at" %}  {{mymoh_facility}} {% trans "with expected population of" %} <span id="pop_total">{{pop_total.population_cible|default:0}}</span> patients.</h5>
     </div>
   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-    <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
+    <a href="#beneficiary"   data-toggle="tab">{% trans "Beneficiaries" %}</a>
   </li>
   <li {% block activereception %}{% endblock activereception %} >
-  <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
+  <a href="#reception"   data-toggle="tab">{% trans "Stocks received" %}</a>
   </li>
   <li {% block activefinal %}{% endblock activefinal %} >
-    <a href="#final"   data-toggle="tab">Stock Final</a>
+    <a href="#final"   data-toggle="tab">{% trans "Final Stock" %}</a>
   </li>
 </ul>
 <div >

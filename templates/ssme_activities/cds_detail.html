@@ -1,5 +1,6 @@
 {% extends "base_layout.html" %}
 {% load extras_utils2  %}
+{% load i18n %}
 {% block title %}
 {{ object.name|  capfirst }} CDS
 {% endblock title %}
@@ -19,39 +20,39 @@
            <ul class="list-group">
               <li class="list-group-item">
                 <span class="badge">{{object.name}}</span>
-              Name of the CDS :
+              {% trans "Name of the CDS" %} :
               </li>
               <li class="list-group-item">
                 <span class="badge">{{object.code}}</span>
-              Code of the CDS :
+              {% trans "Code of the CDS" %} :
               </li>
               <li class="list-group-item">
                 <span class="badge">{{object.district}}</span>
-                 District :
+                 {% trans "District" %} :
               </li>
               <li class="list-group-item">
                 <span class="badge">{{object.district.province}}</span>
-                Province :
+                {% trans "Province " %}:
               </li>
               <li class="list-group-item">
                 <span class="badge" id="pop_total">{{pop_total.population_cible}}</span>
-                 Population :
+                 {% trans "Population" %} :
               </li>
             </ul>
         </div>
         <div class="col-md-9">
             <ul class="nav nav-tabs">
                 <div class="page-header">
-                  <h3>Rapports au CDS : {{ object.name|  capfirst }}</h3>
+                  <h3>{% trans "Report at CDS" %} : {{ object.name|  capfirst }}</h3>
                 </div>
                   <li {% block activebeneficiary %}class="active"{% endblock activebeneficiary %} >
-                    <a href="#beneficiary"   data-toggle="tab">Bénéficiaires</a>
+                    <a href="#beneficiary"   data-toggle="tab">{% trans "Beneficiaries" %}</a>
                   </li>
                   <li {% block activereception %}{% endblock activereception %} >
-                    <a href="#reception"   data-toggle="tab">Stocks Reçus</a>
+                    <a href="#reception"   data-toggle="tab">{% trans "Stocks received" %}</a>
                   </li>
                   <li {% block activefinal %}{% endblock activefinal %} >
-                    <a href="#final"   data-toggle="tab">Stock Final</a>
+                    <a href="#final"   data-toggle="tab">{% trans "Final Stock" %}</a>
                   </li>
             </ul>
             <div class="tab-content">
@@ -136,7 +137,7 @@
     </div>
 
 {% else %}
-No Patient in this CDS
+{% trans "No Patient in this CDS" %}
 {% endif %}
 <script>
 function receivedTextFormatter(data) {

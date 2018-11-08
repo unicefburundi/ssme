@@ -1,8 +1,8 @@
 {% extends "base_layout.html" %}
 {% load extras_utils %}
-
+{% load i18n %}
 {% block title %}
-Districts Sanitaires
+{% trans "Sanitary Districts" %}
 {% endblock title %}
 
 {% block stylesheets %}
@@ -17,9 +17,9 @@ Districts Sanitaires
     <table id="list_cds" class="table table-bordered" data-toggle="table" data-search="true" data-show-export="true" data-export-types=['csv','excel']>
         <thead>
               <tr>
-                <th>Name</th>
-                <th>Code</th>
-                <th>Province</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Code" %}</th>
+                <th>{% trans "Province" %}</th>
               </tr>
             </thead>
         {% for cds in object_list %}
@@ -37,20 +37,20 @@ Districts Sanitaires
         <div class="pagination">
             <span class="page-links">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">{% trans "previous" %}</a>
                 {% endif %}
                 <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    Page {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}.
                 </span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.next_page_number }}">{% trans "next" %}</a>
                 {% endif %}
             </span>
         </div>
     {% endif %}
 
 {% else %}
-    <p>No District found!!! :(</p>
+    <p>{% trans "No District found!!! :(" %}</p>
 {% endif %}
 
 </div>

@@ -1,4 +1,5 @@
 {% extends "ssme_activities/moh_facility.html" %}
+{% load i18n %}
 {% block activeuser %}{% endblock activeuser %}
 {% block activeuser1 %}{% endblock activeuser1 %}
 {% block activecds %}class="active"{% endblock activecds %}
@@ -27,7 +28,7 @@
         <p>{{form.status.errors}}</p>
         <p>{{form.status}}</p>
     </div>
-    <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+    <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
 </form>
 
 {% endblock cds %}

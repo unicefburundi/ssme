@@ -1,6 +1,6 @@
 {% extends "base_layout.html" %}
-
-{% block title %} Ministry of Defence facilities
+{% load i18n %}
+{% block title %} {% trans "Ministry of Health facilities" %}
 {% endblock title  %}
 
 {% block stylesheets %}
@@ -12,8 +12,8 @@
 <div >
     <div class="tab-content">
 <ul class="nav nav-tabs">
-  <li {% block activeprovince %}class="active"{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">Province</a></li>
-  <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">District</a></li>
+  <li {% block activeprovince %}class="active"{% endblock activeprovince %} ><a href="#province"   data-toggle="tab">{% trans "Province" %}</a></li>
+  <li {% block activedistrict %}{% endblock activedistrict %} ><a href="#district"   data-toggle="tab">{% trans "District" %}</a></li>
   <li {% block activecds %}{% endblock activecds %} ><a href="#cds"   data-toggle="tab">Cds</a></li>
     <hr>
               <div class="tab-pane {% block activeprovince1 %}active{% endblock activeprovince1 %}" id="province">
@@ -34,7 +34,7 @@
                             </div>
                          </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock province %}
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock district %}
@@ -95,7 +95,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <button type="submit" name="intervalsubmit" class="btn btn-primary">Create</button>
+                            <button type="submit" name="intervalsubmit" class="btn btn-primary">{% trans "Create" %}</button>
                         </div>
                     </form>
                 {% endblock cds %}
