@@ -2,7 +2,7 @@
 {% load staticfiles  extras_utils %}
 <div class="left_col scroll-view">
   <div class="navbar nav_title" style="border: 0;">
-    <a href="{% url "dashboard" %}" class="site_title"><i class="fa fa-spinner"></i> <span>SSME</span></a>
+    <a href="{% url "dashboard" %}" class="site_title"><i class="fa fa-medkit"></i> <span>SSME</span></a>
   </div>
 
   <div class="clearfix"></div>
@@ -55,6 +55,13 @@
             {% endif %}
             {% if user|has_group:"CDS" or user|has_group:"BPS" or user|has_group:"BDS" or user|has_group:"CEN" or user.is_superuser  %}
               <li><a href="{% url 'cds_list' %}"> CDS</a></li>
+            {% endif %}
+            {% if user.is_superuser %}
+            <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
+            <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
+            <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
+            <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
+            <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
             {% endif %}
             </ul>
         </li>

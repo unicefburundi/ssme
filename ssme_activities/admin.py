@@ -6,7 +6,7 @@ from django.contrib import admin
 from ssme_activities.models import *
 from ssme_activities.forms import UserCreationForm
 from import_export import resources
-from import_export.admin import ExportMixin
+from import_export.admin import ExportMixin, ImportExportModelAdmin
 
 
 class CampaignBeneficiaryProductResource(resources.ModelResource):
@@ -420,6 +420,18 @@ class ProvinceAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ("name", "code")
 
 
+class ProductResource(resources.ModelResource):
+    class Meta:
+        model = Product
+        fields = ("name", "unite_de_mesure")
+
+
+class ProductAdmin(ExportMixin, admin.ModelAdmin):
+    resource_class = ProductResource
+    search_fields = ("name", "unite_de_mesure")
+    list_display = ("name", "unite_de_mesure")
+
+
 class DistrictResource(resources.ModelResource):
     class Meta:
         model = District
@@ -488,13 +500,26 @@ class DistrictSupervisorAdmin(ExportMixin, admin.ModelAdmin):
     )
 
 
+@admin.register(Campaign)
+class CampaignAdmin(ImportExportModelAdmin):
+    search_fields = ("id", "name", "start_date", "end_date", "going_on")
+    list_display = ("id", "name", "start_date", "end_date", "going_on")
+    list_display_links = ("id", "name")
+    list_filter = ("going_on",)
+
+
+@admin.register(Beneficiaire)
+class BeneficiaireAdmin(ImportExportModelAdmin):
+    search_fields = ("id", "designation", "nombre_mois_min", "nombre_mois_max")
+    list_display = ("id", "designation", "nombre_mois_min", "nombre_mois_max")
+    list_display_links = ("id", "designation")
+
+
 admin.site.register(Province, ProvinceAdmin)
 admin.site.register(District, DistrictAdmin)
 admin.site.register(CDS, CDSAdmin)
 admin.site.register(Reporter, ReporterAdmin)
-admin.site.register(Campaign)
-admin.site.register(Beneficiaire)
-admin.site.register(Product)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(CampaignBeneficiary, CampaignBeneficiaryAdmin)
 admin.site.register(CampaignProduct, CampaignProductAdmin)
 admin.site.register(CampaignBeneficiaryProduct, CampaignBeneficiaryProductAdmin)

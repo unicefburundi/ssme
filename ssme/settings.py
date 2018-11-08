@@ -177,7 +177,9 @@ PERMISSIONS = {
 
 # assigns the permissions that each group should have, here creating an Administrator group with
 # authority to create and change users
-GROUP_PERMISSIONS = {"Administrator": ("auth.user.*", "csv_imports.importtask.*")}
+GROUP_PERMISSIONS = {
+    "Administrator": ("auth.user.*", "csv_imports.importtask.*")
+    }
 
 # this is required by guardian
 ANONYMOUS_USER_ID = -1

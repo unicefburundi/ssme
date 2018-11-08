@@ -179,8 +179,7 @@ class CampaignBeneficiary(models.Model):
     """With this model, we will be able to define and identify beneficiaries for a given ssme campaign"""
 
     campaign = models.ForeignKey(Campaign)
-    beneficiary = models.ForeignKey(Beneficiaire)
-    # The below field will be removed
+    beneficiary = models.ManyToManyField(Beneficiaire, unique=False)
     order_in_sms = models.IntegerField()
     pourcentage_attendu = models.FloatField(default=100.0, null=True)
 
@@ -189,7 +188,8 @@ class CampaignBeneficiary(models.Model):
         unique_together = ("campaign", "beneficiary")
 
     def __unicode__(self):
-        return self.beneficiary.designation
+        return "{} dans la campaigne {}".format(
+            self.beneficiary.designation, self.campaign)
 
     def get_absolute_url(self):
         return reverse(
@@ -215,7 +215,8 @@ class CampaignProduct(models.Model):
     order_in_sms = models.IntegerField()
 
     def __unicode__(self):
-        return self.product.name
+        return "{} dans la campaigne {}".format(
+            self.product.name, self.campaign)
 
     def get_absolute_url(self):
         return reverse("ssme_activities.campaignproduct_read", kwargs={"pk": self.id})
@@ -226,12 +227,17 @@ class CampaignProduct(models.Model):
 
 
 class CampaignBeneficiaryProduct(models.Model):
-    """With this model, we will be able to define and identify which medecines will be received by each beneficiary
-    category and quantity for each Beneficiary"""
+    """ With this model, we will be able to 
+    define and identify which medecines will be received by each beneficiary
+    category and quantity for each Beneficiary """
 
-    campaign_beneficiary = models.ForeignKey(CampaignBeneficiary)
-    campaign_product = models.ForeignKey(CampaignProduct)
-    dosage = models.FloatField(null=True)
+    campaign_beneficiary = models.ForeignKey(
+        CampaignBeneficiary,
+        related_name='campaign_beneficiary')
+    campaign_product = models.ForeignKey(
+        CampaignProduct,
+        related_name='campaign_product')
+    dosage = models.FloatField(null=True, default=0.0)
     pourcentage_attendu = models.FloatField(default=0.0, null=True)
     order_in_sms = models.IntegerField()
 

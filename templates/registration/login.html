@@ -24,7 +24,7 @@
             <form method="post" action="{% url 'login' %}"  role="form">
               {% csrf_token %}
               <h1>Login Form</h1>
-            <div>{{ form.username|add_class:'form-control'|attr:"placeholder:Username" }}</div>
+            <div>{{ form.username|add_class:'form-control'|attr:"placeholder:e-mail" }}</div>
             <div>{{ form.password|add_class:'form-control'|attr:"placeholder:Password" }}</div>
             <div>
                 <input type="submit" value="Login" class="btn btn-sm btn-success"/>

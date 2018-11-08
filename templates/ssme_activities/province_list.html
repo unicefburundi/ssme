@@ -14,8 +14,25 @@
 <div >
     
 {% if object_list %}
-    <div class="col-md-8">
-    <table class="table table-bordered" >
+    <div class="page-title">
+            <div class="title_left">
+              <h3>Liste des provinces</h3>
+            </div>
+
+            <div class="title_right">
+              <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Search for...">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">Go!</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+        </div>
+    <div>
+    <div >
+          <table class="table table-striped ">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -31,12 +48,9 @@
                 {% endwith %}
             </tr>
         {% endfor %}
-    </table>
-    <div class="col-md-6"></div>
-
-    </div>
-    <div class="col-md-4"></div>
-
+          </table>
+      </div>
+  </div>
 {% else %}
 
     <p>No Provinces found!!! :(</p>

@@ -16,9 +16,7 @@ from ssme_activities.forms import *
 from ssme_activities.tables import *
 from smartmin.views import *
 import json
-from django.db.models import Sum
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import Sum
 from ssme_activities.serilaizers import *
 from rest_framework import viewsets
 from rest_framework.renderers import BrowsableAPIRenderer
@@ -848,8 +846,9 @@ class BeneficiaireCRUDL(SmartCRUDL):
 
 # Product
 class ProductCRUDL(SmartCRUDL):
-    actions = ("read", "list")
+    actions = ("read", "list", "create", "delete", "update")
     model = Product
+    permissions = True
 
     class List(SmartListView):
         search_fields = ("name__icontains",)
@@ -871,7 +870,7 @@ class CampaignBeneficiaryCRUDL(SmartCRUDL):
 
 # CampaignBeneficiaryProduct
 class CampaignBeneficiaryProductCRUDL(SmartCRUDL):
-    actions = ("read", "list")
+    actions = ("read", "list", "create", "delete", "update")
     model = CampaignBeneficiaryProduct
 
     class List(SmartListView):
@@ -956,42 +955,46 @@ FORMS = [
     ("campaign", CampaignForm1),
     ("product", ProductsFormSet),
     ("beneficiary", BeneficiaryFormSet),
+    # ("campaignbeneficiaryproduct", CampaignBeneficiaryProductFormSet),
 ]
 
 
 class CampaignWizard(SessionWizardView):
-    
+
     def done(self, form_list, form_dict, **kwargs):
         campaign = form_dict["campaign"].save()
         products, orders = set(), set()
+        campaignproduct, campaignbeneficiary = set(), set() 
         for i in form_dict["product"].cleaned_data:
             if (
                 (i != {})
                 and (i["product"] not in products)
                 and (i["order_in_sms"] not in orders)
             ):
-                CampaignProduct.objects.get_or_create(
+                product = CampaignProduct.objects.get_or_create(
                     campaign=campaign,
                     product=i["product"],
                     order_in_sms=i["order_in_sms"],
                 )
                 products.add(i["product"])
+                campaignproduct.add(product)
                 orders.add(i["order_in_sms"])
 
-        beneficiaries, orders = set(), set()
+        orders = set()
         for i in form_dict["beneficiary"].cleaned_data:
             if (
-                (i != {})
-                and (i["beneficiary"] not in beneficiaries)
-                and (i["order_in_sms"] not in orders)
+                (i != {}) and (i["order_in_sms"] not in orders)
             ):
-                CampaignBeneficiary.objects.get_or_create(
+                beneficiary = CampaignBeneficiary.objects.get_or_create(
                     campaign=campaign,
                     beneficiary=i["beneficiary"],
                     order_in_sms=i["order_in_sms"],
                 )
-                beneficiaries.add(i["beneficiary"])
+                campaignbeneficiary.add(beneficiary)
                 orders.add(i["order_in_sms"])
+        # campaignbeneficiaryproduct, orders = set(), set()
+        # import ipdb; ipdb.set_trace()
+        print form_dict["campaignbeneficiaryproduct"]
 
         return HttpResponseRedirect(campaign.get_absolute_url())
 

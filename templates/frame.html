@@ -1,191 +1,109 @@
-{% load extras_utils %}
-<!doctype html>
-<head>
-  <meta charset="utf-8">
-  <title>{% block title %}SSME{% endblock %}</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+{% load staticfiles  extras_utils %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+      {% block meta %}
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+      {% endblock meta %}
 
-  <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
-  <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <![endif]-->
+      <title>SSME - {% block title %}Dashboard{% endblock title %} </title>
 
-      <!-- Mobile viewport optimized: j.mp/bplateviewport -->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-      <!-- Place favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-      <link rel="icon" type="image/x-icon" href="{{ STATIC_URL }}img/favicon.ico">
-
-      <!-- CSS: implied media="all" -->
-      {# load compress #}
-      {# compress css #}
-      {% block styles %}
-      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.css">
-      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-theme.css">
-      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/smartmin_styles.css">
-      <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}css/styles.css">
-      {% endblock %}
-
-      {% block extra-style %}{% endblock %}
-
-      {# endcompress #}
+      {% block stylesheets %}
+        <!-- Bootstrap -->
+        <link href="{% static "vendors/bootstrap/dist/css/bootstrap.min.css" %}" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="{% static "vendors/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="{% static "vendors/nprogress/nprogress.css" %}" rel="stylesheet">
+        <!-- bootstrap-daterangepicker -->
+        <link href="{% static "vendors/bootstrap-daterangepicker/daterangepicker.css" %}" rel="stylesheet">
+        <!-- iCheck -->
+        <link href="{% static "vendors/iCheck/skins/flat/green.css" %}" rel="stylesheet">
+        <!-- bootstrap-progressbar -->
+        <link href="{% static "vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" %}" rel="stylesheet">
+        <!-- JQVMap -->
+        <link href="{% static "vendors/jqvmap/dist/jqvmap.min.css" %}" rel="stylesheet"/>
+      {% endblock stylesheets %}
+      <!-- Custom Theme Style -->
+      <link href="{% static "build/css/custom.css" %}" rel="stylesheet">
+    {% endblock head %}
   </head>
 
-  <body>
+  <body class="{% block body_class %}nav-md {% endblock body_class %}">
+    {% block body %}
+      <div class="container body">
+        <div class="main_container">
 
-      {% block navbar %}
-      <header class="navbar navbar-static-top" role="banner">
-        <div class="container">
+          {% block sidebar %}
+            <div class="col-md-3 left_col {% block sidebar_class %} {% endblock sidebar_class %}">
+              {% include "sidebar.html" %}
+            </div>
+          {% endblock sidebar %}
 
-          <div class="navbar-header">
-           <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#smartmin-navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-          </button>
-
-          {% block brand %}
-          <a class="navbar-brand" href="/">SSME App</a>
-          {% endblock brand %}
+          {% block top_navigation %}
+            <div class="top_nav">
+              {% include "top_navigation.html" %}
+            </div>
+          {% endblock top_navigation %}
+            <div class="right_col" role="main">
+              {% block pre-content %}
+                <div class="page-header"><h2>{{ title }}</h2></div>
+              {% endblock %}
+          {% block content %}
+            <!-- {{ content }} -->
+          {% endblock content %}
+            </div>
+          {% block footer %}
+            <footer>
+              {% include "footer.html" %}
+            </footer>
+          {% endblock footer %}
+        </div>
       </div>
 
-      {% block navigation %}
-      <nav class="collapse navbar-collapse" id="smartmin-navbar-collapse" role="navigation">
-       <ul class="nav navbar-nav">
-         {% if perms.nsms.text_list %}
-         <li role="presentation" class="dropdown">
-          <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> List<span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            <li><a href="{% url 'province_list' %}">Provinces</a></li>
-            <li><a href="{% url 'district_list' %}">Districts</a></li>
-            <li><a href="{% url 'cds_list' %}">CDS</a></li>
-
-            {% if user.is_superuser %}
-            <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
-            <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
-            <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
-            <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
-            {% endif %}
-        </ul>
-    </li>
-    <li role="presentation" class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Créer <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu">
-          {% if user.is_superuser %}
-          <li><a href="{% url 'profile_user' %}">Utilisateurs</a></li>
-          <li><a href="{% url 'moh_facility' %}">Établissements Sanitaires</a></li>
-          {% endif %}
-          <li><a href="{% url 'ssme_activities.campaign_create' %}">Campagnes</a></li>
-          <li><a href="{% url 'ssme_activities.product_list' %}">Produits</a></li>
-          <li><a href="{% url 'ssme_activities.beneficiaire_list' %}">Bénéficiaires</a></li>
-      </ul>
-  </li>
-  <li role="presentation" class="dropdown">
-      <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-list-alt"></i> Campagnes <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu">
-          {% if user.is_superuser %}
-          <li><a href="{% url 'ssme_activities.profileuser_list' %}"> Profils Utilisateurs</a></li>
-          <li><a href="{% url 'ssme_activities.campaign_list' %}"> Campagne</a></li>
-          <li role="separator" class="divider"></li>
-          <li><a href="{% url 'ssme_activities.campaignbeneficiary_list' %}">Bénéficiaires de campagne</a></li>
-          <li><a href="{% url 'ssme_activities.campaignbeneficiaryproduct_list' %}">Bénéficiaires de campagne Produit</a></li>
-          <li><a href="{% url 'ssme_activities.campaignproduct_list' %}">Campagne Produit</a></li>
-          {% endif %}
-      </ul>
-  </li>
-  {% if user|has_group:"CEN" or user|has_group:"CDS" or user|has_group:"BDS" or user|has_group:"BPS" or user.is_superuser %}
-  <li>
-      <a href="{% url 'reports' %}"  ><i class="glyphicon glyphicon-list-alt"></i> Rapports </a>
-  </li>
-  {% endif %}
-  {% endif %}
-</ul>
-<ul class="nav navbar-nav navbar-right">
-
- {% block login %}
- {% if request.user and request.user.is_authenticated %}
- <li>
-    <a href="{% url 'users.user_profile' request.user.id %}" style="float: left;"><i class="glyphicon glyphicon-user"></i>  {{ request.user.name|capfirst }}</a>
-    <a href="#" style="float: left;">Niveau : {{mylevel}}</a>
-    <a href="{% url 'users.user_logout' %}?go=/" style="float: right;">Se déconnecter</a>
-</li>
-{% else %}
-<li><a href="{% url 'users.user_login' %}">Se connecter</a></li>
-{% endif %}
-{% endblock login %}
-</ul>
-</nav>
-{% endblock navigation %}
-
-</div>
-
-</header>
-{% endblock navbar %}
-
-<div class="container">
-
-    {% load smartmin %}
-
-    {% block content-div %}
-    <div class="content">
-      {% block messages %}
-      {% if messages %}
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        <a class="close" data-dismiss="alert">×</a>
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endblock messages %}
-
-    {% block pre-content %}
-    {% endblock %}
-
-    {% block content %}
-    {% endblock %}
-
-    {% block post-content %}
-    {% endblock %}
-</div>
-{% endblock %}
-
-<footer>
-  {% block footer %}
-  <a href="http://ssme.unicefburundi.org/"><div class="pull-right" id="footer"></div></a>
-  {% endblock %}
-</footer>
-
-</div> <!-- /container -->
-
-<!-- JavaScript at the bottom for fast page loading, conditional based on whether we are serving locally -->
-<script>
-    if (window.location.hostname == "localhost"){
-        document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.1.11.1.min.js"%3E%3C/script%3E'));
-    } else {
-        document.write(unescape('%3Cscript src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"%3E%3C/script%3E'));
-    }
-</script>
-
-{# compress js #}
-<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.pjax.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/scripts.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-
-{# media associated with any form we are displaying #}
-{% if form %}
-{{ form.media }}
-{% endif %}
-
-{% block extra-script %}{% endblock %}
-{% block script %}{% endblock %}
-
-</body>
+      {% block javascripts %}
+        <!-- jQuery -->
+        <script src="{% static "vendors/jquery/dist/jquery.min.js" %}"></script>
+        <!-- Bootstrap -->
+        <script src="{% static "vendors/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+        <!-- FastClick -->
+        <script src="{% static "vendors/fastclick/lib/fastclick.js" %}"></script>
+        <!-- NProgress -->
+        <script src="{% static "vendors/nprogress/nprogress.js" %}"></script>
+        <!-- bootstrap-progressbar -->
+        <script src="{% static "vendors/bootstrap-progressbar/bootstrap-progressbar.min.js" %}"></script>
+        <!-- iCheck -->
+        <script src="{% static "vendors/iCheck/icheck.min.js" %}"></script>
+        <!-- bootstrap-daterangepicker -->
+        <script src="{% static "vendors/moment/min/moment.min.js" %}"></script>
+        <script src="{% static "vendors/bootstrap-daterangepicker/daterangepicker.js" %}"></script>
+        <!-- bootstrap-wysiwyg -->
+        <script src="{% static "vendors/bootstrap-wysiwyg/js/bootstrap-wysiwyg.min.js" %}"></script>
+        <script src="{% static "vendors/jquery.hotkeys/jquery.hotkeys.js" %}"></script>
+        <script src="{% static "vendors/google-code-prettify/src/prettify.js" %}"></script>
+        <!-- jQuery Tags Input -->
+        <script src="{% static "vendors/jquery.tagsinput/src/jquery.tagsinput.js" %}"></script>
+        <!-- Switchery -->
+        <script src="{% static "vendors/switchery/dist/switchery.min.js" %}"></script>
+        <!-- Select2 -->
+        <script src="{% static "vendors/select2/dist/js/select2.full.min.js" %}"></script>
+        <!-- Parsley -->
+        <script src="{% static "vendors/parsleyjs/dist/parsley.min.js" %}"></script>
+        <!-- Autosize -->
+        <script src="{% static "vendors/autosize/dist/autosize.min.js" %}"></script>
+        <!-- jQuery autocomplete -->
+        <script src="{% static "vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js" %}"></script>
+        <!-- starrr -->
+        <script src="{% static "vendors/starrr/dist/starrr.js" %}"></script>
+      {% endblock %}
+      <!-- Custom Theme Scripts -->
+      <script src="{% static "build/js/custom.js" %}"></script>
+    {% endblock body %}
+  </body>
 </html>

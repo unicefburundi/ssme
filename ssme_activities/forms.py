@@ -66,11 +66,29 @@ class UserCreationMultiForm(MultiModelForm):
 MAX_ELEMENTS = 10
 
 ProductsFormSet = inlineformset_factory(
-    Campaign, CampaignProduct, can_delete=True, fields="__all__", extra=MAX_ELEMENTS
+    Campaign,
+    CampaignProduct,
+    can_delete=True,
+    fields="__all__",
+    extra=MAX_ELEMENTS
 )
 
 BeneficiaryFormSet = inlineformset_factory(
-    Campaign, CampaignBeneficiary, can_delete=True, fields="__all__", extra=MAX_ELEMENTS
+    Campaign,
+    CampaignBeneficiary,
+    can_delete=True,
+    help_texts="Create a Campaign Beneficiary",
+    fields="__all__",
+    extra=MAX_ELEMENTS
+)
+
+CampaignBeneficiaryProductFormSet = inlineformset_factory(
+    CampaignProduct,
+    CampaignBeneficiaryProduct,
+    help_texts="Create a Campaign Beneficiary Product",
+    can_delete=True,
+    fields="__all__",
+    extra=MAX_ELEMENTS
 )
 
 CDSCampaignFormSet = inlineformset_factory(
