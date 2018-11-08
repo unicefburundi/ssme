@@ -5,31 +5,32 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-15 20:54+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Rugano Allan Stockman <kuristockyrugano at gmail >\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2018-11-08 10:49+0200\n"
+"PO-Revision-Date: 2018-11-08 10:58+0200\n"
+"Last-Translator: Allan Stockman Rugano <kuristockyrugano@gmail.com>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: \n"
+"X-Generator: Poedit 1.8.7.1\n"
 
-#: ssme_activities/forms.py:113
+#: ssme_activities/forms.py:126
 msgid "Dose"
 msgstr "Dose"
 
-#: ssme_activities/forms.py:114
+#: ssme_activities/forms.py:127
 msgid "Pill"
 msgstr "Pilule"
 
-#: ssme_activities/forms.py:115
+#: ssme_activities/forms.py:128
 msgid "Injection"
 msgstr "Injection"
 
-#: ssme_activities/models.py:20
+#: ssme_activities/models.py:24
 msgid ""
 "Phone number must be entered in the format: '+999999999'. Up to 15 digits "
 "allowed."
@@ -37,37 +38,37 @@ msgstr ""
 "Numéro de téléphone doit être saisi dans le format:. '999999999' Jusqu'à 15 "
 "chiffrespermis."
 
-#: ssme_activities/models.py:21
+#: ssme_activities/models.py:31
 msgid "The telephone to contact you."
 msgstr "Le téléphone pour vous contacter."
 
-#: ssme_activities/models.py:22
+#: ssme_activities/models.py:39
 msgid "Either CDS, BDS, PBS, or Central level."
 msgstr "Soit CDS, BDS, PBS, ou niveau central."
 
-#: ssme_activities/models.py:23
+#: ssme_activities/models.py:46
 msgid "Code of the MoH facility"
 msgstr "Code de l'etablissment"
 
-#: ssme_activities/views.py:393
+#: ssme_activities/views.py:764
 #, python-format
 msgid "Profile created and mail sent to %(email)s."
 msgstr "Profil créé et e-mail envoyé au %(email)s."
 
-#: ssme_activities/views.py:395
+#: ssme_activities/views.py:770
 #, python-format
 msgid "Unable to send mail  to %(email)s."
 msgstr "Impossible d'envoyer l'e-mail au %(email)s."
 
-#: ssme_activities/views.py:434
+#: ssme_activities/views.py:818
 #, python-format
 msgid "Campaign created %(email)s."
 msgstr "Campagne créée %(email)s."
 
-#: ssme_activities/views.py:564
+#: ssme_activities/views.py:1018
 msgid ""
-"You have no valid MoH facility attached to your profile. Please contact the "
-"Admin"
+"You have no valid MoH facility attached to             your profile. Please "
+"contact the Admin"
 msgstr ""
 "Vous avez aucune installation sanitaire valide attaché à votre profil. S'il "
 "vous plaît contacter l'Admin"
@@ -77,6 +78,7 @@ msgid "Please correct the following errors"
 msgstr "Code de l'installation MoH"
 
 #: templates/formtools/form.html:6 templates/formtools/preview.html:24
+#: templates/ssme_activities/searchbenef_form.html:30
 msgid "Submit"
 msgstr "Envoyer"
 
@@ -208,7 +210,7 @@ msgstr "Merci,"
 
 #: templates/registration/activation_email.html:31
 msgid "Management"
-msgstr ""
+msgstr "Management"
 
 #: templates/registration/activation_email_subject.txt:1
 msgid "Account activation on"
@@ -306,23 +308,23 @@ msgstr ""
 "    Votre e-mail et cliquez sur le lien pour continuer. \n"
 "    "
 
-#: templates/registration/password_reset_form.html:4
-#: templates/registration/password_reset_form.html:15
+#: templates/registration/password_reset_form.html:12
+#: templates/registration/password_reset_form.html:27
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
 
-#: templates/registration/password_reset_form.html:8
+#: templates/registration/password_reset_form.html:20
 msgid ""
 "\n"
-"    Forgot your password?  Enter your email in the form below and we'll send "
-"you instructions for creating a new one.\n"
-"    "
+"\t\t\t\t    Forgot your password?  Enter your email in the form below and "
+"we'll send you instructions for creating a new one.\n"
+"\t\t\t\t    "
 msgstr ""
 "\n"
-"    Vous avez oublié votre mot de passe? Entrez votre émail dans le "
+"\t\t\t\t  Vous avez oublié votre mot de passe? Entrez votre émail dans le "
 "formulaire ci-dessous et nous allons vous envoyer des instructions pour "
 "créer un nouveau. \n"
-"    "
+"\t\t\t\t    "
 
 #: templates/registration/registration_closed.html:4
 msgid "Registration is closed"
@@ -350,13 +352,32 @@ msgstr "Nouvel utilisateur ?"
 msgid "Invalid data. Please try again."
 msgstr "Données invalides. Veuillez réessayer."
 
+#: templates/sidebar.html:31
+msgid "Create"
+msgstr "Creer "
+
+#: templates/sidebar.html:41
+msgid "Reports"
+msgstr "Rapports"
+
+#: templates/sidebar.html:48
+msgid "Lists"
+msgstr "Listes"
+
 #: templates/smartmin/delete_confirm.html:11
 msgid "Remove Item?"
 msgstr "Supprimer un objet?"
 
-#: templates/smartmin/delete_confirm.html:14
-msgid "Are you sure you want to remove"
-msgstr "Êtes-vous sûr que vous voulez supprimer"
+#: templates/smartmin/delete_confirm.html:13
+#, python-format
+msgid ""
+"\n"
+"    Are you sure you want to remove <b>%(object)s</b>?\n"
+"    "
+msgstr ""
+"\n"
+"Êtes-vous sûr que vous voulez supprimer<b>%(object)s</b>?\n"
+"    "
 
 #: templates/smartmin/delete_confirm.html:17
 msgid ""
@@ -383,21 +404,35 @@ msgstr "Chercher"
 msgid "Add"
 msgstr "Ajouter"
 
-#: templates/smartmin/list.html:80
-msgid "result"
-msgstr "résultat"
+#: templates/smartmin/list.html:79
+#, python-format
+msgid ""
+"\n"
+"\t %(counter)s result\n"
+"\t"
+msgid_plural ""
+"\n"
+"         %(counter)s results\n"
+"        "
+msgstr[0] ""
+"\n"
+"\t %(counter)s resultats\n"
+"\t"
+msgstr[1] ""
+"\n"
+"         %(counter)s resultats\n"
+"        "
 
-#: templates/smartmin/list.html:82
-msgid "results"
-msgstr "résultats"
-
-#: templates/smartmin/list.html:86
-msgid "Results"
-msgstr "Résultats"
-
-#: templates/smartmin/list.html:86
-msgid "of"
-msgstr "de"
+#: templates/smartmin/list.html:85
+#, python-format
+msgid ""
+"\n"
+"\tResults %(start)s-%(end)s of %(count)s\n"
+"\t"
+msgstr ""
+"\n"
+"\tResultats %(start)s-%(end)s de %(count)s\n"
+"\t"
 
 #: templates/smartmin/list.html:95 templates/smartmin/list.html.py:97
 msgid "Previous"
@@ -407,9 +442,9 @@ msgstr "Precedent"
 msgid "Next"
 msgstr "Suivant"
 
-#: templates/smartmin/read.html:14
-msgid "Edit"
-msgstr "Editer"
+#: templates/smartmin/read.html:13
+msgid "edit"
+msgstr "éditer"
 
 #: templates/smartmin/users/login.html:10
 msgid "Sign in"
@@ -431,23 +466,30 @@ msgstr "Token périmée"
 msgid "Login Failure"
 msgstr "Echec connexion"
 
-#: templates/smartmin/users/user_failed.html:12
-msgid "Sorry, you cannot log in at this time because we received"
+#: templates/smartmin/users/user_failed.html:11
+#, python-format
+msgid ""
+"\n"
+"      Sorry, you cannot log in at this time because we received "
+"%(failed_login_limit)s incorrect login attempts.\n"
+"      "
 msgstr ""
-"Désolé, vous ne pouvez pas vous connecter en ce moment parce que nous avons "
-"reçu"
+"\n"
+"      Désolé, vous ne pouvez pas vous connecter en ce moment parce que nous "
+"avons reçu %(failed_login_limit)s conexions incorrectes\n"
+"      "
 
-#: templates/smartmin/users/user_failed.html:12
-msgid "incorrect login attempts."
-msgstr "des tentatives de connexion incorrectes."
-
-#: templates/smartmin/users/user_failed.html:19
-msgid "Please wait"
-msgstr "S'il vous plaît attendre"
-
-#: templates/smartmin/users/user_failed.html:19
-msgid "minutes before to try log in again."
-msgstr "minutes avant d'essayer de vous connecter à nouveau."
+#: templates/smartmin/users/user_failed.html:18
+#, python-format
+msgid ""
+"\n"
+"      Please wait %(lockout_timeout)s minutes before to try log in again.\n"
+"      "
+msgstr ""
+"\n"
+"      Allendez %(lockout_timeout)s minutes avant d'essayer de vous connecter "
+"à nouveau.\n"
+"      "
 
 #: templates/smartmin/users/user_failed.html:25
 msgid ""
@@ -479,22 +521,55 @@ msgstr ""
 "S'il vous plaît entrez l'adresse e-mail que vous avez utilisé pour vous "
 "inscrire et nous allons vous aider pourrécupérer votre mot de passe."
 
-#: templates/smartmin/users/user_newpassword.html:8
-msgid "Your password has expired."
-msgstr "Votre mot de passe a été réinitialisé!"
-
-#: templates/smartmin/users/user_newpassword.html:8
-msgid "Site policy states that you must pick a new password every"
+#: templates/smartmin/users/user_newpassword.html:7
+#, python-format
+msgid ""
+"\n"
+"  <strong>Your password has expired.</strong> Site policy states that you "
+"must pick a new password every %(expire_days)s days, and that passwords must "
+"not have been used within the previous %(window_days)s days.\n"
+"  "
 msgstr ""
-"Selon la politique du site que vous devez choisir un nouveau mot de passe "
-"chaque"
+"\n"
+"  <strong>Votre mot de passe a expire.</strong> La politique du site stipule "
+"que vous devez choisir un nouveau mot de passe chaque %(expire_days)s "
+"djours, et que les mots de passe ne doivent pas avoir été utilisés au cours "
+"des precedents %(window_days)s jours.\n"
+" "
 
-#: templates/smartmin/users/user_newpassword.html:8
-msgid "days, and that passwords must not have been used within the previous"
-msgstr ""
-"jours, et que les mots de passe ne doivent pas avoir été utilisés au sein de "
-"la précédente"
+#~ msgid "result"
+#~ msgstr "résultat"
 
-#: templates/smartmin/users/user_newpassword.html:8
-msgid "days."
-msgstr "jours"
+#~ msgid "results"
+#~ msgstr "résultats"
+
+#~ msgid "Results"
+#~ msgstr "Résultats"
+
+#~ msgid "of"
+#~ msgstr "de"
+
+#~ msgid "Edit"
+#~ msgstr "Editer"
+
+#~ msgid "incorrect login attempts."
+#~ msgstr "des tentatives de connexion incorrectes."
+
+#~ msgid "Please wait"
+#~ msgstr "S'il vous plaît attendre"
+
+#~ msgid "Your password has expired."
+#~ msgstr "Votre mot de passe a été réinitialisé!"
+
+#~ msgid "Site policy states that you must pick a new password every"
+#~ msgstr ""
+#~ "Selon la politique du site que vous devez choisir un nouveau mot de passe "
+#~ "chaque"
+
+#~ msgid "days, and that passwords must not have been used within the previous"
+#~ msgstr ""
+#~ "jours, et que les mots de passe ne doivent pas avoir été utilisés au sein "
+#~ "de la précédente"
+
+#~ msgid "days."
+#~ msgstr "jours"
