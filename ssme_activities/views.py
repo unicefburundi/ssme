@@ -27,6 +27,9 @@ today = {"reception_date": datetime.date.today().strftime("%Y-%m-%d")}
 
 def dashboard(request):
     d = {}
+    # the_last_campaign = Campaign.objects.latest("start_date")
+    d["reports"] = Report.objects.filter()
+    d["current_campaign"] = Campaign.objects.latest("start_date")
     d["campaigns"] = Campaign.objects.all()
     d["provinces"] = Province.objects.all()
     return render(request, "base_layout.html", d)
