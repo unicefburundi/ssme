@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url, include
+from django.conf.urls import url, include
 from ssme_activities.backend import handel_rapidpro_request
 from ssme_activities.views import *
 from django.contrib.auth.decorators import login_required as _
@@ -10,8 +10,7 @@ router.register(r"district", DistrictViewSet)
 router.register(r"cdss", CDSViewSet)
 router.register(r"campaigns", CampaignViewSet)
 
-urlpatterns = patterns(
-    "",
+urlpatterns = [
     url(r"^", include(router.urls)),
     url(r"external_request", handel_rapidpro_request, name="handel_request"),
     url(r"^moh_facility/$", moh_facility, name="moh_facility"),
@@ -77,7 +76,7 @@ urlpatterns = patterns(
     url(r"^calcul_benef/$", get_benef_in_json, name="calcul_benef"),
     url(r"^calcul_recus/$", get_recus_in_json, name="calcul_recus"),
     url(r"^calcul_final/$", get_final_in_json, name="calcul_final"),
-)
+]
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()
 urlpatterns += BeneficiaireCRUDL().as_urlpatterns()
