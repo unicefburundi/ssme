@@ -358,6 +358,9 @@ class AllSupervisorsOnDistrictLevel(models.Model):
     def __unicode__(self):
         return "{0} {1}".format(self.first_name, self.last_name)
 
+    class Meta:
+        ordering = ['first_name']
+
 
 class DistrictSupervisor(models.Model):
     district = models.ForeignKey(District)
