@@ -83,40 +83,22 @@
                 var icons = {
                     'Vit A 100 000 UI': L.icon({
                         iconUrl: '{% static "img/marker-icon-orange.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                     'MENA': L.icon({
                         iconUrl: '{% static "img/marker-icon-black.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                     'Savon': L.icon({
                         iconUrl: '{% static "img/marker-icon-blue.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                     'Albendazol': L.icon({
                         iconUrl: '{% static "img/marker-icon-red.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                     'Vit A 200 000 UI': L.icon({
                         iconUrl: '{% static "img/marker-icon-green.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                     'Praziquantel': L.icon({
                         iconUrl: '{% static "img/marker-icon-yellow.png" %}',
-                        iconSize: [25, 41],
-                        iconAnchor: [12, 41],
-                        popupAnchor: [1, -34],
-                        shadowSize: [41, 41]}),
+                        }),
                 }
 
                 var stocks = L.geoJson(data,{
@@ -130,7 +112,7 @@
                       {
                     iconCreateFunction: function(cluster) {
                       return L.divIcon({ 
-                        // html: '<font size="5" color="red">' + cluster.getChildCount() + '</font>',
+                        html: '<font size="5" color="red">' + cluster.getChildCount() + '</font>',
                         iconSize:5,
                          });
                     }
