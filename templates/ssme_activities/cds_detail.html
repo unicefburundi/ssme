@@ -188,3 +188,8 @@ function receivedTextFormatter(data) {
 </script>
 </div>
 {% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  {% include "ssme_activities/datatable_scripts.html" %}
+{% endblock javascripts %}
