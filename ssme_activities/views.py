@@ -1,4 +1,5 @@
 import datetime
+import os
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -21,6 +22,9 @@ from ssme_activities.serilaizers import *
 from rest_framework import viewsets
 from rest_framework.renderers import BrowsableAPIRenderer
 from django.core import serializers
+from django.http import JsonResponse
+import pandas as pd
+from ssme_activities.utils import add_zero, extract_gps, get_columns, df_to_geojson
 
 today = {"reception_date": datetime.date.today().strftime("%Y-%m-%d")}
 
@@ -1647,3 +1651,37 @@ class CampaignViewSet(viewsets.ModelViewSet):
             return ct.update({"dates": self.request.GET["dates"]})
         else:
             return ct
+
+
+def get_stockout(product=None):
+    # import ipdb; ipdb.set_trace()
+    cds_ = os.path.join(
+                    settings.STATIC_ROOT, 
+                    'bdi_json',
+                    'GPS-CDS.json'
+                    )
+    hop_ = os.path.join(
+                    settings.STATIC_ROOT, 
+                    'bdi_json',
+                    'GPS-hopitaux.json'
+                    )
+    files = [cds_, hop_]
+    good_columns = get_columns()
+    data = extract_gps(files)
+    moh_facilities = pd.DataFrame(data, columns=good_columns)
+    moh_facilities['code_fosa'] = moh_facilities["code_fosa"].apply(add_zero)
+    moh_facilities = moh_facilities.dropna(axis=0, subset=['longitude'])
+
+    current_campaign = Campaign.objects.filter(going_on=True)
+    rep = ReportStockOut.objects.filter(campaign_product__campaign=current_campaign).values(
+        "report__reporting_date", 
+        "remaining_stock", 
+        "campaign_product__product__name", 
+        "campaign_product__product__unite_de_mesure", 
+        "report__cds__name",
+        "report__cds__code"
+        )
+    reports = pd.DataFrame(list(rep))
+    reports.columns = ['product', 'unite_de_mesure', 'remaining_stock', 'code_fosa', 'cds_name', 'reporting_date']
+    reportsGps = pd.merge(moh_facilities, reports, on='code_fosa')
+    return JsonResponse(df_to_geojson(reportsGps, reportsGps.columns), safe=False)

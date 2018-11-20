@@ -77,6 +77,7 @@ urlpatterns = patterns(
     url(r"^calcul_benef/$", get_benef_in_json, name="calcul_benef"),
     url(r"^calcul_recus/$", get_recus_in_json, name="calcul_recus"),
     url(r"^calcul_final/$", get_final_in_json, name="calcul_final"),
+    url(r"^get_stockout/$", get_stockout, name="get_stockout"),
 )
 
 urlpatterns += CampaignCRUDL().as_urlpatterns()

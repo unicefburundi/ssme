@@ -76,7 +76,7 @@
               <script>
               // initialize the map
               var map = L.map('rupturemap').setView([-3.433333, 29.9], 9);
-
+              var dataurl = '{% url "get_stockout" %}';
               // load a tile layer
               L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
               {
@@ -84,6 +84,58 @@
               maxZoom: 18,
               minZoom: 4
               }).addTo(map);
+
+              $.getJSON(dataurl,function(data){
+                // add GeoJSON layer to the map once the file is loaded
+                var icons = {
+                    'Vit A 100 000 UI': L.icon({
+                        iconUrl: '{% static "img/marker-icon-orange.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                    'MENA': L.icon({
+                        iconUrl: '{% static "img/marker-icon-black.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                    'Savon': L.icon({
+                        iconUrl: '{% static "img/marker-icon-blue.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                    'Albendazol': L.icon({
+                        iconUrl: '{% static "img/marker-icon-red.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                    'Vit A 200 000 UI': L.icon({
+                        iconUrl: '{% static "img/marker-icon-green.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                    'Praziquantel': L.icon({
+                        iconUrl: '{% static "img/marker-icon-yellow.png" %}',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]}),
+                }
+
+                L.geoJson(data,{
+                      pointToLayer: function(feature,latlng){
+                      var marker = L.marker(latlng,{icon: icons[feature.properties.product]});
+                        marker.bindPopup("Rupture du <b>" + feature.properties.product +"</b>  au centre de sante <b>"+ feature.properties.cds_name +"</b> du district sanitaire <b>"+ feature.properties.nom_ds +"</b>. </br> Sous colline <b>"+ feature.properties.s_colline + "</b>, colline <b>" + feature.properties.colline + "</b>, commune <b>" + feature.properties.commune+ "</b>, province <b>" + feature.properties.province + "</b> le <strong>" + feature.properties.reporting_date + "</strong>.</br> Il ne reste que " + feature.properties.remaining_stock + feature.properties.unite_de_mesure);
+                      return marker; 
+                      }
+                    }  
+                  ).addTo(map);
+              });
+              
               </script>
           {% endblock content %}
             </div>
