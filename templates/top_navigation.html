@@ -6,18 +6,19 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right">
+          {% if user.is_authenticated %}
       <li class="">
         <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
           <img src="https://ui-avatars.com/api/?name={{user.first_name|title}}+{{user.name|title}}" alt="{{user.name|title}}+{{user.last_name|title}}" alt="{{user.name|capfirst}}">{{user.name|capfirst}}
           <span class=" fa fa-angle-down"></span>
         </a>
         <ul class="dropdown-menu dropdown-usermenu pull-right">
-          {% if user.is_authenticated %}
           <li><a href="{% url 'profile_user_detail' pk=user.id %}"> Profil</a></li>
-          {% else %}
           <li><a href="{% url 'logout' %}?next=/"><i class="fa fa-sign-out pull-right"></i> {% trans "Log Out" %}</a></li>
-          {% endif %}
         </ul>
+          {% else %}
+          <li><a href="{% url 'login' %}?next=/dashboard"><i class="fa fa-sign-in pull-right"></i> {% trans "Login" %}</a></li>
+          {% endif %}
       </li>
     </ul>
   </nav>

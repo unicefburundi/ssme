@@ -48,7 +48,7 @@
               <div class="tab-pane {% block activebeneficiary1 %}active{% endblock activebeneficiary1 %}" id="beneficiary">
                 <h5><i class="glyphicon glyphicon-comment"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                     {% block beneficiary %}
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
+                          <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action">
                             <thead>
                               <tr>
                                 <th >District</th>
@@ -74,7 +74,7 @@
                   <div class="tab-pane {% block activereception1 %}{% endblock activereception1 %}" id="reception">
                     <h5><i class="glyphicon glyphicon-cog"></i>  {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                     {% block reception %}
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
+                          <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action">
                             <thead>
                               <tr>
                                 <th data-footer-formatter="totalTextFormatter">District</th>
@@ -99,7 +99,7 @@
                   <div class="tab-pane {% block activefinal1 %}{% endblock activefinal1 %}" id="final">
                     <h5><i class="glyphicon glyphicon-list-alt"></i> {{mycampaign|default:"The Beginning"}} du {{mycampaign.start_date|date:"d M, Y"}} au {{mycampaign.end_date|date:"d M, Y"}}</h5>
                     {% block final %}
-                          <table class="table table-bordered" data-toggle="table"  data-show-export="true" data-search="true" data-export-types=['csv','excel'] data-show-footer="true">
+                          <table id="datatable-checkbox" class="table table-striped table-bordered bulk_action">
                             <thead>
                               <tr>
                                 <th data-footer-formatter="consumptionTextFormatter">District</th>
@@ -156,3 +156,8 @@ function consumptionFormatter(data) {
 </script>
 </div>
 {% endblock content %}
+
+{% block javascripts %}
+  {{ block.super }}
+  {% include "ssme_activities/datatable_scripts.html" %}
+{% endblock javascripts %}

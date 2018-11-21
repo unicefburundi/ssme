@@ -435,13 +435,13 @@ class ProductAdmin(ExportMixin, admin.ModelAdmin):
 class DistrictResource(resources.ModelResource):
     class Meta:
         model = District
-        fields = ("name", "code", "province__name")
+        fields = ("id", "name", "code", "province__name")
 
 
 class DistrictAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = DistrictResource
     search_fields = ("name", "code", "province__name")
-    list_display = ("name", "code", "province")
+    list_display = ("id", "name", "code", "province")
 
     def province(self, obj):
         return obj.province.name
@@ -468,12 +468,13 @@ class CDSAdmin(ExportMixin, admin.ModelAdmin):
 class AllSupervisorsOnDistrictLevelResource(resources.ModelResource):
     class Meta:
         model = AllSupervisorsOnDistrictLevel
-        fields = ("first_name", "last_name", "phone_number")
+        fields = ("id", "first_name", "last_name", "phone_number")
 
 
-class AllSupervisorsOnDistrictLevelAdmin(ExportMixin, admin.ModelAdmin):
+@admin.register(AllSupervisorsOnDistrictLevel)
+class AllSupervisorsOnDistrictLevelAdmin(ImportExportModelAdmin):
     resource_class = AllSupervisorsOnDistrictLevelResource
-    list_display = ("first_name", "last_name", "phone_number")
+    list_display = ("id", "first_name", "last_name", "phone_number")
     search_fields = ("first_name", "last_name", "phone_number")
 
 
@@ -481,15 +482,21 @@ class DistrictSupervisorResource(resources.ModelResource):
     class Meta:
         model = DistrictSupervisor
         fields = (
+            "id",
+            "district",
             "district__name",
-            "supervisor__phone_number",
             "district__province__name",
+            "supervisor__id",
+            "supervisor__phone_number",
+            "supervisor__first_name",
+            "supervisor__last_name",
         )
 
 
-class DistrictSupervisorAdmin(ExportMixin, admin.ModelAdmin):
-    resource_class = DistrictSupervisorResource
-    list_display = ("district", "supervisor")
+@admin.register(DistrictSupervisor)
+class DistrictSupervisorAdmin(ImportExportModelAdmin):
+    # resource_class = DistrictSupervisorResource
+    list_display = ("id", "district", "supervisor")
     list_filter = ("district__province__name",)
     search_fields = (
         "district__name",
@@ -532,5 +539,3 @@ admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 admin.site.register(ReportStockOut, ReportStockOutAdmin)
 admin.site.register(CampaignCDS, CampaignCDSAdmin)
-admin.site.register(AllSupervisorsOnDistrictLevel, AllSupervisorsOnDistrictLevelAdmin)
-admin.site.register(DistrictSupervisor, DistrictSupervisorAdmin)
