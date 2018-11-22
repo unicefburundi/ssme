@@ -33,7 +33,7 @@ def myfacility(request):
     if not Campaign.objects.all():
         campaign = ["no campaign"]
     else:
-        campaign = Campaign.objects.latest("end_date")
+        campaign = Campaign.objects.filter(going_on=True).latest("end_date")
     return {
         "myprofile": myprofile,
         "mycode": myprofile.moh_facility,

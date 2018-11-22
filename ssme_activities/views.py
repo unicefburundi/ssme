@@ -1145,7 +1145,7 @@ def get_reports_by_benef(request, **kwargs):
     headers_benef = initial_data["headers_benef"]
     taux = initial_data["taux"]
     serializer = CampaignSerializer(
-        Campaign.objects.latest("pk"),
+        Campaign.objects.filter(going_on=True).latest("end_date"),
         context={"request": request, "mycode": mycode["mycode"]},
     )
     body_benef = serializer.data
@@ -1172,7 +1172,7 @@ def get_reports_by_received(request, **kwargs):
     # reception
     queryset_reception = get_report_by_code(
         request, mycode["mycode"], ReportProductReception
-    )
+    ).filter(campaign_product__campaign__going_on=True)
     dates_reception = []
     body_reception = []
     if not queryset_reception:
@@ -1211,7 +1211,7 @@ def get_reports_by_remaining(request, **kwargs):
     # Remain
     queryset_remain = get_report_by_code(
         request, mycode["mycode"], ReportProductRemainStock
-    )
+    ).filter(campaign_product__campaign__going_on=True)
     dates_remain = []
     body_remain = []
     if not queryset_remain:
@@ -1673,7 +1673,7 @@ def get_stockout(product=None):
     moh_facilities = moh_facilities.dropna(axis=0, subset=['longitude'])
 
     current_campaign = Campaign.objects.filter(going_on=True)
-    rep = ReportStockOut.objects.filter(campaign_product__campaign=current_campaign).values(
+    rep = ReportStockOut.objects.filter(campaign_product__campaign=current_campaign, report__reporting_date=today["reception_date"]).values(
         "report__reporting_date", 
         "remaining_stock", 
         "campaign_product__product__name", 
@@ -1681,7 +1681,11 @@ def get_stockout(product=None):
         "report__cds__name",
         "report__cds__code"
         )
-    reports = pd.DataFrame(list(rep))
-    reports.columns = ['product', 'unite_de_mesure', 'remaining_stock', 'code_fosa', 'cds_name', 'reporting_date']
-    reportsGps = pd.merge(moh_facilities, reports, on='code_fosa')
-    return JsonResponse(df_to_geojson(reportsGps, reportsGps.columns), safe=False)
+    print rep
+    if len([]) == 0:
+        return JsonResponse({}, safe=False)
+    else:
+        reports = pd.DataFrame(list(rep))
+        reports.columns = ['product', 'unite_de_mesure', 'remaining_stock', 'code_fosa', 'cds_name', 'reporting_date']
+        reportsGps = pd.merge(moh_facilities, reports, on='code_fosa')
+        return JsonResponse(df_to_geojson(reportsGps, reportsGps.columns), safe=False)
