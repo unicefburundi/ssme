@@ -1,14 +1,13 @@
-from django.conf.urls import include, url, patterns
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 
-urlpatterns = patterns(
-    "",
+urlpatterns = [
     url(r"^admin/", include(admin.site.urls)),
     url(r"^ssme/", include("ssme_activities.urls")),
-)
+    ]
 
 urlpatterns += i18n_patterns(
     url(r"^accounts/", include("authtools.urls")),
